@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -26,6 +27,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -46,6 +48,9 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -63,6 +68,7 @@ public class MisApuntesClienteFXController {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger("view.MisApuntesClienteFXController");
     private ClienteBean cliente;
     private Stage stage;
+    private Stage stageAyuda;
     
     
     private ApunteManager apunteLogic = createApunteManager("real");
@@ -601,7 +607,42 @@ public class MisApuntesClienteFXController {
     private void onActionAbrirMiPerfil(ActionEvent event){
     }
     @FXML
-    private void onActionAbout(ActionEvent event){
+    private void onActionAbout(ActionEvent event){final WebView browser = new WebView();
+        final WebEngine webEngine = browser.getEngine();
+        
+        URL url = this.getClass().getResource("/ayuda/ayuda_subir_apunte.html");
+        webEngine.load(url.toString());
+        
+        stageAyuda=new Stage();
+        stageAyuda.setTitle(webEngine.getTitle());
+        
+        Button ayudaCerrar=new Button("Cerrar");        
+        ayudaCerrar.setOnAction(this::cerrarAyuda);
+        ayudaCerrar.setMnemonicParsing(true);
+        ayudaCerrar.setText("_Cerrar");
+        /* Al pulsar enter encima del boton se ejecute */
+        ayudaCerrar.setOnKeyPressed((key) ->{
+            if(key.getCode().equals(KeyCode.ENTER)) {
+                 ayudaCerrar.fire();
+            }
+        });
+        stageAyuda.setOnShowing(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                ayudaCerrar.requestFocus();
+            }
+        });
+        VBox root = new VBox();
+        root.getChildren().addAll(browser,ayudaCerrar);
+        
+        Scene escenaAyuda=new Scene(root);
+        stageAyuda.setScene(escenaAyuda);
+        stageAyuda.initModality(Modality.APPLICATION_MODAL);
+        
+        stageAyuda.show();
+    }
+    public void cerrarAyuda(ActionEvent event){
+        stageAyuda.hide();
     }
     //Fin de los metodos de navegación de la aplicación
     /**

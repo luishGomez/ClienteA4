@@ -12,6 +12,7 @@ import businessLogic.MateriaManager;
 import static businessLogic.MateriaManagerFactory.createMateriaManager;
 import com.google.common.collect.Lists;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -24,6 +25,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -45,6 +47,9 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -79,6 +84,7 @@ public class TiendaApuntesFXController {
     private String tipoFiltrado="Sin filtro";
     private MateriaBean materiaFiltrada = null;
     private static int resultado=0;
+    private Stage stageAyuda;
     
     @FXML
     private Button btnRefrescar;
@@ -392,6 +398,42 @@ public class TiendaApuntesFXController {
     }
     @FXML
     private void onActionAbout(ActionEvent event){
+        final WebView browser = new WebView();
+        final WebEngine webEngine = browser.getEngine();
+        
+        URL url = this.getClass().getResource("/ayuda/ayuda_tienda_de_apuntes.html");
+        webEngine.load(url.toString());
+        
+        stageAyuda=new Stage();
+        stageAyuda.setTitle(webEngine.getTitle());
+        
+        Button ayudaCerrar=new Button("Cerrar");        
+        ayudaCerrar.setOnAction(this::cerrarAyuda);
+        ayudaCerrar.setMnemonicParsing(true);
+        ayudaCerrar.setText("_Cerrar");
+        /* Al pulsar enter encima del boton se ejecute */
+        ayudaCerrar.setOnKeyPressed((key) ->{
+            if(key.getCode().equals(KeyCode.ENTER)) {
+                 ayudaCerrar.fire();
+            }
+        });
+        stageAyuda.setOnShowing(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                ayudaCerrar.requestFocus();
+            }
+        });
+        VBox root = new VBox();
+        root.getChildren().addAll(browser,ayudaCerrar);
+        
+        Scene escenaAyuda=new Scene(root);
+        stageAyuda.setScene(escenaAyuda);
+        stageAyuda.initModality(Modality.APPLICATION_MODAL);
+        
+        stageAyuda.show();
+    }
+    public void cerrarAyuda(ActionEvent event){
+        stageAyuda.hide();
     }
     //Fin de los metodos de navegación de la aplicación
     /**

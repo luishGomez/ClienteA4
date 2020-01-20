@@ -10,6 +10,7 @@ import static businessLogic.ApunteManagerFactory.createApunteManager;
 import businessLogic.BusinessLogicException;
 import businessLogic.MateriaManager;
 import static businessLogic.MateriaManagerFactory.createMateriaManager;
+import java.net.URL;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,6 +25,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -45,10 +47,14 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -77,6 +83,7 @@ public class GestorDeApuntesFXController {
     private ApunteBean apunteProvisional;
     private final int MIN_CARACTERES=3;
     private final int MAX_CARACTERES=250;
+    private Stage stageAyuda;
     @FXML
     private TableView tableApuntes;
     @FXML
@@ -504,7 +511,42 @@ public class GestorDeApuntesFXController {
     
     @FXML
     private void onActionAbout(ActionEvent event){
-        showErrorAlert("About");
+        final WebView browser = new WebView();
+        final WebEngine webEngine = browser.getEngine();
+        
+        URL url = this.getClass().getResource("/ayuda/ayuda_gestor_apuntes.html");
+        webEngine.load(url.toString());
+        
+        stageAyuda=new Stage();
+        stageAyuda.setTitle(webEngine.getTitle());
+        
+        Button ayudaCerrar=new Button("Cerrar");        
+        ayudaCerrar.setOnAction(this::cerrarAyuda);
+        ayudaCerrar.setMnemonicParsing(true);
+        ayudaCerrar.setText("_Cerrar");
+        /* Al pulsar enter encima del boton se ejecute */
+        ayudaCerrar.setOnKeyPressed((key) ->{
+            if(key.getCode().equals(KeyCode.ENTER)) {
+                 ayudaCerrar.fire();
+            }
+        });
+        stageAyuda.setOnShowing(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                ayudaCerrar.requestFocus();
+            }
+        });
+        VBox root = new VBox();
+        root.getChildren().addAll(browser,ayudaCerrar);
+        
+        Scene escenaAyuda=new Scene(root);
+        stageAyuda.setScene(escenaAyuda);
+        stageAyuda.initModality(Modality.APPLICATION_MODAL);
+        
+        stageAyuda.show();
+    }
+    public void cerrarAyuda(ActionEvent event){
+        stageAyuda.hide();
     }
     //Metodos de navigacion entre ventanas de administrador
     @FXML
