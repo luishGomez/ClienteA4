@@ -96,7 +96,7 @@ public class ModificarApunteFXController {
             textFieldPrecio.setText(apunte.getPrecio()+"");
             stage.showAndWait();
         }catch(Exception e){
-            LOGGER.severe(e.getMessage());
+            LOGGER.severe("Error al iniciar ModificarApunteFXController: "+e.getMessage());
         }
     }
     /**
@@ -233,7 +233,7 @@ public class ModificarApunteFXController {
      * @param frase La cadena.
      * @param minimo Minimo de caracteres.
      * @param maximo Maximo de caracteres.
-     * @return 
+     * @return
      */
     public boolean esValido(String frase,int minimo, int maximo){
         boolean resultado=true;

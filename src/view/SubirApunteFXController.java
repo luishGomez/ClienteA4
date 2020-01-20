@@ -10,17 +10,11 @@ import static businessLogic.ApunteManagerFactory.createApunteManager;
 import businessLogic.BusinessLogicException;
 import businessLogic.MateriaManager;
 import static businessLogic.MateriaManagerFactory.createMateriaManager;
-import com.google.common.collect.Lists;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -116,7 +110,7 @@ public class SubirApunteFXController {
             
             stage.showAndWait();
         }catch(Exception e){
-            LOGGER.severe(e.getMessage());
+            LOGGER.severe("Erro al abrira la ventan de SubirApunteFXController: "+e.getMessage());
         }
     }
     /**
@@ -329,7 +323,7 @@ public class SubirApunteFXController {
      * @param frase La cadena de caracteres.
      * @param minimo El minimo de caracteres.
      * @param maximo El maximo de caracteres.
-     * @return 
+     * @return
      */
     public boolean esValido(String frase,int minimo, int maximo){
         boolean resultado=true;

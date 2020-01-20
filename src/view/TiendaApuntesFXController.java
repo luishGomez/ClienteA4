@@ -387,15 +387,31 @@ public class TiendaApuntesFXController {
             showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor."+e.getMessage());
         }
     }
+    /**
+     * Abre la ventana mi biblioteca.
+     * @param event El evento de pulsación del botón.
+     */
     @FXML
     private void onActionAbrirMiBiblioteca(ActionEvent event){
     }
+    /**
+     * Abre la ventana tienda packs.
+     * @param event El evento de pulsación del botón.
+     */
     @FXML
     private void onActionAbrirTiendaPacks(ActionEvent event){
     }
+    /**
+     * Abre la ventna mi perfil.
+     * @param event El evento de pulsación del botón.
+     */
     @FXML
     private void onActionAbrirMiPerfil(ActionEvent event){
     }
+    /**
+     * Abre la ventana de ayuda.
+     * @param event  El evento de pulsación del botón.
+     */
     @FXML
     private void onActionAbout(ActionEvent event){
         final WebView browser = new WebView();
@@ -407,14 +423,14 @@ public class TiendaApuntesFXController {
         stageAyuda=new Stage();
         stageAyuda.setTitle(webEngine.getTitle());
         
-        Button ayudaCerrar=new Button("Cerrar");        
+        Button ayudaCerrar=new Button("Cerrar");
         ayudaCerrar.setOnAction(this::cerrarAyuda);
         ayudaCerrar.setMnemonicParsing(true);
         ayudaCerrar.setText("_Cerrar");
         /* Al pulsar enter encima del boton se ejecute */
         ayudaCerrar.setOnKeyPressed((key) ->{
             if(key.getCode().equals(KeyCode.ENTER)) {
-                 ayudaCerrar.fire();
+                ayudaCerrar.fire();
             }
         });
         stageAyuda.setOnShowing(new EventHandler<WindowEvent>() {
@@ -432,6 +448,10 @@ public class TiendaApuntesFXController {
         
         stageAyuda.show();
     }
+    /**
+     * Cierra la ventana de ayuda.
+     * @param event El evento de pulsación del botón.
+     */
     public void cerrarAyuda(ActionEvent event){
         stageAyuda.hide();
     }
@@ -480,8 +500,7 @@ public class TiendaApuntesFXController {
             //List <ApunteBean> apuntesList = Lists.newArrayList(apuntes);
             Set <ApunteBean> apuntesNoCreadosPorMi = new HashSet <ApunteBean>();
             Set <ApunteBean> apuntesComprados = apunteLogic.getApuntesByComprador(cliente.getId());
-            apuntesDeTienda = new HashSet <ApunteBean>(); //PASARLO A GLOBAL
-            //apuntesList=apuntesList.stream().filter(apunte -> apunte.getIdApunte()==)
+            apuntesDeTienda = new HashSet <ApunteBean>();
             
             apuntes.stream().forEach(apunte ->{
                 if(apunte.getCreador().getId()!=cliente.getId()){
@@ -500,15 +519,10 @@ public class TiendaApuntesFXController {
                     apuntesDeTienda.add(apunte);
             });
             
-            //ApunteBean apunte=apunteLogic.find(4);
-            //MateriaRESTClient mrc=new MateriaRESTClient();
-            //MateriaBean materia=mrc.find(MateriaBean.class, "2");
-            
             apuntesData=FXCollections.observableArrayList(new ArrayList<>(apuntesDeTienda));
             this.listViewApuntes.setItems(apuntesData);
             this.listViewApuntes.setCellFactory(param -> new CellTiendaApunte());
-            //ArrayList <ApunteBean> apuntesInfo=new ArrayList<>(apuntes);
-            //LOGGER.info("INf. "+apuntesInfo.get(0).getCreador().getNombreCompleto());
+            
         } catch (BusinessLogicException ex) {
             LOGGER.severe("Error al intentar cargar los apuntes :"+ex.getMessage());
             showErrorAlert("No se ha podido cargar los apuntes");
@@ -532,18 +546,14 @@ public class TiendaApuntesFXController {
         if(newValue!=null && newValue!=oldValue){
             MateriaBean materia=(MateriaBean) newValue;
             if(materia.getIdMateria()!=-1){
-                //Filtrar
-                //this.filtrarMateria=true;
+                
                 this.materiaFiltrada=materia;
             }else{
-                //this.filtrarMateria=false;
                 this.materiaFiltrada=null;
-                //quitar filtrado por materia
             }
             filtrarLosApuntes();
         }else{
-            //No filtrar
-            //PROVISIONAL
+            
             this.listViewMateria.getSelectionModel().select(0);
             
         }
@@ -595,18 +605,13 @@ public class TiendaApuntesFXController {
                 apuntesConElNombre.add(apunte);
             });
         }
-        //ESTA PARTE SE CAMBIA  Y LO QUE HARA SERA LLAMAR AL METODO ORDENAR
         if(this.filtrado){
             
-            this.apuntesDeTiendaFiltrado=apuntesConElNombre;//quizas quitar
-            /*
-            this.apuntesDataFiltrado=FXCollections.observableArrayList(new ArrayList<>(apuntesConElNombre));
-            this.listViewApuntes.setItems(this.apuntesDataFiltrado);
-            */
+            this.apuntesDeTiendaFiltrado=apuntesConElNombre;
+            
             ordenarApuntes();
             
         }else{
-            //this.listViewApuntes.setItems(apuntesData);
             ordenarApuntes();
         }
         
@@ -643,7 +648,7 @@ public class TiendaApuntesFXController {
      * Inserta el resultado de la ventana modal que abre esta ventana.
      * @param resultado El resultado de la ventana modal.
      */
-    public static void setResultadoTiendaApuntes(int resultado){/////////////////////////////////////
+    public static void setResultadoTiendaApuntes(int resultado){
         TiendaApuntesFXController.resultado=resultado;
     }
 }
