@@ -25,12 +25,12 @@ import javax.ws.rs.core.GenericType;
  * @author Usuario
  */
 public class ClienteRESTClient {
+
     private static ResourceBundle configFile=ResourceBundle.getBundle("service.configService");
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = configFile.getString("base_uri");
 
-    
     public ClienteRESTClient() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
         webTarget = client.target(BASE_URI).path("cliente");
@@ -64,6 +64,12 @@ public class ClienteRESTClient {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("iniciarSesion/{0}/{1}", new Object[]{login, contrasenia}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
+    }
+
+    public String getPublicKey() throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path("publicKey");
+        return resource.request(javax.ws.rs.core.MediaType.TEXT_PLAIN).get(String.class);
     }
 
     public void comprarApunte(Object requestEntity, String idApunte) throws ClientErrorException {
