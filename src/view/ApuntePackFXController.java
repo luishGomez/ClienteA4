@@ -1,23 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
 import businessLogic.ApunteManager;
 import businessLogic.ApunteManagerFactory;
-import businessLogic.BusinessLogicException;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -34,21 +27,17 @@ import transferObjects.ApunteBean;
  *
  * @author Luis
  */
-public class AddApuntePackFXController {
-    private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger("view.AddApuntePackFXController");
+public class ApuntePackFXController {
+    private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger("view.ApuntePackFXController");
     private Stage stage;
     private ModificarPackFXController fxModificarPack = null;
     private ObservableList<ApunteBean> apuntesObv = null;
-    private ApunteManager managerApunte = ApunteManagerFactory.createApunteManager("real");
+    private Set<ApunteBean> apuntes = null;
+    private ApunteBean apunte = null;
+    private int opcion;
     
     @FXML
-    private Button btnBuscarAddApunte;
-    @FXML
-    private TextField tfFiltarAddApunte;
-    @FXML
-    private TableView tvApuntesAddApunte;
-    @FXML
-    private TableColumn cIncluido;
+    private TableView tvApuntesApuntePack;
     @FXML
     private TableColumn cTitulo;
     @FXML
@@ -56,10 +45,22 @@ public class AddApuntePackFXController {
     @FXML
     private TableColumn cMateria;
     @FXML
-    private Button btnModificarAddApunte;
+    private Button btnModificarApuntePack;
     
     public void setFXModificarPack(ModificarPackFXController fxController){
         this.fxModificarPack = fxController;
+    }
+    
+    public void setApunte(ApunteBean apunte){
+        this.apunte = apunte;
+    }
+    
+    public void setApuntes(Set<ApunteBean> apuntes){
+        this.apuntes = apuntes;
+    }
+    
+    public void setOpcion(int opc){
+        this.opcion = opc;
     }
     
     @FXML
@@ -78,6 +79,7 @@ public class AddApuntePackFXController {
             cDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
             cMateria.setCellValueFactory(new PropertyValueFactory<>("materia"));
             cargarDatos();
+            tvApuntesApuntePack.getSelectionModel().selectedItemProperty().addListener(this::ApunteClicked);
             stage.showAndWait();
         }catch(Exception e){
             e.printStackTrace();
@@ -88,25 +90,37 @@ public class AddApuntePackFXController {
     private void handleWindowShowing(WindowEvent event){
         try{
             LOGGER.info("handlWindowShowing --> Gestor de Pack MODIFICAR Añadir apunte");
-            tfFiltarAddApunte.requestFocus();
         }catch(Exception e){
             LOGGER.severe(e.getMessage());
         }
     }
     
     @FXML
-    private void onActionBtnBuscarAddApunte(){
-        if(!tfFiltarAddApunte.getText().trim().isEmpty()){
-            cargarDatos(tfFiltarAddApunte.getText().trim());
-        }else{
-            cargarDatos();
-        }
+    private void onActionBtnEliminarAddApunte(){
+        fxModificarPack.setOpcion(1);
+        fxModificarPack.setApunte(apunte);
+        stage.hide();
     }
     
     @FXML
-    private void onActionBtnModificarAddApunte(){
-        fxModificarPack.setOpcion(1);
-        stage.hide();
+    private void onActionBtnAñadirAddApunte(){
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass()
+                .getResource("add_apunte.fxml"));
+            Parent root = (Parent)loader.load();
+            AddApunteFXController controller =
+                ((AddApunteFXController)loader.getController());
+            controller.setFXApuntePack(this);
+            controller.initStage(root);
+            if(opcion == 1){
+                fxModificarPack.setOpcion(2);
+                fxModificarPack.setApunte(apunte);
+                stage.hide();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            ControladorGeneral.showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());
+        }
     }
     
     @FXML
@@ -116,22 +130,14 @@ public class AddApuntePackFXController {
     }
     
     private void cargarDatos(){
-        try {
-            Set<ApunteBean> apuntes = managerApunte.findAll();
-            apuntesObv = FXCollections.observableArrayList(new ArrayList<>(apuntes.stream().sorted(Comparator.comparing(ApunteBean::getTitulo)).collect(Collectors.toList())));
-            tvApuntesAddApunte.setItems(apuntesObv);
-        }catch (BusinessLogicException e) {
-            e.printStackTrace();
-        }
+        apuntesObv = FXCollections.observableArrayList(new ArrayList<>(apuntes.stream().sorted(Comparator.comparing(ApunteBean::getIdApunte)).collect(Collectors.toList())));
+        tvApuntesApuntePack.setItems(apuntesObv);
+        LOGGER.info("cargarDatos() --> DONE");
     }
     
-    private void cargarDatos(String string){
-        try {
-            Set<ApunteBean> apuntes = managerApunte.findAll();
-            apuntesObv = FXCollections.observableArrayList(new ArrayList<>(apuntes.stream().filter(apunte -> apunte.getTitulo().contains(string)).sorted(Comparator.comparing(ApunteBean::getTitulo)).collect(Collectors.toList())));
-            tvApuntesAddApunte.setItems(apuntesObv);
-        }catch (BusinessLogicException e) {
-            e.printStackTrace();
+    private void ApunteClicked(ObservableValue obvservable, Object oldValue, Object newValue){
+        if(newValue != null){
+            apunte = (ApunteBean) newValue;
         }
     }
 }

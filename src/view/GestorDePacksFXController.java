@@ -29,6 +29,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import transferObjects.ApunteBean;
 import transferObjects.PackBean;
 import transferObjects.UserBean;
 import static view.ControladorGeneral.showErrorAlert;
@@ -45,6 +46,7 @@ public class GestorDePacksFXController {
     private Set<PackBean> packs = null;
     private ObservableList<PackBean> packsObv = null;
     private int opcion;
+    private ApunteBean apunte;
     
     @FXML
     private Menu menuCuenta;
@@ -95,6 +97,10 @@ public class GestorDePacksFXController {
     
     public void setOpc(int opcion){
         this.opcion = opcion;
+    }
+    
+    public void setApunte(ApunteBean apunte){
+        this.apunte = apunte;
     }
     
     @FXML
@@ -341,6 +347,10 @@ public class GestorDePacksFXController {
                     manager.editPack(pack);
                     cargarDatos();
                     tablaPack.refresh();
+                }else if(opcion == 3){
+                    manager.removeApunte(pack, Integer.toString(apunte.getIdApunte()));
+                }else if(opcion == 4){
+                    manager.addApunte(pack, Integer.toString(apunte.getIdApunte()));
                 }
             }catch(Exception e){
                 e.printStackTrace();

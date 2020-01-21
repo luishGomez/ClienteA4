@@ -6,13 +6,12 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AddApuntePackFXController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.AddApunteFXController">
    <children>
       <Button fx:id="btnBuscarAddApunte" layoutX="540.0" layoutY="14.0" mnemonicParsing="false" onAction="#onActionBtnBuscarAddApunte" text="Buscar" />
-      <TextField fx:id="tfFiltarAddApunte" layoutX="366.0" layoutY="14.0" />
-      <TableView fx:id="tvApuntesAddApunte" layoutX="8.0" layoutY="48.0" prefHeight="305.0" prefWidth="583.0">
+      <TextField fx:id="tfFiltarAddApunte" layoutX="373.0" layoutY="14.0" />
+      <TableView fx:id="tvApuntesAddApunte" layoutX="9.0" layoutY="48.0" prefHeight="305.0" prefWidth="583.0">
             <columns>
-              <TableColumn fx:id="cIncluido" prefWidth="76.0" text="Incluido" />
               <TableColumn fx:id="cTitulo" prefWidth="213.0" text="Título" />
               <TableColumn fx:id="cDescripcion" prefWidth="258.0" text="Descripción" />
               <TableColumn fx:id="cMateria" prefWidth="87.0" text="Materia" />
@@ -22,6 +21,5 @@
             </columnResizePolicy>
       </TableView>
       <Button fx:id="btnSalirAddApunte" layoutX="552.0" layoutY="361.0" mnemonicParsing="false" onAction="#onActionBtnSalirAddApunte" text="Salir" />
-      <Button fx:id="btnModificarAddApunte" layoutX="473.0" layoutY="361.0" mnemonicParsing="false" onAction="#onActionBtnModificarAddApunte" text="Modificar" />
    </children>
 </Pane>

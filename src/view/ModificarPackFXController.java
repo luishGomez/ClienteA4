@@ -8,13 +8,16 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import transferObjects.ApunteBean;
 import transferObjects.PackBean;
 
 /**
@@ -23,9 +26,10 @@ import transferObjects.PackBean;
  */
 public class ModificarPackFXController {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger("view.ModificarPackFXController");
-    GestorDePacksFXController fxPack = null;
+    private GestorDePacksFXController fxPack = null;
     private Stage stage;
     private PackBean pack;
+    private ApunteBean apunte;
     private int opcion;
     
     @FXML
@@ -84,6 +88,10 @@ public class ModificarPackFXController {
         this.fxPack = fxController;
     }
     
+    public void setApunte(ApunteBean apunte){
+        this.apunte = apunte;
+    }
+    
     @FXML
     public void onActionBtnModificarModificarPack(ActionEvent event){
         if(!tfTituloModificarPack.getText().isEmpty() && !taDescripcionModificarPack.getText().isEmpty()){
@@ -104,20 +112,47 @@ public class ModificarPackFXController {
     }
     @FXML
     public void onActionBtnEliminarModificarPack(ActionEvent event){
-        //PEDIR CONFIRMACIÓN
-        fxPack.setOpc(1);
-        stage.hide();
+        Alert alertCerrarAplicacion = new Alert(Alert.AlertType.CONFIRMATION,"",ButtonType.NO,ButtonType.YES);
+        //Añadimos titulo a la ventana como el alert.
+        alertCerrarAplicacion.setTitle("Eliminar");
+        alertCerrarAplicacion.setHeaderText("¿Estas seguro que lo deseas eliminar?");
+        //Si acepta cerrara la aplicación.
+        alertCerrarAplicacion.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.YES) {
+                fxPack.setOpc(1);
+                stage.hide();
+            }
+        });
     }
     @FXML
     public void onActionBtnModificarApuntesModificarPack(ActionEvent event){
         try{
             FXMLLoader loader = new FXMLLoader(getClass()
-                .getResource("add_apunte_pack.fxml"));
+                .getResource("apunte_pack.fxml"));
             Parent root = (Parent)loader.load();
-            AddApuntePackFXController controller =
-                ((AddApuntePackFXController)loader.getController());
+            ApuntePackFXController controller =
+                ((ApuntePackFXController)loader.getController());
             controller.setFXModificarPack(this);
+            controller.setApuntes(pack.getApuntes());
             controller.initStage(root);
+            if(opcion == 1){
+                Alert alertCerrarAplicacion = new Alert(Alert.AlertType.CONFIRMATION,"",ButtonType.NO,ButtonType.YES);
+                //Añadimos titulo a la ventana como el alert.
+                alertCerrarAplicacion.setTitle("Eliminar");
+                alertCerrarAplicacion.setHeaderText("¿Estas seguro que lo deseas eliminar?");
+                //Si acepta cerrara la aplicación.
+                alertCerrarAplicacion.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.YES) {
+                        fxPack.setOpc(3);
+                        fxPack.setApunte(apunte);
+                        stage.hide();
+                    }
+                });
+            }else if(opcion == 2){
+                fxPack.setOpc(4);
+                fxPack.setApunte(apunte);
+                stage.hide();
+            }
         }catch(Exception e){
             e.printStackTrace();
             ControladorGeneral.showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());

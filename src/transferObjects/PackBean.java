@@ -4,9 +4,7 @@ import java.util.Date;
 import java.util.Set;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleSetProperty;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.ObservableSet;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
