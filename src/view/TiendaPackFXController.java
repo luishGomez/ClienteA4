@@ -8,7 +8,6 @@ import static businessLogic.MateriaManagerFactory.createMateriaManager;
 import businessLogic.PackManager;
 import static businessLogic.PackManagerFactory.createPackManager;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javafx.application.Platform;
