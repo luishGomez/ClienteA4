@@ -1,7 +1,5 @@
 package view;
 
-import businessLogic.ApunteManager;
-import businessLogic.ApunteManagerFactory;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Set;
@@ -16,15 +14,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import transferObjects.ApunteBean;
+import static view.ControladorGeneral.showErrorAlert;
 
 /**
- *
+ * Clase controladora de la ventana de ApuntePack.
  * @author Luis
  */
 public class ApuntePackFXController {
@@ -45,24 +43,48 @@ public class ApuntePackFXController {
     @FXML
     private TableColumn cMateria;
     @FXML
-    private Button btnModificarApuntePack;
+    private Button btnSalirApuntePack;
+    @FXML
+    private Button btnEliminarApuntePack;
+    @FXML
+    private Button btnAñadirApuntePack;
     
+    /**
+     * Asigna un valor a fxModificarPack.
+     * @param fxController Controlador de Pack.
+     */
     public void setFXModificarPack(ModificarPackFXController fxController){
         this.fxModificarPack = fxController;
     }
     
+    /**
+     * Asigna un valor a apunte.
+     * @param apunte Apunte seleccionado.
+     */
     public void setApunte(ApunteBean apunte){
         this.apunte = apunte;
     }
     
+    /**
+     * Asigna un valor a apuntes.
+     * @param apuntes Apuntes del pack.
+     */
     public void setApuntes(Set<ApunteBean> apuntes){
         this.apuntes = apuntes;
     }
     
+    /**
+     * Asigna un valor a opcion.
+     * @param opc Opción elegida.
+     */
     public void setOpcion(int opc){
         this.opcion = opc;
     }
     
+    /**
+     * El método initStage inicializa la ventana.
+     * @param root Nodo raiz de la ventana.
+     */
     @FXML
     public void initStage(Parent root) {
         try{
@@ -79,7 +101,7 @@ public class ApuntePackFXController {
             cDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
             cMateria.setCellValueFactory(new PropertyValueFactory<>("materia"));
             cargarDatos();
-            tvApuntesApuntePack.getSelectionModel().selectedItemProperty().addListener(this::ApunteClicked);
+            tvApuntesApuntePack.getSelectionModel().selectedItemProperty().addListener(this::apunteClicked);
             stage.showAndWait();
         }catch(Exception e){
             e.printStackTrace();
@@ -87,21 +109,36 @@ public class ApuntePackFXController {
         }
     }
     
+    /**
+     * El método se ejecuta cuando se esta mostrando la ventana.
+     * @param event Evento de la ventana.
+     */
     private void handleWindowShowing(WindowEvent event){
         try{
             LOGGER.info("handlWindowShowing --> Gestor de Pack MODIFICAR Añadir apunte");
+            btnAñadirApuntePack.requestFocus();
         }catch(Exception e){
             LOGGER.severe(e.getMessage());
         }
     }
     
+    /**
+     * Se activa cuando se hace click en el botón Eliminar.
+     */
     @FXML
     private void onActionBtnEliminarAddApunte(){
-        fxModificarPack.setOpcion(1);
-        fxModificarPack.setApunte(apunte);
-        stage.hide();
+        if(apunte != null){
+            fxModificarPack.setOpcion(1);
+            fxModificarPack.setApunte(apunte);
+            stage.hide();
+        }else{
+            showErrorAlert("Debes seleccionar algun apunte.");
+        }
     }
     
+    /**
+     * Se activa cuando se hace click en el botón Añadir.
+     */
     @FXML
     private void onActionBtnAñadirAddApunte(){
         try{
@@ -111,6 +148,7 @@ public class ApuntePackFXController {
             AddApunteFXController controller =
                 ((AddApunteFXController)loader.getController());
             controller.setFXApuntePack(this);
+            controller.setApuntes(apuntes);
             controller.initStage(root);
             if(opcion == 1){
                 fxModificarPack.setOpcion(2);
@@ -118,24 +156,34 @@ public class ApuntePackFXController {
                 stage.hide();
             }
         }catch(Exception e){
-            e.printStackTrace();
-            ControladorGeneral.showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());
+            showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());
         }
     }
     
+    /**
+     * Se activa cuando se hace click en el botón Salir.
+     */
     @FXML
     private void onActionBtnSalirAddApunte(){
         fxModificarPack.setOpcion(0);
         stage.hide();
     }
     
+    /**
+     * Carga los datos en la tabla.
+     */
     private void cargarDatos(){
         apuntesObv = FXCollections.observableArrayList(new ArrayList<>(apuntes.stream().sorted(Comparator.comparing(ApunteBean::getIdApunte)).collect(Collectors.toList())));
         tvApuntesApuntePack.setItems(apuntesObv);
-        LOGGER.info("cargarDatos() --> DONE");
     }
     
-    private void ApunteClicked(ObservableValue obvservable, Object oldValue, Object newValue){
+    /**
+     * Cambia el valor de apunte, al nuevo.
+     * @param obvservable Valor obvservable.
+     * @param oldValue Antiguo valor.
+     * @param newValue Nuevo valor.
+     */
+    private void apunteClicked(ObservableValue obvservable, Object oldValue, Object newValue){
         if(newValue != null){
             apunte = (ApunteBean) newValue;
         }

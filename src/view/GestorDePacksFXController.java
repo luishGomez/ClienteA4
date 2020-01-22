@@ -128,7 +128,7 @@ public class GestorDePacksFXController {
             cTitulo.setCellValueFactory(new PropertyValueFactory<>("titulo"));
             cDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
             cargarDatos();
-            tablaPack.getSelectionModel().selectedItemProperty().addListener(this::PackClicked);
+            tablaPack.getSelectionModel().selectedItemProperty().addListener(this::packClicked);
             stage.show();
         }catch(Exception e){
             LOGGER.severe(e.getMessage());
@@ -325,7 +325,7 @@ public class GestorDePacksFXController {
         }
     }
     
-    private void PackClicked(ObservableValue obvservable, Object oldValue, Object newValue){
+    private void packClicked(ObservableValue obvservable, Object oldValue, Object newValue){
         if(newValue != null){
             PackBean pack = (PackBean) newValue;
             try{

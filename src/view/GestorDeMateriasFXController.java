@@ -129,7 +129,7 @@ public class GestorDeMateriasFXController {
             cTitulo.setCellValueFactory(new PropertyValueFactory<>("titulo"));
             cDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
             cargarDatos();
-            tablaMateria.getSelectionModel().selectedItemProperty().addListener(this::MateriaClicked);
+            tablaMateria.getSelectionModel().selectedItemProperty().addListener(this::materiaClicked);
             stage.show();
         }catch(Exception e){
             LOGGER.severe(e.getMessage());
@@ -325,7 +325,7 @@ public class GestorDeMateriasFXController {
         }
     }
     
-    private void MateriaClicked(ObservableValue obvservable, Object oldValue, Object newValue){
+    private void materiaClicked(ObservableValue obvservable, Object oldValue, Object newValue){
         if(newValue != null){
             MateriaBean materia = (MateriaBean) newValue;
             try{

@@ -33,6 +33,7 @@ public class AddApunteFXController {
     private Stage stage;
     private ApuntePackFXController fxModificarPack = null;
     private ObservableList<ApunteBean> apuntesObv = null;
+    private Set<ApunteBean> apuntes = null;
     private ApunteBean apunte = null;
     private ApunteManager managerApunte = ApunteManagerFactory.createApunteManager("real");
     private int opcion;
@@ -50,7 +51,7 @@ public class AddApunteFXController {
     @FXML
     private TableColumn cMateria;
     @FXML
-    private Button btnModificarApuntePack;
+    private Button btnSalirAddApunte;
     
     public void setFXApuntePack(ApuntePackFXController fxController){
         this.fxModificarPack = fxController;
@@ -58,6 +59,10 @@ public class AddApunteFXController {
     
     public void setOpcion(int opc){
         this.opcion = opc;
+    }
+    
+    public void setApuntes(Set<ApunteBean> apuntes){
+        this.apuntes = apuntes;
     }
     
     @FXML
@@ -76,7 +81,7 @@ public class AddApunteFXController {
             cDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
             cMateria.setCellValueFactory(new PropertyValueFactory<>("materia"));
             cargarDatos();
-            tvApuntesAddApunte.getSelectionModel().selectedItemProperty().addListener(this::ApunteClicked);
+            tvApuntesAddApunte.getSelectionModel().selectedItemProperty().addListener(this::apunteClicked);
             stage.showAndWait();
         }catch(Exception e){
             e.printStackTrace();
@@ -87,7 +92,6 @@ public class AddApunteFXController {
     private void handleWindowShowing(WindowEvent event){
         try{
             LOGGER.info("handlWindowShowing --> Gestor de Pack MODIFICAR Añadir apunte");
-            tfFiltarApuntePack.requestFocus();
         }catch(Exception e){
             LOGGER.severe(e.getMessage());
         }
@@ -106,8 +110,16 @@ public class AddApunteFXController {
     
     private void cargarDatos(){
         try{
-            Set<ApunteBean> apuntes = managerApunte.findAll();
-            List<ApunteBean> apunteList = apuntes.stream().sorted(Comparator.comparing(ApunteBean::getIdApunte)).collect(Collectors.toList());
+            Set<ApunteBean> apuns = managerApunte.findAll();
+            for(ApunteBean a : apuntes){
+                for(ApunteBean b : apuns){
+                    if(a.getIdApunte() == b.getIdApunte()){
+                        apuns.remove(b);
+                        break;
+                    }
+                }
+            }
+            List<ApunteBean> apunteList = apuns.stream().sorted(Comparator.comparing(ApunteBean::getIdApunte)).collect(Collectors.toList());
             apuntesObv = FXCollections.observableArrayList(new ArrayList<>(apunteList));
             tvApuntesAddApunte.setItems(apuntesObv);
         }catch(BusinessLogicException e) {
@@ -115,7 +127,7 @@ public class AddApunteFXController {
         }
     }
     
-    private void ApunteClicked(ObservableValue obvservable, Object oldValue, Object newValue){
+    private void apunteClicked(ObservableValue obvservable, Object oldValue, Object newValue){
         if(newValue != null){
             apunte = (ApunteBean) newValue;
             fxModificarPack.setApunte(apunte);

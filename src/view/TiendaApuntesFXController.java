@@ -386,6 +386,21 @@ public class TiendaApuntesFXController {
     }
     @FXML
     private void onActionAbrirTiendaPacks(ActionEvent event){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("tienda_pack.fxml"));
+            
+            Parent root = (Parent)loader.load();
+            
+            TiendaPackFXController controller =
+                    ((TiendaPackFXController)loader.getController());
+            controller.setCliente(cliente);
+            controller.setStage(stage);
+            controller.initStage(root);
+            stage.hide();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
     @FXML
     private void onActionAbrirMiPerfil(ActionEvent event){
