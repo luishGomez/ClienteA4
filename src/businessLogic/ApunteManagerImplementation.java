@@ -31,7 +31,6 @@ public class ApunteManagerImplementation implements ApunteManager{
             throw new BusinessLogicException(e.getMessage());
         }
     }
-
     @Override
     public void edit(ApunteBean apunte) throws BusinessLogicException {
         try{

@@ -1,34 +1,50 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
+import businessLogic.BusinessLogicException;
+import businessLogic.PackManager;
+import businessLogic.PackManagerFactory;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import transferObjects.PackBean;
 import transferObjects.UserBean;
 import static view.ControladorGeneral.showErrorAlert;
 
 /**
  *
- * @author 2dam
+ * @author Luis
  */
 public class GestorDePacksFXController {
-    private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger("view.GestorDeOfertasFXController");
+    private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger("view.GestorDePacksFXController");
     private UserBean user;
     private Stage stage;
+    private PackManager manager = PackManagerFactory.createPackManager("real");
+    private Set<PackBean> packs = null;
+    private ObservableList<PackBean> packsObv = null;
+    private int opcion;
     
     @FXML
     private Menu menuCuenta;
@@ -51,48 +67,75 @@ public class GestorDePacksFXController {
     @FXML
     private MenuItem menuHelpAbout;
     @FXML
+    private Button btnBCrearGestorPack;
+    @FXML
+    private Button btnInformeGestorPack;
+    @FXML
+    private TextField tfFiltrarGestorPack;
+    @FXML
+    private Button btnBuscarGestorPack;
+    @FXML
+    private TableView tablaPack;
+    @FXML
+    private TableColumn cId;
+    @FXML
+    private TableColumn cTitulo;
+    @FXML
+    private TableColumn cDescripcion;
+    @FXML
+    private TableColumn cPrecio;
+    
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+    
+    public void setUser(UserBean user){
+        this.user = user;
+    }
+    
+    public void setOpc(int opcion){
+        this.opcion = opcion;
+    }
+    
+    @FXML
     public void initStage(Parent root) {
         try{
-            LOGGER.info("Iniciando la ventana LogOut");
+            LOGGER.info("Iniciando la ventana Gestor de Pack");
             Scene scene=new Scene(root);
-            stage=new Stage();
+            stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
-            stage.setTitle("Tienda de apuntes");
+            stage.setTitle("Gestor de Pack");
             stage.setResizable(true);
             stage.setMaximized(true);
             //Vamos a rellenar los datos en la ventana.
             stage.setOnShowing(this::handleWindowShowing);
-            
-            //Mnemonicos
-            //Menu->
+            //Menu
             menuCuenta.setMnemonicParsing(true);
             menuCuenta.setText("_Cuenta");
             menuVentanas.setMnemonicParsing(true);
             menuVentanas.setText("_Ventanas");
             menuHelp.setMnemonicParsing(true);
             menuHelp.setText("_Help");
-            //<-Menu
-            
-            
-            
+            //Tabla
+            cId.setCellValueFactory(new PropertyValueFactory<>("idPack"));
+            cTitulo.setCellValueFactory(new PropertyValueFactory<>("titulo"));
+            cDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+            cargarDatos();
+            tablaPack.getSelectionModel().selectedItemProperty().addListener(this::PackClicked);
             stage.show();
         }catch(Exception e){
             LOGGER.severe(e.getMessage());
         }
-        
     }
+    
     private void handleWindowShowing(WindowEvent event){
         try{
-            LOGGER.info("handlWindowShowing --> LogOut");
-            
-            
+            LOGGER.info("handlWindowShowing --> Gestor de Pack");
+            tfFiltrarGestorPack.requestFocus();
         }catch(Exception e){
             LOGGER.severe(e.getMessage());
         }
-    }
-    public void setUser(UserBean user){
-        this.user=user;
     }
     
     //Parte comun
@@ -115,6 +158,7 @@ public class GestorDePacksFXController {
             LOGGER.severe(e.getMessage());
         }
     }
+    
     @FXML
     private void onActionSalir(ActionEvent event){
         try{
@@ -137,12 +181,6 @@ public class GestorDePacksFXController {
     }
     
     //Inicio de los metodos de navegación de la aplicación
-    
-    
-    @FXML
-    private void onActionAbout(ActionEvent event){
-    }
-    //Fin de los metodos de navegación de la aplicación
     @FXML
     private void onActionAbrirGestorApuntes(ActionEvent event){
         try{
@@ -151,7 +189,6 @@ public class GestorDePacksFXController {
             Parent root = (Parent)loader.load();
             GestorDeApuntesFXController controller =
                     ((GestorDeApuntesFXController)loader.getController());
-            
             controller.setUser(user);
             controller.setStage(stage);
             controller.initStage(root);
@@ -160,6 +197,7 @@ public class GestorDePacksFXController {
             showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor."+e.getMessage());
         }
     }
+    
     @FXML
     private void onActionAbrirGestorPacks(ActionEvent event){
         try{
@@ -168,7 +206,6 @@ public class GestorDePacksFXController {
             Parent root = (Parent)loader.load();
             GestorDePacksFXController controller =
                     ((GestorDePacksFXController)loader.getController());
-            
             controller.setUser(user);
             controller.setStage(stage);
             controller.initStage(root);
@@ -177,6 +214,7 @@ public class GestorDePacksFXController {
             showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor."+e.getMessage());
         }
     }
+    
     @FXML
     private void onActionAbrirGestorOfertas(ActionEvent event){
         try{
@@ -185,7 +223,6 @@ public class GestorDePacksFXController {
             Parent root = (Parent)loader.load();
             GestorDeOfertasFXController controller =
                     ((GestorDeOfertasFXController)loader.getController());
-            
             controller.setUser(user);
             controller.setStage(stage);
             controller.initStage(root);
@@ -194,24 +231,131 @@ public class GestorDePacksFXController {
             showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor."+e.getMessage());
         }
     }
+    
     @FXML
-    private void onActionAbrirGesstorMaterias(ActionEvent event){
-         try{
+    private void onActionAbrirGestorMaterias(ActionEvent event){
+        try{
             FXMLLoader loader = new FXMLLoader(getClass()
                     .getResource("gestor_de_materias.fxml"));
             Parent root = (Parent)loader.load();
             GestorDeMateriasFXController controller =
                     ((GestorDeMateriasFXController)loader.getController());
-            
             controller.setUser(user);
             controller.setStage(stage);
             controller.initStage(root);
             stage.hide();
         }catch(Exception e){
+            e.printStackTrace();
+            showErrorAlert("A ocurrido un error, reinicie la aplicación por favor.");
+        }
+    }
+    //Fin de los metodos de navegación de la aplicación
+    
+    @FXML
+    private void onActionAbout(ActionEvent event){
+        
+    }
+    
+    //Metodos de la escena.
+    @FXML
+    private void onActionCrearGestorPack(ActionEvent event){
+        PackBean pack = new PackBean();
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("crear_pack.fxml"));
+            Parent root = (Parent)loader.load();
+            CrearPackFXController controller =
+                    ((CrearPackFXController)loader.getController());
+            controller.setFXPack(this);
+            controller.setPack(pack);
+            controller.setOpcion(opcion);
+            controller.initStage(root);
+            if(opcion == 1){
+                createPack(pack);
+                cargarDatos();
+                tablaPack.refresh();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
             showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor."+e.getMessage());
         }
     }
-    public void setStage(Stage stage) {
-        this.stage = stage;
+    
+    @FXML
+    private void onActionInformeGestorPack(ActionEvent event){
+        
+    }
+    
+    @FXML
+    private void onActionBuscarGestorPack(ActionEvent event){
+        if(!tfFiltrarGestorPack.getText().trim().isEmpty()){
+            cargarDatos(tfFiltrarGestorPack.getText().trim());
+        }else{
+            cargarDatos();
+        }
+    }
+    
+    private void cargarDatos() {
+        try {
+            packs = manager.findAllPack();
+            List packList = packs.stream().sorted(Comparator.comparing(PackBean::getIdPack)).collect(Collectors.toList());
+            packsObv = FXCollections.observableArrayList(new ArrayList<>(packList));
+            tablaPack.setItems(packsObv);
+        }catch (BusinessLogicException ex) {
+            LOGGER.severe("Error al cargar los packs :"+ex.getMessage());
+            showErrorAlert("Ha ocurrido un error cargando los packs.");
+        }
+    }
+    
+    private void cargarDatos(String string) {
+        try {
+            packs = manager.findAllPack();
+            List packList = packs.stream().filter(pack -> pack.getTitulo().contains(string)).sorted(Comparator.comparing(PackBean::getIdPack)).collect(Collectors.toList());
+            packsObv = FXCollections.observableArrayList(new ArrayList<>(packList));
+            tablaPack.setItems(packsObv);
+        }catch (BusinessLogicException ex) {
+            LOGGER.severe("Error al cargar los packs :"+ex.getMessage());
+            showErrorAlert("Ha ocurrido un error cargando los packs.");
+        }
+    }
+    
+    private void PackClicked(ObservableValue obvservable, Object oldValue, Object newValue){
+        if(newValue != null){
+            PackBean pack = (PackBean) newValue;
+            try{
+                FXMLLoader loader = new FXMLLoader(getClass()
+                        .getResource("modificar_pack.fxml"));
+                Parent root = (Parent)loader.load();
+                ModificarPackFXController controller =
+                        ((ModificarPackFXController)loader.getController());
+                controller.setFXPack(this);
+                controller.setPack(pack);
+                controller.initStage(root);
+                if(opcion == 1){
+                    //COMPROBAR QUE NO EXISTEN APUNTES EN ESTA MATERIA.
+                    manager.removePack(pack);
+                    tablaPack.getItems().remove(pack);
+                    //cargarDatos();
+                    tablaPack.refresh();
+                }else if(opcion == 2){
+                    manager.editPack(pack);
+                    cargarDatos();
+                    tablaPack.refresh();
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+                showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());
+            }
+        }
+    }
+    
+    private void createPack(PackBean pack){
+        try{
+            manager.createPack(pack);
+        }catch(BusinessLogicException e){
+            e.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 }

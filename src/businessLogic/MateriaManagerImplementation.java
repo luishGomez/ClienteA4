@@ -39,10 +39,11 @@ public class MateriaManagerImplementation implements MateriaManager{
     }
 
     @Override
-    public void deleteMateria(MateriaBean materia) throws BusinessLogicException {
+    public void removeMateria(MateriaBean materia) throws BusinessLogicException {
         try{
             webClient.remove(materia.getIdMateria().toString());
         }catch(Exception e){
+            e.printStackTrace();
             LOGGER.severe("ERROR! MateriaManagerImpl -> DeleteMateria: "+e.getMessage());
             throw new BusinessLogicException(e.getMessage());
         }

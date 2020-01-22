@@ -17,8 +17,8 @@ import view.InicioFXController;
 public class ClienteA4 extends javafx.application.Application {
 
     @Override
-    public void start(Stage stage) {
-        try{
+    public void start(Stage stage) throws IOException {
+       // try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/inicio.fxml"));
 
             Parent root = (Parent)loader.load();
@@ -26,9 +26,7 @@ public class ClienteA4 extends javafx.application.Application {
             InicioFXController controller = ((InicioFXController)loader.getController());
             controller.setStage(stage);
             controller.initStage(root);
-        }catch(IOException e){
-            ControladorGeneral.showErrorAlert("Error al cargar la ventana.");
-        }
+       
     }
 
     /**

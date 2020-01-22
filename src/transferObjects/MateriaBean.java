@@ -56,6 +56,5 @@ public class MateriaBean implements Serializable {
     @Override
     public String toString() {
         return titulo.get();
-    }    
+    }
 }
-

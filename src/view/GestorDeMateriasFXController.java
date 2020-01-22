@@ -1,34 +1,54 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package view;
 
+import businessLogic.ApunteManager;
+import businessLogic.ApunteManagerFactory;
+import businessLogic.BusinessLogicException;
+import businessLogic.MateriaManager;
+import businessLogic.MateriaManagerFactory;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import transferObjects.ApunteBean;
+import transferObjects.MateriaBean;
 import transferObjects.UserBean;
 import static view.ControladorGeneral.showErrorAlert;
 
 /**
  *
- * @author 2dam
+ * @author Luis
  */
 public class GestorDeMateriasFXController {
-    private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger("view.GestorDeOfertasFXController");
+    private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger("view.GestorDeMateriasFXController");
     private UserBean user;
     private Stage stage;
+    private MateriaManager manager = MateriaManagerFactory.createMateriaManager("real");
+    private Set<MateriaBean> materias = null;
+    private ObservableList<MateriaBean> materiasObv = null;
+    private int opcion;
+    private int posicion;
     
     @FXML
     private Menu menuCuenta;
@@ -51,48 +71,78 @@ public class GestorDeMateriasFXController {
     @FXML
     private MenuItem menuHelpAbout;
     @FXML
+    private Button btnBCrearGestorMateria;
+    @FXML
+    private Button btnInformeGestorMateria;
+    @FXML
+    private TextField tfFiltrarGestorMateria;
+    @FXML
+    private Button btnBuscarGestorMateria;
+    @FXML
+    private TableView tablaMateria;
+    @FXML
+    private TableColumn cId;
+    @FXML
+    private TableColumn cTitulo;
+    @FXML
+    private TableColumn cDescripcion;
+    
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+    
+    public void setUser(UserBean user){
+        this.user = user;
+    }
+    
+    public void setOpc(int opcion){
+        this.opcion = opcion;
+    }
+    
+    public void setPos(int pos){
+        this.posicion = pos;
+        this.tablaMateria.getSelectionModel().select(null);
+    }
+    
+    @FXML
     public void initStage(Parent root) {
         try{
-            LOGGER.info("Iniciando la ventana LogOut");
+            LOGGER.info("Iniciando la ventana Gestor de Materia");
             Scene scene=new Scene(root);
-            stage=new Stage();
+            stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
-            stage.setTitle("Tienda de apuntes");
+            stage.setTitle("Gestor de Materia");
             stage.setResizable(true);
             stage.setMaximized(true);
             //Vamos a rellenar los datos en la ventana.
             stage.setOnShowing(this::handleWindowShowing);
-            
-            //Mnemonicos
-            //Menu->
+            //Menu
             menuCuenta.setMnemonicParsing(true);
             menuCuenta.setText("_Cuenta");
             menuVentanas.setMnemonicParsing(true);
             menuVentanas.setText("_Ventanas");
             menuHelp.setMnemonicParsing(true);
             menuHelp.setText("_Help");
-            //<-Menu
-            
-            
-            
+            //Tabla
+            cId.setCellValueFactory(new PropertyValueFactory<>("idMateria"));
+            cTitulo.setCellValueFactory(new PropertyValueFactory<>("titulo"));
+            cDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+            cargarDatos();
+            tablaMateria.getSelectionModel().selectedItemProperty().addListener(this::MateriaClicked);
             stage.show();
         }catch(Exception e){
             LOGGER.severe(e.getMessage());
         }
-        
     }
+    
     private void handleWindowShowing(WindowEvent event){
         try{
-            LOGGER.info("handlWindowShowing --> LogOut");
-            
-            
+            LOGGER.info("handlWindowShowing --> Gestor de Materia");
+            tfFiltrarGestorMateria.requestFocus();
         }catch(Exception e){
             LOGGER.severe(e.getMessage());
         }
-    }
-    public void setUser(UserBean user){
-        this.user=user;
     }
     
     //Parte comun
@@ -115,6 +165,7 @@ public class GestorDeMateriasFXController {
             LOGGER.severe(e.getMessage());
         }
     }
+    
     @FXML
     private void onActionSalir(ActionEvent event){
         try{
@@ -137,12 +188,6 @@ public class GestorDeMateriasFXController {
     }
     
     //Inicio de los metodos de navegación de la aplicación
-    
-    
-    @FXML
-    private void onActionAbout(ActionEvent event){
-    }
-    //Fin de los metodos de navegación de la aplicación
     @FXML
     private void onActionAbrirGestorApuntes(ActionEvent event){
         try{
@@ -151,7 +196,6 @@ public class GestorDeMateriasFXController {
             Parent root = (Parent)loader.load();
             GestorDeApuntesFXController controller =
                     ((GestorDeApuntesFXController)loader.getController());
-            
             controller.setUser(user);
             controller.setStage(stage);
             controller.initStage(root);
@@ -160,6 +204,7 @@ public class GestorDeMateriasFXController {
             showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor."+e.getMessage());
         }
     }
+    
     @FXML
     private void onActionAbrirGestorPacks(ActionEvent event){
         try{
@@ -168,7 +213,6 @@ public class GestorDeMateriasFXController {
             Parent root = (Parent)loader.load();
             GestorDePacksFXController controller =
                     ((GestorDePacksFXController)loader.getController());
-            
             controller.setUser(user);
             controller.setStage(stage);
             controller.initStage(root);
@@ -177,6 +221,7 @@ public class GestorDeMateriasFXController {
             showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor."+e.getMessage());
         }
     }
+    
     @FXML
     private void onActionAbrirGestorOfertas(ActionEvent event){
         try{
@@ -185,7 +230,6 @@ public class GestorDeMateriasFXController {
             Parent root = (Parent)loader.load();
             GestorDeOfertasFXController controller =
                     ((GestorDeOfertasFXController)loader.getController());
-            
             controller.setUser(user);
             controller.setStage(stage);
             controller.initStage(root);
@@ -194,25 +238,146 @@ public class GestorDeMateriasFXController {
             showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor."+e.getMessage());
         }
     }
+    
     @FXML
-    private void onActionAbrirGesstorMaterias(ActionEvent event){
+    private void onActionAbrirGestorMaterias(ActionEvent event){
         try{
             FXMLLoader loader = new FXMLLoader(getClass()
                     .getResource("gestor_de_materias.fxml"));
             Parent root = (Parent)loader.load();
             GestorDeMateriasFXController controller =
                     ((GestorDeMateriasFXController)loader.getController());
-            
             controller.setUser(user);
             controller.setStage(stage);
             controller.initStage(root);
             stage.hide();
         }catch(Exception e){
-            showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor."+e.getMessage());
+            e.printStackTrace();
+            showErrorAlert("A ocurrido un error, reinicie la aplicación por favor.");
         }
+    }
+    //Fin de los metodos de navegación de la aplicación
+    
+    @FXML
+    private void onActionAbout(ActionEvent event){
         
     }
-    public void setStage(Stage stage) {
-        this.stage = stage;
+    
+    //Metodos de la escena.
+    @FXML
+    private void onActionCrearGestorMateria(ActionEvent event){
+        MateriaBean materia = new MateriaBean();
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("crear_materia.fxml"));
+            Parent root = (Parent)loader.load();
+            CrearMateriaFXController controller =
+                    ((CrearMateriaFXController)loader.getController());
+            controller.setFXMateria(this);
+            controller.setMateria(materia);
+            controller.initStage(root);
+            if(opcion == 1){
+                createMateria(materia);
+                cargarDatos();
+                tablaMateria.refresh();
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+            showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor."+e.getMessage());
+        }
+    }
+    
+    @FXML
+    private void onActionInformeGestorMateria(ActionEvent event){
+        
+    }
+    
+    @FXML
+    private void onActionBuscarGestorMateria(ActionEvent event){
+        if(!tfFiltrarGestorMateria.getText().trim().isEmpty()){
+            cargarDatos(tfFiltrarGestorMateria.getText().trim());
+        }else{
+            cargarDatos();
+        }
+    }
+    
+    private void cargarDatos() {
+        try {
+            materias = manager.findAllMateria();
+            List<MateriaBean> matList = materias.stream().sorted(Comparator.comparing(MateriaBean::getIdMateria)).collect(Collectors.toList());
+            materiasObv = FXCollections.observableArrayList(new ArrayList<>(matList));
+            tablaMateria.setItems(materiasObv);
+        }catch (BusinessLogicException ex) {
+            LOGGER.severe("Error al cargar las materias :"+ex.getMessage());
+            showErrorAlert("Ha ocurrido un error cargando las materias.");
+        }
+    }
+    
+    private void cargarDatos(String string) {
+        try {
+            materias = manager.findAllMateria();
+            List<MateriaBean> matList = materias.stream().filter(materia -> materia.getTitulo().contains(string)).sorted(Comparator.comparing(MateriaBean::getIdMateria)).collect(Collectors.toList());
+            materiasObv = FXCollections.observableArrayList(new ArrayList<>(matList));
+            tablaMateria.setItems(materiasObv);
+        }catch (BusinessLogicException ex) {
+            LOGGER.severe("Error al cargar las materias :"+ex.getMessage());
+            showErrorAlert("Ha ocurrido un error cargando las materias.");
+        }
+    }
+    
+    private void MateriaClicked(ObservableValue obvservable, Object oldValue, Object newValue){
+        if(newValue != null){
+            MateriaBean materia = (MateriaBean) newValue;
+            try{
+                FXMLLoader loader = new FXMLLoader(getClass()
+                        .getResource("modificar_materia.fxml"));
+                Parent root = (Parent)loader.load();
+                ModificarMateriaFXController controller =
+                        ((ModificarMateriaFXController)loader.getController());
+                controller.setMateria(materia);
+                controller.setFXMateria(this);
+                controller.initStage(root);
+                if(opcion == 1){
+                    comprobar(materia);
+                    manager.removeMateria(materia);
+                    tablaMateria.getItems().remove(materia);
+                    //cargarDatos();
+                    tablaMateria.refresh();
+                }else if(opcion == 2){
+                    manager.editMateria(materia);
+                    //Modificar solo del List??
+                    cargarDatos();
+                    tablaMateria.refresh();
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+                showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());
+            }
+        }
+    }
+    
+    private void createMateria(MateriaBean materia){
+        try{
+            manager.createMateria(materia);
+        }catch(BusinessLogicException e){
+            e.printStackTrace();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    
+    private boolean comprobar(MateriaBean materia){
+        ApunteManager managerApunte = ApunteManagerFactory.createApunteManager("real");
+        boolean estaVacio = false;
+        try{
+            List<ApunteBean> apuntes = (List<ApunteBean>) managerApunte.findAll().stream().filter(apunte -> apunte.getMateria().equals(materia)).collect(Collectors.toList());
+            if(apuntes.isEmpty()){
+                estaVacio = true;
+            }
+        }catch(BusinessLogicException e){
+            e.printStackTrace();
+            showErrorAlert("Ha ocurrido un error.");
+        }
+        return estaVacio;
     }
 }

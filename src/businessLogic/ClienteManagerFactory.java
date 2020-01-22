@@ -5,6 +5,8 @@
  */
 package businessLogic;
 
+import fakeBusinessLogic.TestClienteManagerImplementation;
+
 /**
  *
  * @author Usuario
@@ -18,6 +20,7 @@ public class ClienteManagerFactory {
         //Evaluate type parameter.
         switch(type){
             case TEST:
+                clienteManager=new TestClienteManagerImplementation();
                 break;
             default:
                 clienteManager=new ClienteManagerImplementation();

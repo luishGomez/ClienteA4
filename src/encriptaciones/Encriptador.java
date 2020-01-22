@@ -2,6 +2,8 @@ package encriptaciones;
 
 
 
+
+import static com.google.common.io.BaseEncoding.base64;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,11 +18,13 @@ import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.zip.ZipInputStream;
 import javax.crypto.Cipher;
+import service.ClienteRESTClient;
 
 
 /*
@@ -91,13 +95,17 @@ public class Encriptador {
             path=Paths.get("public.key");
             byte[] bytes=Files.readAllBytes(Paths.get("public.key"));
             */
-            byte[] bytes=Files.readAllBytes(Paths.get(rutaPublica));
+            //byte[] bytes=Files.readAllBytes(Paths.get(rutaPublica));
+            ClienteRESTClient clienteRest=new ClienteRESTClient();
+            byte[] bytes=hexStringToByteArray(clienteRest.getPublicKey());
             
+                    
             EncodedKeySpec publicKeySpec = new  X509EncodedKeySpec(bytes);
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             PublicKey publicKey = keyFactory.generatePublic(publicKeySpec);
             
             Cipher cipher = Cipher.getInstance("RSA");
+            //Cipher cipher = Chiper.getInstance("RSA/ECB/OAEPwithSHA-256andMGF1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
             byte[] cipherText = cipher.doFinal(mensaje.getBytes());
             
@@ -132,6 +140,21 @@ public class Encriptador {
             HEX += h;
         }
         return HEX.toUpperCase();
+    }
+    
+    /**
+     * Convierte un texto en hexadeciaml en una lista de bytes.
+     * @param s El texto en hexadecimal.
+     * @return La coleccion en bytes.
+     */
+    public static byte[] hexStringToByteArray(String s) {
+        int len = s.length();
+        byte[] data = new byte[len / 2];
+        for (int i = 0; i < len; i += 2) {
+            data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+                    + Character.digit(s.charAt(i+1), 16));
+        }
+        return data;
     }
     
     

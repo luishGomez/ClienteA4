@@ -2,20 +2,17 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GestorDePacksFXController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="681.0" prefWidth="982.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GestorDePacksFXController">
    <top>
       <MenuBar fx:id="menuBar" BorderPane.alignment="CENTER">
         <menus>
@@ -30,7 +27,7 @@
                   <MenuItem fx:id="menuVentanasGestorApuntes" mnemonicParsing="false" onAction="#onActionAbrirGestorApuntes" text="Gestor de apuntes" />
                   <MenuItem fx:id="menuVentanasGestorPacks" mnemonicParsing="false" onAction="#onActionAbrirGestorPacks" text="Gestor de Packs" />
                   <MenuItem fx:id="menuVentanasGestorOfertas" mnemonicParsing="false" onAction="#onActionAbrirGestorOfertas" text="Gestor de ofertas" />
-                  <MenuItem fx:id="menuVentanasGestorMaterias" mnemonicParsing="false" onAction="#onActionAbrirGesstorMaterias" text="Gestor de materias" />
+                  <MenuItem fx:id="menuVentanasGestorMaterias" mnemonicParsing="false" onAction="#onActionAbrirGestorMaterias" text="Gestor de materias" />
                </items>
             </Menu>
             <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
@@ -44,45 +41,54 @@
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <HBox alignment="TOP_RIGHT" prefHeight="37.0" prefWidth="600.0">
+            <HBox alignment="TOP_RIGHT" prefHeight="37.0">
                <children>
-                  <Button mnemonicParsing="false" text="Crear">
+                  <Button fx:id="btnCrearGestorPack" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onActionCrearGestorPack" text="Crear">
                      <HBox.margin>
                         <Insets right="5.0" top="6.0" />
                      </HBox.margin>
                   </Button>
-                  <Button mnemonicParsing="false" text="Informe">
+                  <Button fx:id="btnInformeGestorPack" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onActionInformeGestorPack" text="Informe">
                      <HBox.margin>
-                        <Insets right="110.0" top="6.0" />
+                        <Insets right="5.0" top="6.0" />
                      </HBox.margin>
                   </Button>
-                  <Label text="Pack">
+                  <TextField fx:id="tfFiltrarGestorPack" >
                      <HBox.margin>
-                        <Insets right="140.0" top="7.0" />
+                        <Insets right="5.0" top="6.0" />
                      </HBox.margin>
-                     <font>
-                        <Font size="14.0" />
-                     </font>
-                  </Label>
-                  <TextField>
+                  </TextField>
+                  <Button fx:id="btnBuscarGestorPack" mnemonicParsing="false" onAction="#onActionBuscarGestorPack" text="Buscar">
                      <HBox.margin>
                         <Insets right="5.0" top="6.0" />
-                     </HBox.margin></TextField>
-                  <Button mnemonicParsing="false" text="Buscar">
-                     <HBox.margin>
-                        <Insets right="5.0" top="6.0" />
-                     </HBox.margin></Button>
+                     </HBox.margin>
+                  </Button>
                </children>
             </HBox>
-            <TableView prefHeight="340.0" prefWidth="600.0">
-              <columns>
-                <TableColumn prefWidth="75.0" text="ID" />
-                <TableColumn prefWidth="107.0" text="Título" />
-                  <TableColumn prefWidth="344.0" text="Descripción" />
-                  <TableColumn prefWidth="73.0" text="Precio" />
-              </columns>
-            </TableView>
-            <Separator prefWidth="200.0" />
+            <VBox alignment="TOP_CENTER" prefHeight="620.0" prefWidth="982.0">
+               <children>
+                  <TableView fx:id="tablaPack" prefHeight="620.0" prefWidth="977.0">
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                     <columns>
+                        <TableColumn fx:id="cId" prefWidth="75.0" text="ID" />
+                        <TableColumn fx:id="cTitulo" prefWidth="75.0" text="Título" />
+                        <TableColumn fx:id="cDescripcion" prefWidth="75.0" text="Descripción" />
+                        <TableColumn fx:id="cPrecio" prefWidth="75.0" text="Precio" />
+                     </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+               </children>
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+               <padding>
+                  <Insets left="5.0" right="5.0" />
+               </padding>
+            </VBox>
          </children>
       </VBox>
    </center>

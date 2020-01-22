@@ -28,6 +28,22 @@ public class UserBean implements Serializable{
     private String contrasenia;
     private Date ultimoAcceso;
     private Date ultimoCambioContrasenia;
+     public UserBean() {
+       // this.nombreCompleto=new SimpleStringProperty();
+    }
+
+    public UserBean(Integer id, String login, String email, String nombreCompleto, UserStatus status, UserPrivilege privilegio, String contrasenia, Date ultimoAcceso, Date ultimoCambioContrasenia) {
+        this.id = id;
+        this.login = login;
+        this.email = email;
+        this.nombreCompleto = nombreCompleto;
+        //this.nombreCompleto= new SimpleStringProperty(nombreCompleto);
+        this.status = status;
+        this.privilegio = privilegio;
+        this.contrasenia = contrasenia;
+        this.ultimoAcceso = ultimoAcceso;
+        this.ultimoCambioContrasenia = ultimoCambioContrasenia;
+    }
 
     /**
      * @return the id
@@ -157,22 +173,7 @@ public class UserBean implements Serializable{
         this.ultimoCambioContrasenia = ultimoCambioContrasenia;
     }
 
-    public UserBean() {
-       // this.nombreCompleto=new SimpleStringProperty();
-    }
-
-    public UserBean(Integer id, String login, String email, String nombreCompleto, UserStatus status, UserPrivilege privilegio, String contrasenia, Date ultimoAcceso, Date ultimoCambioContrasenia) {
-        this.id = id;
-        this.login = login;
-        this.email = email;
-        this.nombreCompleto = nombreCompleto;
-        //this.nombreCompleto= new SimpleStringProperty(nombreCompleto);
-        this.status = status;
-        this.privilegio = privilegio;
-        this.contrasenia = contrasenia;
-        this.ultimoAcceso = ultimoAcceso;
-        this.ultimoCambioContrasenia = ultimoCambioContrasenia;
-    }
+   
 
     @Override
     public String toString() {

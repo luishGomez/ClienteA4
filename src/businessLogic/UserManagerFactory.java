@@ -5,6 +5,8 @@
 */
 package businessLogic;
 
+import fakeBusinessLogic.TestUserManagerImplementation;
+
 /**
  *
  * @author Usuario
@@ -18,6 +20,7 @@ public class UserManagerFactory {
         //Evaluate type parameter.
         switch(type){
             case TEST:
+                userManager=new TestUserManagerImplementation();
                 break;
             default:
                 userManager=new UserManagerImplementation();

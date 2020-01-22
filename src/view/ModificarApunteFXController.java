@@ -74,12 +74,12 @@ public class ModificarApunteFXController {
     @FXML
     public void initStage(Parent root) {
         try{
-            LOGGER.info("Iniciando la ventana SubirApunteFXController");
+            LOGGER.info("Iniciando la ventana ModificarApunteFXController");
             Scene scene=new Scene(root);
             stage=new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
-            stage.setTitle("Subir Apunte");
+            stage.setTitle("Modificar Apunte");
             stage.setResizable(false);
             stage.setOnShowing(this::handleWindowShowing);
             

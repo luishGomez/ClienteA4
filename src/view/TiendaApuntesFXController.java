@@ -19,6 +19,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -393,6 +395,25 @@ public class TiendaApuntesFXController {
      */
     @FXML
     private void onActionAbrirMiBiblioteca(ActionEvent event){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("biblioteca.fxml"));
+            
+            Parent root = (Parent)loader.load();
+            
+            BibliotecaClienteFXController controller =
+                    ((BibliotecaClienteFXController)loader.getController());
+            controller.setUser(cliente);
+            controller.setStage(stage);
+            controller.initStage(root);
+            stage.hide();
+        } catch (IOException ex) {
+            Logger.getLogger(TiendaApuntesFXController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (BusinessLogicException ex) {
+            Logger.getLogger(TiendaApuntesFXController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
     }
     /**
      * Abre la ventana tienda packs.
@@ -400,6 +421,21 @@ public class TiendaApuntesFXController {
      */
     @FXML
     private void onActionAbrirTiendaPacks(ActionEvent event){
+         try {
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("tienda_pack.fxml"));
+            
+            Parent root = (Parent)loader.load();
+            
+            TiendaPackFXController controller =
+                    ((TiendaPackFXController)loader.getController());
+            controller.setCliente(cliente);
+            controller.setStage(stage);
+            controller.initStage(root);
+            stage.hide();
+        } catch (IOException ex) {
+            Logger.getLogger(TiendaApuntesFXController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     /**
      * Abre la ventna mi perfil.
@@ -407,6 +443,21 @@ public class TiendaApuntesFXController {
      */
     @FXML
     private void onActionAbrirMiPerfil(ActionEvent event){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("perfil.fxml"));
+            
+            Parent root = (Parent)loader.load();
+            
+            PerfilFXMLController controller =
+                    ((PerfilFXMLController)loader.getController());
+            controller.setUser(cliente);
+            controller.setStage(stage);
+            controller.initStage(root);
+            stage.hide();
+        } catch (IOException ex) {
+            Logger.getLogger(TiendaApuntesFXController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     /**
      * Abre la ventana de ayuda.

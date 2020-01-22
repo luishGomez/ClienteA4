@@ -78,7 +78,12 @@ public class CompraBean implements Serializable {
     public void setFecha(Date fecha) {
         this.fecha.set(fecha);
     }
-
+    public CompraBean() {
+        this.idCompra= new SimpleObjectProperty();
+        this.propietario = new SimpleObjectProperty();
+        this.apunte = new SimpleObjectProperty();
+        this.fecha = new SimpleObjectProperty();
+    }
     public CompraBean(CompraId idCompra, ClienteBean propietario,ApunteBean apunte, Date fecha) {
         this.idCompra= new SimpleObjectProperty(idCompra);
         this.propietario = new SimpleObjectProperty(propietario);

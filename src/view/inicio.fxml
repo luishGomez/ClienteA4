@@ -7,7 +7,8 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="372.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.InicioFXController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="372.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+      fx:controller="view.InicioFXController">
    <children>
       <Label fx:id="lblNombreUsuario" layoutX="122.0" layoutY="118.0" text="Nombre de usuario:" />
       <TextField fx:id="tfNombreUsuario" layoutX="119.0" layoutY="135.0" prefHeight="25.0" prefWidth="250" />

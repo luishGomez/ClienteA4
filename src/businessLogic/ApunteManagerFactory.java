@@ -5,6 +5,8 @@
  */
 package businessLogic;
 
+import fakeBusinessLogic.TestApunteManagerImplementation;
+
 /**
  *
  * @author 2dam
@@ -18,6 +20,7 @@ public class ApunteManagerFactory {
         //Evaluate type parameter.
         switch(type){
             case TEST:
+                apunteManager= new TestApunteManagerImplementation();
                 break;
             default:
                 apunteManager=new ApunteManagerImplementation();

@@ -12,10 +12,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="701.0" prefWidth="885.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GestorDeOfertasFXController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="766.0" prefWidth="1051.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.GestorDeOfertasFXController">
    <top>
       <MenuBar fx:id="menuBar" BorderPane.alignment="CENTER">
         <menus>
@@ -42,15 +41,18 @@
       </MenuBar>
    </top>
    <center>
-      <VBox prefHeight="318.0" prefWidth="754.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="0.0" prefWidth="927.0" style="-fx-border-color: grey;" BorderPane.alignment="TOP_CENTER">
          <children>
             <HBox alignment="CENTER_RIGHT" prefHeight="42.0" prefWidth="795.0">
                <VBox.margin>
                   <Insets />
                </VBox.margin>
                <children>
-                  <TextField />
-                  <Button mnemonicParsing="false" text="Buscar" />
+                  <TextField fx:id="txtBuscar" />
+                  <Button fx:id="btnBuscar" mnemonicParsing="false" text="Buscar">
+                     <HBox.margin>
+                        <Insets right="-190.0" />
+                     </HBox.margin></Button>
                </children>
                <opaqueInsets>
                   <Insets />
@@ -59,77 +61,79 @@
                   <Insets right="190.0" />
                </padding>
             </HBox>
-            <HBox alignment="CENTER" prefHeight="500.0" prefWidth="820.0">
-               <children>
-                  <TableView prefHeight="500.0" prefWidth="731.0">
-                    <columns>
-                      <TableColumn prefWidth="143.0" text="ID" />
-                      <TableColumn prefWidth="199.0" text="Fecha inicio" />
-                        <TableColumn prefWidth="157.0" text="Fecha fin" />
-                        <TableColumn prefWidth="143.0" text="Oferta" />
-                        <TableColumn prefWidth="94.0" text="Descuento" />
-                    </columns>
-                     <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                     </columnResizePolicy>
-                     <HBox.margin>
-                        <Insets left="10.0" right="10.0" />
-                     </HBox.margin>
-                  </TableView>
-                  <VBox prefHeight="500.0" prefWidth="124.0">
-                     <children>
-                        <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Modificar">
-                           <VBox.margin>
-                              <Insets left="20.0" top="50.0" />
-                           </VBox.margin>
-                        </Button>
-                        <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="75.0" text="Insertar">
-                           <VBox.margin>
-                              <Insets left="20.0" top="50.0" />
-                           </VBox.margin>
-                        </Button>
-                        <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="74.0" text="Borrar">
-                           <VBox.margin>
-                              <Insets left="20.0" top="50.0" />
-                           </VBox.margin>
-                        </Button>
-                     </children>
-                  </VBox>
-                  <VBox prefHeight="200.0" prefWidth="100.0" />
-               </children>
+            <TableView fx:id="tablaGestorOfertas" prefHeight="595.0" prefWidth="915.0">
+              <columns>
+                <TableColumn fx:id="columnaId" prefWidth="143.0" text="ID" />
+                <TableColumn fx:id="columnaFechaInicio" prefWidth="199.0" text="Fecha inicio" />
+                  <TableColumn fx:id="columnaFechaFin" prefWidth="157.0" text="Fecha fin" />
+                  <TableColumn fx:id="columnaOferta" prefWidth="143.0" text="Oferta" />
+                  <TableColumn fx:id="columnaDescuento" prefWidth="94.0" text="Descuento" />
+              </columns>
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
                <VBox.margin>
-                  <Insets />
+                  <Insets left="10.0" />
                </VBox.margin>
-               <padding>
-                  <Insets right="10.0" />
-               </padding>
-            </HBox>
-            <HBox prefHeight="100.0" prefWidth="754.0">
+            </TableView>
+            <HBox alignment="CENTER" prefHeight="49.0" prefWidth="925.0">
                <children>
-                  <Pane prefHeight="85.0" prefWidth="415.0" />
-                  <Pane prefHeight="85.0" prefWidth="887.0">
-                     <children>
-                        <HBox alignment="CENTER" layoutX="-148.0" prefHeight="100.0" prefWidth="885.0">
-                           <children>
-                              <DatePicker promptText="Fecha inicio">
-                                 <HBox.margin>
-                                    <Insets left="-100.0" />
-                                 </HBox.margin></DatePicker>
-                              <DatePicker promptText="Fecha fin" />
-                              <TextField promptText="Oferta nombre" />
-                              <TextField promptText="Descuento" />
-                              <ComboBox prefHeight="25.0" prefWidth="129.0" />
-                           </children>
-                        </HBox>
-                     </children>
-                  </Pane>
-                  <Pane prefHeight="85.0" prefWidth="390.0">
-                     <children>
-                        <Button layoutX="14.0" layoutY="38.0" mnemonicParsing="false" text="Aceptar" />
-                     </children></Pane>
+                  <DatePicker fx:id="dateInicio" prefHeight="25.0" prefWidth="153.0" promptText="Fecha inicio">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </DatePicker>
+                  <DatePicker fx:id="dateFin" promptText="Fecha fin">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </DatePicker>
+                  <TextField fx:id="txtOfertaNombre" promptText="Oferta nombre">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <TextField fx:id="txtDescuento" promptText="Descuento">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </TextField>
+                  <ComboBox fx:id="comboPacks" prefHeight="25.0" prefWidth="129.0">
+                     <HBox.margin>
+                        <Insets right="10.0" />
+                     </HBox.margin>
+                  </ComboBox>
+                  <Button fx:id="btnAceptar" mnemonicParsing="false" onAction="#aceptar" text="Aceptar" />
                </children>
             </HBox>
          </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <BorderPane.margin>
+            <Insets />
+         </BorderPane.margin>
       </VBox>
    </center>
+   <right>
+      <VBox prefHeight="691.0" prefWidth="124.0" BorderPane.alignment="CENTER_RIGHT">
+         <children>
+            <Button fx:id="btnModificar" mnemonicParsing="false" onAction="#modificar" prefHeight="25.0" prefWidth="75.0" text="Modificar">
+               <VBox.margin>
+                  <Insets left="20.0" top="50.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="btnInsertar" mnemonicParsing="false" onAction="#insertar" prefHeight="25.0" prefWidth="75.0" text="Insertar">
+               <VBox.margin>
+                  <Insets left="20.0" top="50.0" />
+               </VBox.margin>
+            </Button>
+            <Button fx:id="btnBorrar" mnemonicParsing="false" onAction="#borrar" prefHeight="25.0" prefWidth="74.0" text="Borrar">
+               <VBox.margin>
+                  <Insets left="20.0" top="50.0" />
+               </VBox.margin>
+            </Button>
+         </children>
+      </VBox>
+   </right>
 </BorderPane>
