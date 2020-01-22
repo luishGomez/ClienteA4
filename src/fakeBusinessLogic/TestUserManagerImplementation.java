@@ -11,6 +11,7 @@ import exceptions.LoginNotFoundException;
 import exceptions.NoEsUserException;
 import exceptions.PasswordWrongException;
 import transferObjects.UserBean;
+import transferObjects.UserPrivilege;
 
 /**
  *
@@ -23,6 +24,7 @@ public class TestUserManagerImplementation implements UserManager {
         admin=new UserBean();
         admin.setId(0);
         admin.setLogin("admin");
+        admin.setPrivilegio(UserPrivilege.ADMIN);
         
     }
     

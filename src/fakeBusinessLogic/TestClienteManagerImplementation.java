@@ -11,6 +11,7 @@ import exceptions.LoginNotFoundException;
 import exceptions.PasswordWrongException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 import transferObjects.ClienteBean;
 import transferObjects.UserPrivilege;
 
@@ -19,6 +20,7 @@ import transferObjects.UserPrivilege;
  * @author 2dam
  */
 public class TestClienteManagerImplementation implements  ClienteManager{
+    private static final Logger LOGGER = Logger.getLogger("fakeBusinessLogic.TestClienteManagerImplementation");
     private Set<ClienteBean> clientes;
     public TestClienteManagerImplementation(){
         clientes=new HashSet<ClienteBean>();
@@ -90,9 +92,10 @@ public class TestClienteManagerImplementation implements  ClienteManager{
 
     @Override
     public ClienteBean iniciarSesion(String login, String contrasenia) throws BusinessLogicException, PasswordWrongException, LoginNotFoundException {
+        LOGGER.info("Intenta iniciar sesion como clinete");
         ClienteBean resultado=null;
         for(ClienteBean cliente:clientes){
-            if(cliente.getLogin()==login){
+            if(cliente.getLogin().equals(login)){
                 resultado=cliente;
                 break;
             }

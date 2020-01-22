@@ -55,10 +55,10 @@ public class UserManagerImplementation implements UserManager {
         try{
             elUsuario=webClient.iniciarSesion(UserBean.class, login, contrasenia);
         }catch(NotAuthorizedException e){
-            LOGGER.severe("ERROR! UserManagerImpl -> iniciarSesion: "+e.getMessage()+" "+login+" "+contrasenia);
+            LOGGER.severe("ERROR! UserManagerImpl -> iniciarSesion: "+e.getMessage());
             throw new PasswordWrongException(e.getMessage());
         }catch(NotFoundException e){
-            LOGGER.severe("ERROR! UserManagerImpl -> iniciarSesion: "+e.getMessage()+" "+login+" "+contrasenia);
+            LOGGER.severe("ERROR! UserManagerImpl -> iniciarSesion: "+e.getMessage());
             throw new LoginNotFoundException(e.getMessage());
         }catch(BadRequestException e){
             LOGGER.severe("ERROR! UserManagerImpl -> iniciarSesion: "+e.getMessage());

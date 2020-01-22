@@ -6,19 +6,22 @@
 package businessLogic;
 
 import fakeBusinessLogic.TestUserManagerImplementation;
+import java.util.ResourceBundle;
 
 /**
  *
  * @author Usuario
  */
 public class UserManagerFactory {
+    private static ResourceBundle configFile=ResourceBundle.getBundle("businessLogic.testConfig");
+    private static final String tipo_ejecucion=configFile.getString("tipo_ejecucion");
     public static final String TEST="TEST";
     
     public static UserManager createUserManager(String type) {
         //The object to be returned.
         UserManager userManager=null;
         //Evaluate type parameter.
-        switch(type){
+        switch(tipo_ejecucion){
             case TEST:
                 userManager=new TestUserManagerImplementation();
                 break;
