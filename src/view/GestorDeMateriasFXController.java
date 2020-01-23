@@ -49,6 +49,7 @@ public class GestorDeMateriasFXController {
     private ObservableList<MateriaBean> materiasObv = null;
     private int opcion;
     private int posicion;
+    private MateriaBean materia = null;
     
     @FXML
     private Menu menuCuenta;
@@ -86,6 +87,14 @@ public class GestorDeMateriasFXController {
     private TableColumn cTitulo;
     @FXML
     private TableColumn cDescripcion;
+    @FXML
+    private TextField tfTituloGestorMateria;
+    @FXML
+    private TextField tfDescripcionGestorMateria;
+    @FXML
+    private Button btnModificarGestorMateria;
+    @FXML
+    private Button btnEliminarGestorMateria;
     
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -301,6 +310,57 @@ public class GestorDeMateriasFXController {
         }
     }
     
+    @FXML
+    private void onActionModificarGestorMateria(ActionEvent event){
+        if(materia != null){
+            if(tfTituloGestorMateria.getText().trim().isEmpty() || tfDescripcionGestorMateria.getText().trim().isEmpty()){
+                showErrorAlert("Los campos de texto no pueden estar vacios.");
+            }else{
+                MateriaBean mat = new MateriaBean(materia.getIdMateria(),
+                        tfTituloGestorMateria.getText().trim(),
+                        tfDescripcionGestorMateria.getText().trim());
+                if(mat != materia){
+                    try{
+                        manager.editMateria(mat);
+                        cargarDatos();
+                        tablaMateria.refresh();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                        showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());
+                    }
+                }
+            }
+        }else{
+            showErrorAlert("Seleccione una materia, después, pulse el botón.");
+        }
+    }
+    
+    @FXML
+    private void onActionEliminarGestorMateria(ActionEvent event){
+        if(materia != null){
+            Alert alertCerrarAplicacion = new Alert(Alert.AlertType.CONFIRMATION,"",ButtonType.NO,ButtonType.YES);
+            //Añadimos titulo a la ventana como el alert.
+            alertCerrarAplicacion.setTitle("Eliminar");
+            alertCerrarAplicacion.setHeaderText("¿Estas seguro que lo deseas eliminar?");
+            //Si acepta cerrara la aplicación.
+            alertCerrarAplicacion.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.YES) {
+                    try{
+                        comprobar(this.materia);
+                        manager.removeMateria(this.materia);
+                        tablaMateria.getItems().remove(this.materia);
+                        tablaMateria.refresh();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                        showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());
+                    }
+                }
+            });
+        }else{
+            showErrorAlert("Seleccione una materia, después, pulse el botón.");
+        }
+    }
+    
     private void cargarDatos() {
         try {
             materias = manager.findAllMateria();
@@ -327,32 +387,9 @@ public class GestorDeMateriasFXController {
     
     private void materiaClicked(ObservableValue obvservable, Object oldValue, Object newValue){
         if(newValue != null){
-            MateriaBean materia = (MateriaBean) newValue;
-            try{
-                FXMLLoader loader = new FXMLLoader(getClass()
-                        .getResource("modificar_materia.fxml"));
-                Parent root = (Parent)loader.load();
-                ModificarMateriaFXController controller =
-                        ((ModificarMateriaFXController)loader.getController());
-                controller.setMateria(materia);
-                controller.setFXMateria(this);
-                controller.initStage(root);
-                if(opcion == 1){
-                    comprobar(materia);
-                    manager.removeMateria(materia);
-                    tablaMateria.getItems().remove(materia);
-                    //cargarDatos();
-                    tablaMateria.refresh();
-                }else if(opcion == 2){
-                    manager.editMateria(materia);
-                    //Modificar solo del List??
-                    cargarDatos();
-                    tablaMateria.refresh();
-                }
-            }catch(Exception e){
-                e.printStackTrace();
-                showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());
-            }
+            materia = (MateriaBean) newValue;
+            tfTituloGestorMateria.setText(materia.getTitulo());
+            tfDescripcionGestorMateria.setText(materia.getDescripcion());
         }
     }
     

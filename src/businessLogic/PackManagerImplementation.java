@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 import javax.ws.rs.core.GenericType;
 import service.PackRESTClient;
+import transferObjects.OfertaBean;
 import transferObjects.PackBean;
 
 /**
@@ -96,5 +97,17 @@ public class PackManagerImplementation implements PackManager{
             LOGGER.severe("ERROR! PackManagerImpl -> removeApunte: "+e.getMessage());
             throw new BusinessLogicException(e.getMessage());
         }
+    }
+
+    @Override
+    public OfertaBean getOferta(PackBean pack) throws BusinessLogicException {
+        OfertaBean oferta = null;
+        try{
+            oferta = webClient.dameOferta(OfertaBean.class, pack.getIdPack().toString());
+        }catch(Exception e){
+            LOGGER.severe("ERROR! PackManagerImpl -> removeApunte: "+e.getMessage());
+            throw new BusinessLogicException(e.getMessage());
+        }
+        return oferta;
     }
 }

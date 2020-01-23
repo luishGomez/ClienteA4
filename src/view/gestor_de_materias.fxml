@@ -67,9 +67,9 @@
             </HBox>
             <VBox alignment="TOP_CENTER" prefHeight="620.0" prefWidth="982.0">
                <children>
-                  <TableView fx:id="tablaMateria" prefHeight="620.0" prefWidth="977.0">
+                  <TableView fx:id="tablaMateria" prefHeight="482.0" prefWidth="972.0">
                      <VBox.margin>
-                        <Insets />
+                        <Insets bottom="2.0" />
                      </VBox.margin>
                      <columns>
                         <TableColumn fx:id="cId" prefWidth="75.0" text="ID" />
@@ -80,6 +80,33 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                      </columnResizePolicy>
                   </TableView>
+                  <HBox alignment="CENTER" prefHeight="129.0" prefWidth="972.0">
+                     <VBox.margin>
+                        <Insets top="2.0" />
+                     </VBox.margin>
+                     <children>
+                        <TextField fx:id="tfTituloGestorMateria">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <TextField fx:id="tfDescripcionGestorMateria">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <Button fx:id="btnModificarGestorMateria" mnemonicParsing="false" onAction="#onActionModificarGestorMateria" text="Modificar">
+                           <HBox.margin>
+                              <Insets right="5.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="btnEliminarGestorMateria" mnemonicParsing="false" onAction="#onActionEliminarGestorMateria" text="Eliminar">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
                </children>
                <VBox.margin>
                   <Insets />

@@ -39,9 +39,9 @@ public class AddApunteFXController {
     private int opcion;
     
     @FXML
-    private Button btnBuscarApuntePack;
+    private Button btnBuscarAddApunte;
     @FXML
-    private TextField tfFiltarApuntePack;
+    private TextField tfFiltarAddApunte;
     @FXML
     private TableView tvApuntesAddApunte;
     @FXML
@@ -99,7 +99,11 @@ public class AddApunteFXController {
     
     @FXML
     private void onActionBtnBuscarAddApunte(){
-        
+        if(!tfFiltarAddApunte.getText().trim().isEmpty()){
+            cargarDatos(tfFiltarAddApunte.getText().trim());
+        }else{
+            cargarDatos();
+        }
     }
     
     @FXML
@@ -111,15 +115,38 @@ public class AddApunteFXController {
     private void cargarDatos(){
         try{
             Set<ApunteBean> apuns = managerApunte.findAll();
-            for(ApunteBean a : apuntes){
-                for(ApunteBean b : apuns){
-                    if(a.getIdApunte() == b.getIdApunte()){
-                        apuns.remove(b);
-                        break;
+            if(apuntes != null){
+                for(ApunteBean a : apuntes){
+                    for(ApunteBean b : apuns){
+                        if(a.getIdApunte() == b.getIdApunte()){
+                            apuns.remove(b);
+                            break;
+                        }
                     }
                 }
             }
             List<ApunteBean> apunteList = apuns.stream().sorted(Comparator.comparing(ApunteBean::getIdApunte)).collect(Collectors.toList());
+            apuntesObv = FXCollections.observableArrayList(new ArrayList<>(apunteList));
+            tvApuntesAddApunte.setItems(apuntesObv);
+        }catch(BusinessLogicException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    private void cargarDatos(String string){
+        try{
+            Set<ApunteBean> apuns = managerApunte.findAll();
+            if(apuntes != null){
+                for(ApunteBean a : apuntes){
+                    for(ApunteBean b : apuns){
+                        if(a.getIdApunte() == b.getIdApunte()){
+                            apuns.remove(b);
+                            break;
+                        }
+                    }
+                }
+            }
+            List<ApunteBean> apunteList = apuns.stream().filter(ap -> ap.getTitulo().contains(string)).sorted(Comparator.comparing(ApunteBean::getIdApunte)).collect(Collectors.toList());
             apuntesObv = FXCollections.observableArrayList(new ArrayList<>(apunteList));
             tvApuntesAddApunte.setItems(apuntesObv);
         }catch(BusinessLogicException e) {

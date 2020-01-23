@@ -40,21 +40,6 @@
         </menus>
       </MenuBar>
    </top>
-   <left>
-      <VBox alignment="TOP_CENTER" prefHeight="744.0" prefWidth="294.0" spacing="10.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label text="Materia" />
-            <ListView fx:id="lvMateria" prefHeight="655.0" prefWidth="244.0">
-               <VBox.margin>
-                  <Insets left="1.0" right="2.0" top="5.0" />
-               </VBox.margin></ListView>
-            <Button fx:id="btnRefrescarTiendaPack" mnemonicParsing="false" text="Refrescar" />
-         </children>
-         <BorderPane.margin>
-            <Insets bottom="5.0" top="5.0" />
-         </BorderPane.margin>
-      </VBox>
-   </left>
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
@@ -88,7 +73,7 @@
                </VBox.margin></ListView>
             <HBox alignment="CENTER_RIGHT" prefHeight="49.0" prefWidth="854.0">
                <children>
-                  <Button fx:id="btnComprarTiendaPack" mnemonicParsing="false" text="Comprar">
+                  <Button fx:id="btnComprarTiendaPack" mnemonicParsing="false" onAction="#onActionBtnComprarTiendaPack" text="Comprar">
                      <HBox.margin>
                         <Insets right="50.0" />
                      </HBox.margin>

@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Usuario
+ * @author Luis
  */
 @XmlRootElement(name="pack")
 public class PackBean {
@@ -19,7 +19,6 @@ public class PackBean {
     private final SimpleStringProperty titulo;
     private final SimpleStringProperty descripcion;
     private final SimpleObjectProperty<Date> fechaModificacion;
-    //private final SimpleSetProperty<ApunteBean> apuntes;
     private Set<ApunteBean> apuntes;
     
     public PackBean(Integer idPack, String titulo, String descripcion, Date fecha, Set apuntes){
@@ -27,7 +26,6 @@ public class PackBean {
         this.titulo = new SimpleStringProperty(titulo);
         this.descripcion = new SimpleStringProperty(descripcion);
         this.fechaModificacion = new SimpleObjectProperty(fecha);
-        //this.apuntes = new SimpleSetProperty(apuntes);
         this.apuntes = apuntes;
     }
     
@@ -36,7 +34,6 @@ public class PackBean {
         this.titulo = new SimpleStringProperty();
         this.descripcion = new SimpleStringProperty();
         this.fechaModificacion = new SimpleObjectProperty();
-        //this.apuntes = new SimpleSetProperty();
     }
 
     public Integer getIdPack() {
@@ -77,5 +74,13 @@ public class PackBean {
 
     public void setApuntes(Set<ApunteBean> apuntes) {
         this.apuntes = apuntes;
+    }
+    
+    public float getPrecio(){
+        float precio = 0;
+        for(ApunteBean a : getApuntes()){
+            precio += a.getPrecio();
+        }
+        return precio;
     }
 }

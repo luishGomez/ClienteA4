@@ -28,7 +28,7 @@ import static view.ControladorGeneral.showErrorAlert;
 public class ApuntePackFXController {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger("view.ApuntePackFXController");
     private Stage stage;
-    private ModificarPackFXController fxModificarPack = null;
+    private GestorDePacksFXController fxGestorPack = null;
     private ObservableList<ApunteBean> apuntesObv = null;
     private Set<ApunteBean> apuntes = null;
     private ApunteBean apunte = null;
@@ -50,11 +50,11 @@ public class ApuntePackFXController {
     private Button btnAñadirApuntePack;
     
     /**
-     * Asigna un valor a fxModificarPack.
+     * Asigna un valor a fxGestorPack.
      * @param fxController Controlador de Pack.
      */
-    public void setFXModificarPack(ModificarPackFXController fxController){
-        this.fxModificarPack = fxController;
+    public void setFXModificarPack(GestorDePacksFXController fxController){
+        this.fxGestorPack = fxController;
     }
     
     /**
@@ -128,8 +128,8 @@ public class ApuntePackFXController {
     @FXML
     private void onActionBtnEliminarAddApunte(){
         if(apunte != null){
-            fxModificarPack.setOpcion(1);
-            fxModificarPack.setApunte(apunte);
+            fxGestorPack.setOpc(1);
+            fxGestorPack.setApunte(apunte);
             stage.hide();
         }else{
             showErrorAlert("Debes seleccionar algun apunte.");
@@ -151,8 +151,8 @@ public class ApuntePackFXController {
             controller.setApuntes(apuntes);
             controller.initStage(root);
             if(opcion == 1){
-                fxModificarPack.setOpcion(2);
-                fxModificarPack.setApunte(apunte);
+                fxGestorPack.setOpc(2);
+                fxGestorPack.setApunte(apunte);
                 stage.hide();
             }
         }catch(Exception e){
@@ -165,7 +165,7 @@ public class ApuntePackFXController {
      */
     @FXML
     private void onActionBtnSalirAddApunte(){
-        fxModificarPack.setOpcion(0);
+        fxGestorPack.setOpc(0);
         stage.hide();
     }
     
@@ -173,8 +173,10 @@ public class ApuntePackFXController {
      * Carga los datos en la tabla.
      */
     private void cargarDatos(){
-        apuntesObv = FXCollections.observableArrayList(new ArrayList<>(apuntes.stream().sorted(Comparator.comparing(ApunteBean::getIdApunte)).collect(Collectors.toList())));
-        tvApuntesApuntePack.setItems(apuntesObv);
+        if(apuntes != null){
+            apuntesObv = FXCollections.observableArrayList(new ArrayList<>(apuntes.stream().sorted(Comparator.comparing(ApunteBean::getIdApunte)).collect(Collectors.toList())));
+            tvApuntesApuntePack.setItems(apuntesObv);
+        }
     }
     
     /**

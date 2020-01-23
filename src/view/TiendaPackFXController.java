@@ -1,10 +1,6 @@
 package view;
 
-import businessLogic.ApunteManager;
-import static businessLogic.ApunteManagerFactory.createApunteManager;
 import businessLogic.BusinessLogicException;
-import businessLogic.MateriaManager;
-import static businessLogic.MateriaManagerFactory.createMateriaManager;
 import businessLogic.PackManager;
 import static businessLogic.PackManagerFactory.createPackManager;
 import java.util.ArrayList;
@@ -31,9 +27,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import transferObjects.ApunteBean;
 import transferObjects.ClienteBean;
-import transferObjects.MateriaBean;
 import transferObjects.PackBean;
 import static view.ControladorGeneral.showErrorAlert;
 
@@ -45,14 +39,9 @@ public class TiendaPackFXController {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger("view.TiendaPackFXController");
     private ClienteBean cliente;
     private Stage stage;
-    
-    private ApunteManager managerApunte = createApunteManager("real");
-    private MateriaManager managerMateria = createMateriaManager("real");
+    private PackBean pack = null;
     private PackManager managerPack = createPackManager("real");
-    private ObservableList<MateriaBean> materiaObv = null;
     private ObservableList<PackBean> packObv = null;
-    private ObservableList<PackBean> packFiltradoObv = null;
-    private List<PackBean> packsFiltrados = null;
     private boolean esta = false;
     
     @FXML
@@ -79,8 +68,6 @@ public class TiendaPackFXController {
     private Menu menuHelp;
     @FXML
     private MenuItem menuHelpAbout;
-    @FXML
-    private ListView lvMateria;
     @FXML
     private Button btnRefrescarTiendaPack;
     @FXML
@@ -123,9 +110,8 @@ public class TiendaPackFXController {
             menuVentanas.setText("_Ventanas");
             menuHelp.setMnemonicParsing(true);
             menuHelp.setText("_Help");
-            //Tabla
+            //List
             cargarDatos();
-            lvMateria.getSelectionModel().selectedItemProperty().addListener(this::materiaListSelected);
             stage.show();
         }catch(Exception e){
             LOGGER.severe(e.getMessage());
@@ -264,54 +250,41 @@ public class TiendaPackFXController {
         /*opcionesData=FXCollections.observableArrayList(Arrays.asList(this.opciones));
         this.comboBoxOrdenar.setItems(opcionesData);*/
         try{
-            Set<MateriaBean> materias = managerMateria.findAllMateria();
             Set<PackBean> packs = managerPack.findAllPack();
-            materiaObv = FXCollections.observableArrayList(new ArrayList<>(materias));
             packObv = FXCollections.observableArrayList(new ArrayList<>(packs));
-            lvMateria.setItems(materiaObv);
             lvPack.setItems(packObv);
+            lvPack.setCellFactory(param -> new CellTiendaPack());
         }catch (BusinessLogicException e) {
             e.printStackTrace();
         }
     }
     
-    private void materiaListSelected(ObservableValue obvservable, Object oldValue, Object newValue){
-        if(newValue != null){
-            MateriaBean materia = (MateriaBean) newValue;
-            //Set<ApunteBean> apunts = new HashSet<ApunteBean>();
-            List<ApunteBean> apunts = new ArrayList<ApunteBean>();
-            try{
-                Set<PackBean> packs = managerPack.findAllPack();
-                packs.stream().forEach(pack -> pack.getApuntes().stream().forEach(apunte -> {
-                    //ApunteBean ap = apunte;
-                    if(materia.getIdMateria() == apunte.getMateria().getIdMateria()){
-                        //apunts.add(ap);
-                        if(apunts == null){
-                            apunts.add(apunte);
-                        }else{
-                            this.esta= false;
-                            apunts.stream().forEach(a -> {if(a.getIdApunte() == apunte.getIdApunte()){esta = true;}});
-                            if(!esta){
-                                apunts.add(apunte);
-                            }
-                        }
-                    }
-                }));
-                packs.stream().forEach(p -> apunts.stream().forEach(ap ->{
-                    if(p.getApuntes().contains(ap)){
-                        packsFiltrados.add(p);
-                }}));
-            }catch (BusinessLogicException e) {
-                e.printStackTrace();
-            }
-        }
-        ordenado();
+    private void cargarDatos(List<PackBean> ps){
+            packObv = FXCollections.observableArrayList(new ArrayList<>(ps));
+            lvPack.setItems(packObv);
+            lvPack.setCellFactory(param -> new CellTiendaPack());
     }
     
-    private void ordenado(){
-        ObservableList<PackBean> packsObvs = null;
-        packsObvs = FXCollections.observableArrayList(new ArrayList<>(packsFiltrados));
-        lvPack.setItems(packsObvs);
-        lvPack.refresh();
+    private void packClicked(ObservableValue obvservable, Object oldValue, Object newValue){
+        if(newValue != null){
+            pack = (PackBean) newValue;
+        }
+    }
+    
+    private void onActionBtnComprarTiendaPack(ActionEvent event){
+        try{
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("tienda_pack.fxml"));
+            Parent root = (Parent)loader.load();
+            TiendaPackFXController controller =
+                    ((TiendaPackFXController)loader.getController());
+            
+            controller.setCliente(cliente);
+            controller.setStage(stage);
+            controller.initStage(root);
+            stage.hide();
+        }catch(Exception e){
+            showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor."+e.getMessage());
+        }
     }
 }

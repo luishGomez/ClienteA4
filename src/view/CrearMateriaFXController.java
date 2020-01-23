@@ -29,7 +29,7 @@ public class CrearMateriaFXController {
     @FXML
     private TextField tfTituloCrearMateria;
     @FXML
-    private TextArea taDescripcionCrearMateria;
+    private TextField tfDescripcionCrearMateria;
     
     public void setMateria(MateriaBean materia){
         this.materia = materia;
@@ -67,9 +67,9 @@ public class CrearMateriaFXController {
     
     @FXML
     public void onActionBtnCrearCrearMateria(ActionEvent event){
-        if(!tfTituloCrearMateria.getText().isEmpty() && !taDescripcionCrearMateria.getText().isEmpty()){
+        if(!tfTituloCrearMateria.getText().isEmpty() && !tfDescripcionCrearMateria.getText().isEmpty()){
             materia.setTitulo(tfTituloCrearMateria.getText());
-            materia.setDescripcion(taDescripcionCrearMateria.getText());
+            materia.setDescripcion(tfDescripcionCrearMateria.getText());
             fxMateria.setOpc(1);
             stage.hide();
         }else{
