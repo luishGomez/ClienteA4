@@ -8,6 +8,8 @@ package view;
 import businessLogic.BusinessLogicException;
 import businessLogic.ClienteManager;
 import static businessLogic.ClienteManagerFactory.createClienteManager;
+import encriptaciones.Encriptador;
+import encriptaciones.EncriptarException;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -51,6 +53,7 @@ public class PerfilFXMLController{
     private ClienteBean user;
     private int toques = 0;
     private byte[] bytes;// = user.getFoto();
+    private Encriptador encriptador=new Encriptador();
     
     @FXML private Circle imgCircle;
     @FXML private ImageView imagen;
@@ -211,12 +214,15 @@ public class PerfilFXMLController{
      */
     public void aceptarContrasenia(){
         if(!pswContrasenia.getText().isEmpty() && !pswConfirmarContrasenia.getText().isEmpty() && pswContrasenia.getText().equals(pswConfirmarContrasenia.getText())){
-            /*user.setContrasenia(pswContrasenia.getText());
+            user.setContrasenia(pswContrasenia.getText());
             try {
-            logicCliente.actualizarContrasenia(user);
+                user.setContrasenia(encriptador.encriptar(user.getContrasenia()));
+                logicCliente.actualizarContrasenia(user);
             } catch (BusinessLogicException ex) {
             Logger.getLogger(PerfilFXMLController.class.getName()).log(Level.SEVERE, null, ex);
-            }*/
+            } catch (EncriptarException ex) {
+                Logger.getLogger(PerfilFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             pswContrasenia.setVisible(false);
             pswConfirmarContrasenia.setVisible(false);
             btnAceptarContrasenia.setVisible(false);

@@ -41,19 +41,19 @@ public class TestApunteManagerImplementation implements ApunteManager {
         MateriaBean materia1=new MateriaBean();
         materia1.setIdMateria(1);
         materia1.setTitulo("Procesos");
-        materia1.setTitulo("Los programas en segundo plano.");
+        materia1.setDescripcion("Los programas en segundo plano.");
         MateriaBean materia2=new MateriaBean();
         materia2.setIdMateria(1);
         materia2.setTitulo("Bilogia");
-        materia2.setTitulo("La ciencia de los seres vivos.");
+        materia2.setDescripcion("La ciencia de los seres vivos.");
         MateriaBean materia3=new MateriaBean();
         materia3.setIdMateria(1);
         materia3.setTitulo("Matematicas");
-        materia3.setTitulo("La ciencia de los numeros y sus formulas.");
+        materia3.setDescripcion("La ciencia de los numeros y sus formulas.");
         MateriaBean materia4=new MateriaBean();
         materia4.setIdMateria(1);
         materia4.setTitulo("Euskera");
-        materia4.setTitulo("El idioma del Pais Vasco.");
+        materia4.setDescripcion("El idioma del Pais Vasco.");
         //Los apuntes
         apuntes=new HashSet<ApunteBean>();
         ApunteBean ap1=new ApunteBean();
@@ -82,7 +82,7 @@ public class TestApunteManagerImplementation implements ApunteManager {
         ap3.setMateria(materia2);
         ap3.setLikeCont(0);
         ap3.setDislikeCont(0);
-        ap3.setPrecio(Float.parseFloat("5.85"));
+        ap3.setPrecio(Float.parseFloat("1.20"));
         ApunteBean ap4=new ApunteBean();
         ap4.setIdApunte(4);
         ap4.setTitulo("Aprende threads en Java");

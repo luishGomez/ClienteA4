@@ -342,7 +342,7 @@ public class InicioFXController extends ControladorGeneral{
             
             LOGGER.info("-----------------------------"+usuario.getPrivilegio().toString());
             //abrir admin
-            showErrorAlert("admin");
+            //showErrorAlert("admin");
             try{
                 FXMLLoader loader = new FXMLLoader(getClass()
                         .getResource("gestor_de_apuntes.fxml"));
