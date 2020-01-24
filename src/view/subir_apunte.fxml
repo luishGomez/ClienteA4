@@ -24,9 +24,9 @@
       <ComboBox fx:id="comboBoxMateria" layoutX="122.0" layoutY="94.0" prefHeight="25.0" prefWidth="237.0" />
       <HBox alignment="CENTER_RIGHT" layoutX="35.0" layoutY="473.0" prefHeight="27.0" prefWidth="597.0" style="-fx-border-color: #bdbdbd;">
          <children>
-            <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="399.0">
+            <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="437.0">
                <children>
-                  <Label fx:id="labelRuta" prefHeight="17.0" prefWidth="371.0">
+                  <Label fx:id="labelRuta" prefHeight="18.0" prefWidth="428.0">
                      <HBox.margin>
                         <Insets left="5.0" />
                      </HBox.margin>

@@ -50,7 +50,7 @@ public class ModificarApunteFXController {
     private File selectedFile =null;
     
     @FXML
-    private Label labelTitulo;
+    private Label labelTituloMod;
     @FXML
     private Label labelMateria;
     @FXML
@@ -250,12 +250,12 @@ public class ModificarApunteFXController {
             todoBien=false;
         }
         if(!esValido(this.textFieldTitulo.getText().trim(),3,250)){
-            this.labelTitulo.setText("Titulo (Min 3 car. | Max 250 car.)");
-            this.labelTitulo.setTextFill(Color.web("red"));
+            this.labelTituloMod.setText("Titulo (Min 3 car. | Max 250 car.)");
+            this.labelTituloMod.setTextFill(Color.web("red"));
             todoBien=false;
         }else{
-            this.labelTitulo.setText("Titulo");
-            this.labelTitulo.setTextFill(Color.web("black"));
+            this.labelTituloMod.setText("Titulo");
+            this.labelTituloMod.setTextFill(Color.web("black"));
         }
         if(this.comboBoxMateriaMod.getSelectionModel().getSelectedItem()==null){
             this.labelMateria.setText("Materia (Tienes que seleccionar una materia)");

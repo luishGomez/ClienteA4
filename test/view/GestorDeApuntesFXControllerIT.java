@@ -17,14 +17,21 @@ import org.testfx.framework.junit.ApplicationTest;
 import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
 import static org.testfx.matcher.control.LabeledMatchers.hasText;
-
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import javafx.scene.control.TableView;
+import transferObjects.ApunteBean;
 /**
  *
  * @author 2dam
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class GestorDeApuntesFXControllerIT extends ApplicationTest  {
-    
+    private final String tituloApunte="El apunte test";
+    private final String descApunte="La descripción del apunte test";
+    private final String tituloEditado="Titulo del apunte editado";
+    private final String precio="12";
     private final int MIN_CARACTERES=3;
     private final int MAX_CARACTERES=250;
     private String fraseErrorTitulo="Titulo (Min "+MIN_CARACTERES+" car. | Max "+MAX_CARACTERES+" car.)";
@@ -38,13 +45,75 @@ public class GestorDeApuntesFXControllerIT extends ApplicationTest  {
             "ASDASDASDASDASDASDASDASDASDASDASDASD"+
             "ASDASDASDASDASDASDASDASDASDASDASDASD"+
             "ASDASDASDASDASDASDASDASDASDASDASDASD";
+    private TableView table;
     @Override
     public void start(Stage stage) throws Exception{
         new ClienteA4().start(stage);
     }
     public GestorDeApuntesFXControllerIT() {
     }
-    
+    @Test
+    public void testA_crearApunte(){
+        //Iniciar sesión
+        verifyThat("#btnAcceder",isDisabled());
+        clickOn("#tfNombreUsuario");
+        write("test19993");
+        clickOn("#tfContra");
+        write("123");
+        verifyThat("#btnAcceder",isEnabled());
+        clickOn("#btnAcceder");
+        //Acceder a mis apuntes para subir apunte
+        push(KeyCode.ALT);
+        push(KeyCode.RIGHT);
+        for(int i=0;i<6;i++){
+            push(KeyCode.DOWN);
+        }
+        push(KeyCode.SPACE);
+        clickOn("#btnSubirApunte");
+        write(tituloApunte);
+        clickOn("#comboBoxMateria");
+        push(KeyCode.DOWN);
+        push(KeyCode.ENTER);
+        clickOn("#textDesc");
+        write(descApunte);
+        clickOn("#btnSeleccionarArchivo");
+        applyPath("C:\\Workspace\\hi.pdf");
+        clickOn("#textFieldPrecio");
+        write(precio);
+        clickOn("#btnSubirElApunte");
+        push(KeyCode.SPACE);
+        push(KeyCode.CONTROL,KeyCode.ALT,KeyCode.C);
+        push(KeyCode.SPACE);
+        
+    }
+    @Test
+    public void testB_crearApunte() {
+        //Iniciar sesión
+        clickOn("#tfNombreUsuario");
+        push(KeyCode.CONTROL, KeyCode.A);
+        push(KeyCode.BACK_SPACE);
+        write("admin");
+        clickOn("#tfContra");
+        write("abcd*1234");
+        verifyThat("#btnAcceder",isEnabled());
+        clickOn("#btnAcceder");
+        //GESTOR DE APUNTES
+        verifyThat("#btnModificar",isDisabled());
+        verifyThat("#btnBorrar",isDisabled());
+        verifyThat("#labelTitulo",hasText("Titulo"));
+        verifyThat("#labelDesc",hasText("Descripción"));
+        
+        
+        
+    }
+    private void applyPath(String filePath){
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        StringSelection stringSelection = new StringSelection(filePath);
+        clipboard.setContents(stringSelection, stringSelection);
+        press(KeyCode.CONTROL).press(KeyCode.V).release(KeyCode.V).release(KeyCode.CONTROL);
+        push(KeyCode.ENTER);
+    }
+    /*
     @Test
     public void testA_testIniciaTodoBien() {
         //Iniciar sesión
@@ -64,10 +133,14 @@ public class GestorDeApuntesFXControllerIT extends ApplicationTest  {
         
         
     }
+*/
     @Test
-    public void testB_testIniciaTodoBien(){
+    public void testC_crearApunte(){
+        //CARGAR LA TABLA
+        table=lookup("#tableApuntes").queryTableView();
         //Modificar minimo
-        push(KeyCode.DOWN);
+        push(KeyCode.SPACE);
+        buscarApunte(tituloApunte);
         doubleClickOn("#textFieldTitulo");
         push(KeyCode.CONTROL, KeyCode.A);
         push(KeyCode.BACK_SPACE);
@@ -81,7 +154,7 @@ public class GestorDeApuntesFXControllerIT extends ApplicationTest  {
         verifyThat("#labelDesc",hasText(fraseErrorDesc));
     }
     @Test
-    public void testC_testIniciaTodoBien(){
+    public void testD_crearApunte(){
         //Maximo
         doubleClickOn("#textFieldTitulo");
         push(KeyCode.CONTROL, KeyCode.A);
@@ -98,12 +171,12 @@ public class GestorDeApuntesFXControllerIT extends ApplicationTest  {
         verifyThat("#labelDesc",hasText(fraseErrorDesc));
     }
     @Test
-    public void testD_testIniciaTodoBien(){
+    public void testE_crearApunte(){
         //DATEPICKER vacio & combo de materias
         doubleClickOn("#textFieldTitulo");
         push(KeyCode.CONTROL, KeyCode.A);
         push(KeyCode.BACK_SPACE);
-        write("Titulo del apunte editado");
+        write(tituloEditado);
         doubleClickOn("#textFieldDesc");
         write("La descripción del apunte editado.");
         clickOn("#comboBoxMaterias");
@@ -117,7 +190,7 @@ public class GestorDeApuntesFXControllerIT extends ApplicationTest  {
         verifyThat("#labelDesc",hasText("Descripción"));
     }
     @Test
-    public void testE_testIniciaTodoBien(){
+    public void testF_crearApunte(){
         //Comprueba que funcione el datePicker
         clickOn("#datePickerFecha");
         write("asdasdasd");
@@ -129,11 +202,12 @@ public class GestorDeApuntesFXControllerIT extends ApplicationTest  {
         
     }
     @Test
-    public void testF_testIniciaTodoBien(){
+    public void testG_crearApunte(){
         //Comprobar borrado
-        clickOn("#clPrecio");
+        push(KeyCode.TAB);
         push(KeyCode.DOWN);
-        push(KeyCode.ENTER);
+        table=lookup("#tableApuntes").queryTableView();
+        buscarApunte(tituloEditado);
         clickOn("#btnBorrar");
         push(KeyCode.SPACE);
         push(KeyCode.SPACE);
@@ -142,6 +216,24 @@ public class GestorDeApuntesFXControllerIT extends ApplicationTest  {
         clickOn("#btnBorrar");
         push(KeyCode.SPACE);     
         
+    }
+    @Test
+    public void testH_crearApunte(){
+        //Comprobar borrado
+        clickOn("#btnRefrescar");    
+        
+    }
+
+    private void buscarApunte(String frase) {
+        boolean encontrado=false;
+        while(!encontrado){
+            ApunteBean apunteSeleccionado=(ApunteBean) table.getSelectionModel().getSelectedItem();
+            if(apunteSeleccionado.getTitulo().equals(frase)){
+                break;
+            }else{
+                push(KeyCode.DOWN);
+            }
+        }
     }
     
 }
