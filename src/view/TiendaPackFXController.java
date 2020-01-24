@@ -4,8 +4,10 @@ import businessLogic.BusinessLogicException;
 import businessLogic.PackManager;
 import static businessLogic.PackManagerFactory.createPackManager;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Set;
+import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -43,6 +45,10 @@ public class TiendaPackFXController {
     private PackManager managerPack = createPackManager("real");
     private ObservableList<PackBean> packObv = null;
     private boolean esta = false;
+    private ObservableList<String> comboObv = null;
+    private String [] opciones={"Sin filtro","ABC...","ZYX...","Precio asc.","Precio desc."};
+    private String filtro = "Sin filtro";
+    private int opcion;
     
     @FXML
     private MenuBar menuBar;
@@ -89,6 +95,9 @@ public class TiendaPackFXController {
         this.cliente = cliente;
     }
     
+    public void setOpcion(int opcion){
+        this.opcion = opcion;
+    }
     
     @FXML
     public void initStage(Parent root) {
@@ -112,6 +121,11 @@ public class TiendaPackFXController {
             menuHelp.setText("_Help");
             //List
             cargarDatos();
+            lvPack.getSelectionModel().selectedItemProperty().addListener(this::packClicked);
+            comboObv = FXCollections.observableArrayList(Arrays.asList(this.opciones));
+            cbFiltrado.setItems(comboObv);
+            cbFiltrado.getSelectionModel().selectedItemProperty().addListener(this::comboClicked);
+            cbFiltrado.getSelectionModel().selectFirst();
             stage.show();
         }catch(Exception e){
             LOGGER.severe(e.getMessage());
@@ -221,6 +235,7 @@ public class TiendaPackFXController {
     }
     @FXML
     private void onActionAbrirMiBiblioteca(ActionEvent event){
+        
     }
     @FXML
     private void onActionAbrirTiendaPacks(ActionEvent event){
@@ -241,28 +256,65 @@ public class TiendaPackFXController {
     }
     @FXML
     private void onActionAbrirMiPerfil(ActionEvent event){
+        
     }
     @FXML
     private void onActionAbout(ActionEvent event){
+        
     }
     
-    private void cargarDatos(){
-        /*opcionesData=FXCollections.observableArrayList(Arrays.asList(this.opciones));
-        this.comboBoxOrdenar.setItems(opcionesData);*/
-        try{
-            Set<PackBean> packs = managerPack.findAllPack();
-            packObv = FXCollections.observableArrayList(new ArrayList<>(packs));
-            lvPack.setItems(packObv);
-            lvPack.setCellFactory(param -> new CellTiendaPack());
-        }catch (BusinessLogicException e) {
-            e.printStackTrace();
+    @FXML
+    private void onActionBtnBuscarTiendaPack(ActionEvent event){
+        if(!tfFiltradoBuscar.getText().trim().isEmpty()){
+            cargarDatos(tfFiltradoBuscar.getText().trim());
+        }else{
+            cargarDatos();
         }
     }
     
-    private void cargarDatos(List<PackBean> ps){
-            packObv = FXCollections.observableArrayList(new ArrayList<>(ps));
-            lvPack.setItems(packObv);
-            lvPack.setCellFactory(param -> new CellTiendaPack());
+    @FXML
+    private void onActionBtnComprarTiendaPack(ActionEvent event){
+        if(pack != null){
+            try{
+                FXMLLoader loader = new FXMLLoader(getClass()
+                        .getResource("compra_pack.fxml"));
+                Parent root = (Parent)loader.load();
+                CompraPackFXController controller =
+                        ((CompraPackFXController)loader.getController());
+                controller.setFXController(this);
+                controller.setCliente(cliente);
+                controller.setPack(pack);
+                controller.setStage(stage);
+                controller.initStage(root);
+                if(opcion == 1){
+                    cargarDatos();
+                }
+            }catch(Exception e){
+                showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor."+e.getMessage());
+            }
+        }else{
+            showErrorAlert("Debes seleccionar un Pack.");
+        }
+    }
+    
+    private void cargarDatos(){
+        try{
+            Set<PackBean> packs = managerPack.findAllPack();
+            packObv = FXCollections.observableArrayList(new ArrayList<>(packs.stream().collect(Collectors.toList())));
+        }catch (BusinessLogicException e) {
+            e.printStackTrace();
+        }
+        ordenar(packObv);
+    }
+    
+    private void cargarDatos(String string){
+        try {
+            Set<PackBean> packs = managerPack.findAllPack();
+            packObv = FXCollections.observableArrayList(new ArrayList<>(packs.stream().filter(p -> p.getTitulo().toLowerCase().contains(string.toLowerCase())).collect(Collectors.toList())));
+        }catch (BusinessLogicException e) {
+            e.printStackTrace();
+        }
+        ordenar(packObv);
     }
     
     private void packClicked(ObservableValue obvservable, Object oldValue, Object newValue){
@@ -271,20 +323,30 @@ public class TiendaPackFXController {
         }
     }
     
-    private void onActionBtnComprarTiendaPack(ActionEvent event){
-        try{
-            FXMLLoader loader = new FXMLLoader(getClass()
-                    .getResource("tienda_pack.fxml"));
-            Parent root = (Parent)loader.load();
-            TiendaPackFXController controller =
-                    ((TiendaPackFXController)loader.getController());
-            
-            controller.setCliente(cliente);
-            controller.setStage(stage);
-            controller.initStage(root);
-            stage.hide();
-        }catch(Exception e){
-            showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor."+e.getMessage());
+    private void comboClicked(ObservableValue observable, Object oldValue, Object newValue){
+        if(newValue!=null && newValue!=oldValue){
+            filtro = (String) newValue;
+            ordenar(packObv);
         }
+    }
+
+    private void ordenar(ObservableList<PackBean> p) {
+        switch(filtro){
+            case "ABC...":
+                p = FXCollections.observableArrayList(new ArrayList<>(p.stream().sorted(Comparator.comparing(PackBean::getTitulo)).collect(Collectors.toList())));
+                break;
+            case "ZYX...":
+                p = FXCollections.observableArrayList(new ArrayList<>(p.stream().sorted(Comparator.comparing(PackBean::getTitulo, Comparator.reverseOrder())).collect(Collectors.toList())));
+                break;
+            case "Precio asc.":
+                p = FXCollections.observableArrayList(new ArrayList<>(p.stream().sorted(Comparator.comparing(PackBean::getPrecio)).collect(Collectors.toList())));
+                break;
+            case "Precio desc.":
+                p = FXCollections.observableArrayList(new ArrayList<>(p.stream().sorted(Comparator.comparing(PackBean::getPrecio, Comparator.reverseOrder())).collect(Collectors.toList())));
+                break;
+        }
+        lvPack.setItems(p);
+        lvPack.setCellFactory(param -> new CellTiendaPack());
+        lvPack.refresh();
     }
 }

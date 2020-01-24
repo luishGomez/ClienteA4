@@ -4,8 +4,6 @@ import businessLogic.BusinessLogicException;
 import businessLogic.PackManager;
 import businessLogic.PackManagerFactory;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.layout.HBox;
@@ -30,7 +28,7 @@ public class CellTiendaPack extends ListCell<PackBean> {
     public CellTiendaPack() {
         super();
         hBox.getChildren().addAll(lblTitulo);
-        vBox.getChildren().addAll(lblDescripcion,hBox,lblApuntes,lblPrecio);
+        vBox.getChildren().addAll(hBox,lblDescripcion,lblApuntes,lblPrecio);
     }
     
     public void updateItem(PackBean pack,boolean vacio){
@@ -51,7 +49,7 @@ public class CellTiendaPack extends ListCell<PackBean> {
                 e.printStackTrace();
             }
             Date date = new Date();
-            if(oferta != null && oferta.getFechaInicio().before(date) && oferta.getFechaFin().after(date)){
+            if(oferta != null){
                 precio = pack.getPrecio()*(1 - (oferta.getRebaja()/100));
             }else{
                 precio = pack.getPrecio();

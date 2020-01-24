@@ -364,7 +364,7 @@ public class GestorDeMateriasFXController {
     private void cargarDatos() {
         try {
             materias = manager.findAllMateria();
-            List<MateriaBean> matList = materias.stream().sorted(Comparator.comparing(MateriaBean::getIdMateria)).collect(Collectors.toList());
+            List<MateriaBean> matList = materias.stream().sorted(Comparator.comparing(MateriaBean::getTitulo)).collect(Collectors.toList());
             materiasObv = FXCollections.observableArrayList(new ArrayList<>(matList));
             tablaMateria.setItems(materiasObv);
         }catch (BusinessLogicException ex) {
@@ -376,7 +376,7 @@ public class GestorDeMateriasFXController {
     private void cargarDatos(String string) {
         try {
             materias = manager.findAllMateria();
-            List<MateriaBean> matList = materias.stream().filter(materia -> materia.getTitulo().contains(string)).sorted(Comparator.comparing(MateriaBean::getIdMateria)).collect(Collectors.toList());
+            List<MateriaBean> matList = materias.stream().filter(materia -> materia.getTitulo().toLowerCase().contains(string.toLowerCase())).sorted(Comparator.comparing(MateriaBean::getIdMateria)).collect(Collectors.toList());
             materiasObv = FXCollections.observableArrayList(new ArrayList<>(matList));
             tablaMateria.setItems(materiasObv);
         }catch (BusinessLogicException ex) {

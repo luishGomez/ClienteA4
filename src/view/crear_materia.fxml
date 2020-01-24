@@ -9,9 +9,9 @@
    <children>
       <Button fx:id="btnCrearCrearMateria" layoutX="13.0" layoutY="305.0" mnemonicParsing="false" onAction="#onActionBtnCrearCrearMateria" text="Crear" />
       <Button fx:id="btnSalirCrearMateria" layoutX="265.0" layoutY="305.0" mnemonicParsing="false" onAction="#onActionBtnSalirCrearMateria" text="Salir" />
-      <Label layoutX="36.0" layoutY="60.0" text="Título" />
-      <Label layoutX="35.0" layoutY="154.0" text="Descripción" />
-      <TextField fx:id="tfTituloCrearMateria" layoutX="36.0" layoutY="88.0" prefHeight="25.0" prefWidth="202.0" />
-      <TextField fx:id="tfDescripcionCrearMateria" layoutX="36.0" layoutY="183.0" prefHeight="25.0" prefWidth="202.0" />
+      <Label layoutX="36.0" layoutY="68.0" text="Título" />
+      <Label layoutX="35.0" layoutY="162.0" text="Descripción" />
+      <TextField fx:id="tfTituloCrearMateria" layoutX="36.0" layoutY="96.0" prefHeight="25.0" prefWidth="202.0" />
+      <TextField fx:id="tfDescripcionCrearMateria" layoutX="36.0" layoutY="191.0" prefHeight="25.0" prefWidth="202.0" />
    </children>
 </Pane>

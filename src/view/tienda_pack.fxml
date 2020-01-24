@@ -54,10 +54,11 @@
                      <HBox.margin>
                         <Insets right="2.0" />
                      </HBox.margin></TextField>
-                  <Button fx:id="btnBuscarTiendaPack" mnemonicParsing="false" text="Buscar">
+                  <Button fx:id="btnBuscarTiendaPack" mnemonicParsing="false" onAction="#onActionBtnBuscarTiendaPack" text="Buscar">
                      <HBox.margin>
                         <Insets right="2.0" />
-                     </HBox.margin></Button>
+                     </HBox.margin>
+                  </Button>
                   <ComboBox fx:id="cbFiltrado" prefWidth="150.0">
                      <HBox.margin>
                         <Insets right="5.0" />

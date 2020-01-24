@@ -146,7 +146,7 @@ public class AddApunteFXController {
                     }
                 }
             }
-            List<ApunteBean> apunteList = apuns.stream().filter(ap -> ap.getTitulo().contains(string)).sorted(Comparator.comparing(ApunteBean::getIdApunte)).collect(Collectors.toList());
+            List<ApunteBean> apunteList = apuns.stream().filter(ap -> ap.getTitulo().toLowerCase().contains(string.toLowerCase())).sorted(Comparator.comparing(ApunteBean::getIdApunte)).collect(Collectors.toList());
             apuntesObv = FXCollections.observableArrayList(new ArrayList<>(apunteList));
             tvApuntesAddApunte.setItems(apuntesObv);
         }catch(BusinessLogicException e) {

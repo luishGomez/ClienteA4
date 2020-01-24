@@ -10,8 +10,6 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -424,7 +422,7 @@ public class GestorDePacksFXController {
     private void cargarDatos(String string) {
         try {
             packs = manager.findAllPack();
-            List packList = packs.stream().filter(pack -> pack.getTitulo().contains(string)).sorted(Comparator.comparing(PackBean::getIdPack)).collect(Collectors.toList());
+            List packList = packs.stream().filter(pack -> pack.getTitulo().toLowerCase().contains(string.toLowerCase())).sorted(Comparator.comparing(PackBean::getIdPack)).collect(Collectors.toList());
             packsObv = FXCollections.observableArrayList(new ArrayList<>(packList));
             tablaPack.setItems(packsObv);
         }catch (BusinessLogicException ex) {
