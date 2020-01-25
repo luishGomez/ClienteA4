@@ -20,20 +20,17 @@ import static org.testfx.matcher.control.LabeledMatchers.hasText;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.util.ResourceBundle;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.paint.Color;
 import static org.hamcrest.CoreMatchers.is;
 import transferObjects.ApunteBean;
 /**
- *
- * @author 2dam
+ *  Prueba las funcionalidades del gestor de apuntes del administrador.
+ * @author Ricardo Peinado Lastra
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class GestorDeApuntesFXControllerIT extends ApplicationTest  {
-    //private static ResourceBundle configFile=ResourceBundle.getBundle("view.testConfig.properties");
-    //private static final String URL_APUNTE = configFile.getString("apunte");
     private final String tituloApunte="El apunte test";
     private final String descApunte="La descripción del apunte test";
     private final String tituloEditado="Titulo del apunte editado";
@@ -121,6 +118,10 @@ public class GestorDeApuntesFXControllerIT extends ApplicationTest  {
         
         
     }
+    /**
+     * Permite poner la ruta de un fichero en el fileChooser.
+     * @param filePath El path del fichero a leer.
+     */
     private void applyPath(String filePath){
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         StringSelection stringSelection = new StringSelection(filePath);
@@ -130,7 +131,7 @@ public class GestorDeApuntesFXControllerIT extends ApplicationTest  {
     }
     
     /**
-     * Selecciona el apunte creado y prueba los campos editables con los valores 
+     * Selecciona el apunte creado y prueba los campos editables con los valores
      * inferiores al minimo.
      */
     @Test
@@ -239,13 +240,18 @@ public class GestorDeApuntesFXControllerIT extends ApplicationTest  {
         verifyThat("#labelMateria",hasText("Materia"));
         
     }
+    /**
+     * Comprueba en este punto de todas las pruebas a dar al botón de refrescar.
+     */
     @Test
     public void testH_crearApunte(){
-        //Comprobar borrado
-        clickOn("#btnRefrescar");    
+        clickOn("#btnRefrescar");
         
     }
-
+    /**
+     * Permite buscar un apunte en la tabla de apuntes.
+     * @param frase El titulo de apunte a buscar.
+     */
     private void buscarApunte(String frase) {
         boolean encontrado=false;
         while(!encontrado){

@@ -9,6 +9,7 @@ import clientea4.ClienteA4;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
@@ -27,8 +28,8 @@ import static org.testfx.matcher.control.LabeledMatchers.hasText;
 import transferObjects.ApunteBean;
 
 /**
- *
- * @author 2dam
+ * Esta clase prueba la ventana de mis apuntes y el proceso de modificar y subir un apunte.
+ * @author Ricardo Peinado Lastra
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MisApuntesClienteFXControllerIT extends ApplicationTest{
@@ -39,7 +40,9 @@ public class MisApuntesClienteFXControllerIT extends ApplicationTest{
     private final String tituloEditado="Titulo del apunte editado";
     private final String precio="12";
     private ListView listViewApuntes;
+    private ListView listViewMateria;
     private final String fraseTitulo="Titulo";
+    private ComboBox comboBoxOrdenar;
     private final String frasePrecio="Precio";
     private final String fraseErrorTitulo="Titulo (Min 3 car. | Max 250 car.)";
     private final String fraseErrorPrecioNoNumerico="Precio (Tiene que ser un valor numerico)";
@@ -87,7 +90,7 @@ public class MisApuntesClienteFXControllerIT extends ApplicationTest{
         
     }
     /**
-     * Comprueba los valores menores al minimo
+     * Comprueba los valores menores al minimo.
      */
     @Test
     public void testB_MisApuntes() {
@@ -135,6 +138,9 @@ public class MisApuntesClienteFXControllerIT extends ApplicationTest{
         assertThat(labelPrecio.getTextFill(),is(Color.web("red")));
         
     }
+    /**
+     * Comprueba los valores mayores al maximo.
+     */
     @Test
     public void testC_MisApuntes() {
         clickOn("#textFieldTitulo");
@@ -200,13 +206,96 @@ public class MisApuntesClienteFXControllerIT extends ApplicationTest{
         
     }
     /**
+     * Comprueba la función de filtrado de las materias, nombre y orden que se le diga a la ventana.
+     * @throws Exception
+     */
+    @Test
+    public void testF_MisApuntes() throws Exception {
+        //Por materia
+        listViewApuntes=lookup("#listViewApuntes").queryListView();
+        listViewMateria=lookup("#listViewMateria").queryListView();
+        clickOn("#listViewMateria");
+        push(KeyCode.DOWN);
+        String materia="";
+        listViewApuntes.getSelectionModel().select(0);
+        int numeroMaterias=listViewMateria.getItems().size();
+        for(int i=1;i<numeroMaterias;i++){
+            push(KeyCode.DOWN);
+            materia=listViewMateria.getSelectionModel().toString();
+            for(Object a:listViewApuntes.getItems()){
+                ApunteBean apunte =(ApunteBean)a;
+                if(apunte.getTitulo().equals(materia)){
+                    throw new Exception("No tendria que haber ningun apunte de esa materia");
+                }
+            }
+        }
+        //Por nombre
+        int i=0;
+        while(listViewMateria.getSelectionModel().getSelectedIndex()!=0){
+            push(KeyCode.UP);
+        }
+        clickOn("#textFieldBuscar");
+        write(tituloApunte);
+        push(KeyCode.ENTER);
+        if(listViewApuntes.getItems().size()<1){
+            throw new Exception("Tendrian que aparecer los dos apuntes.");
+        }
+        //Por orden
+        comboBoxOrdenar=lookup("#comboBoxOrdenar").queryComboBox();
+        clickOn("#comboBoxOrdenar");
+        while(comboBoxOrdenar.getSelectionModel().getSelectedIndex()!=3){
+            push(KeyCode.DOWN);
+        }
+        push(KeyCode.SPACE);
+        float precioTop=(float) 0.0;
+        for(Object a:listViewApuntes.getItems()){
+            ApunteBean apunte =(ApunteBean)a;
+            if(precioTop<=apunte.getPrecio()){
+                precioTop=apunte.getPrecio();
+            }else{
+                throw new Exception("Tendrian que tener otro orden");
+            }
+        }
+        clickOn("#comboBoxOrdenar");
+        while(comboBoxOrdenar.getSelectionModel().getSelectedIndex()!=4){
+            push(KeyCode.DOWN);
+        }
+        push(KeyCode.SPACE);
+        float precioMin=(float) 99999999999999999999999.0;
+        for(Object a:listViewApuntes.getItems()){
+            ApunteBean apunte =(ApunteBean)a;
+            if(precioMin>=apunte.getPrecio()){
+                precioMin=apunte.getPrecio();
+            }else{
+                throw new Exception("Tendrian que tener otro orden");
+            }
+        }
+        clickOn("#comboBoxOrdenar");
+        while(comboBoxOrdenar.getSelectionModel().getSelectedIndex()!=0){
+            push(KeyCode.UP);
+        }
+        push(KeyCode.SPACE);
+        clickOn("#listViewMateria");
+        while(listViewMateria.getSelectionModel().getSelectedIndex()!=0){
+            push(KeyCode.UP);
+        }
+        push(KeyCode.SPACE);
+        clickOn("#textFieldBuscar");
+        push(KeyCode.CONTROL,KeyCode.A);
+        push(KeyCode.BACK_SPACE);
+        push(KeyCode.ENTER);
+        
+        
+    }
+    /**
      * Comprueba los valores menores al minimo en la modificación del apunte.
      */
     @Test
-    public void testF_MisApuntes(){
+    public void testG_MisApuntes(){
         //Crear minimo
         listViewApuntes=lookup("#listViewApuntes").queryListView();
         clickOn("#listViewApuntes");
+        push(KeyCode.SPACE);
         push(KeyCode.DOWN);
         push(KeyCode.UP);
         buscarApunte(tituloApunte);
@@ -235,7 +324,7 @@ public class MisApuntesClienteFXControllerIT extends ApplicationTest{
      * Comprueba los valores superiores al maximo en la modificación de un apunte.
      */
     @Test
-    public void testG_MisApuntes(){
+    public void testH_MisApuntes(){
         clickOn("#textFieldPrecio");
         push(KeyCode.CONTROL,KeyCode.A);
         push(KeyCode.BACK_SPACE);
@@ -254,8 +343,11 @@ public class MisApuntesClienteFXControllerIT extends ApplicationTest{
         assertThat(labelPrecio.getTextFill(),is(Color.web("red")));
         
     }
+    /**
+     * Comprueba los valores accesibles del precio.
+     */
     @Test
-    public void testH_MisApuntes(){
+    public void testI_MisApuntes(){
         clickOn("#textFieldTitulo");
         push(KeyCode.CONTROL,KeyCode.A);
         push(KeyCode.BACK_SPACE);
@@ -287,10 +379,10 @@ public class MisApuntesClienteFXControllerIT extends ApplicationTest{
         
     }
     /**
-     * Cre al apunte
+     * Modifica bien un apunte y acontinuación lo borra.
      */
     @Test
-    public void testI_MisApuntes(){
+    public void testJ_MisApuntes(){
         clickOn("#textFieldTitulo");
         write(tituloEditado);
         clickOn("#btnModificarMod");
@@ -310,6 +402,10 @@ public class MisApuntesClienteFXControllerIT extends ApplicationTest{
         
         
     }
+    /**
+     * Permite insertar la ruta para leer el fichero.
+     * @param filePath
+     */
     private void applyPath(String filePath){
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         StringSelection stringSelection = new StringSelection(filePath);
@@ -317,6 +413,10 @@ public class MisApuntesClienteFXControllerIT extends ApplicationTest{
         press(KeyCode.CONTROL).press(KeyCode.V).release(KeyCode.V).release(KeyCode.CONTROL);
         push(KeyCode.ENTER);
     }
+    /**
+     * Busca un apunte en la lista de apuntes.
+     * @param frase El titulo del apunte a buscar.
+     */
     private void buscarApunte(String frase) {
         boolean encontrado=false;
         while(!encontrado){

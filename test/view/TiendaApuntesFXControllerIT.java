@@ -14,7 +14,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.FixMethodOrder;
 import org.junit.runners.MethodSorters;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -22,11 +21,10 @@ import org.testfx.framework.junit.ApplicationTest;
 import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
 import transferObjects.ApunteBean;
-import transferObjects.MateriaBean;
 
 /**
- *
- * @author Usuario
+ *  Prueba la ventana de tienda de apuntes.
+ * @author Ricardo Peinado Lastra
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TiendaApuntesFXControllerIT  extends ApplicationTest{
@@ -44,6 +42,9 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
     public void start(Stage stage) throws Exception{
         new ClienteA4().start(stage);
     }
+    /**
+     * Inicia sesión con una cuenta de cliente y crea 2 apuntes.
+     */
     @Test
     public void testA_TiendaApuntesFXControllerIT() {
         verifyThat("#btnAcceder",isDisabled());
@@ -92,6 +93,9 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
         push(KeyCode.SPACE);
         
     }
+    /**
+     * Accede con otra cuenta.
+     */
     @Test
     public void testB_TiendaApuntesFXControllerIT() {
         
@@ -112,6 +116,10 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
         push(KeyCode.SPACE);
         
     }
+    /**
+     * Prueba los filtros y ordenes que se le pueden dar a los apunte.
+     * @throws Exception 
+     */
     @Test
     public void testC_TiendaApuntesFXControllerIT() throws Exception {
         //Por materia
@@ -135,7 +143,6 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
         }
         //Por nombre
         int i=0;
-        //listViewMateria.getSelectionModel().select(0);
         while(listViewMateria.getSelectionModel().getSelectedIndex()!=0){
             push(KeyCode.UP);
         }
@@ -152,7 +159,6 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
             push(KeyCode.DOWN);
         }
         push(KeyCode.SPACE);
-        //comboBoxOrdenar.getSelectionModel().select(3);
         float precioTop=(float) 0.0;
         for(Object a:listViewApuntes.getItems()){
             ApunteBean apunte =(ApunteBean)a;
@@ -175,10 +181,12 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
             }else{
                 throw new Exception("Tendrian que tener otro orden");
             }
-        }
-        
+        }      
         
     }
+    /**
+     * Comprueba que el apunte caro no se pueda comprar y el apunte barato si.
+     */
     @Test
     public void testD_TiendaApuntesFXControllerIT() {
         clickOn("#listViewApuntes");
@@ -200,6 +208,9 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
         }
         
     }
+    /**
+     * Vuelve a la cuenta que creeo los apuntes para borrarlos.
+     */
     @Test
     public void testE_TiendaApuntesFXControllerIT(){
         push(KeyCode.CONTROL,KeyCode.ALT,KeyCode.C);
@@ -221,7 +232,6 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
         push(KeyCode.SPACE);
         clickOn("#listViewApuntes");
         push(KeyCode.SPACE);
-        //listViewApuntes=lookup("#listViewApuntes").queryListView();
         clickOn("#btnModificar");
         clickOn("#btnEliminar");
         push(KeyCode.SPACE);
@@ -234,6 +244,10 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
         push(KeyCode.SPACE);
         
     }
+    /**
+     * Permite insertar los paths para leer los ficheros.
+     * @param filePath La ruta del ficher a leer.
+     */
     private void applyPath(String filePath){
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         StringSelection stringSelection = new StringSelection(filePath);
