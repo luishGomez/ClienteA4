@@ -44,7 +44,7 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
     public void start(Stage stage) throws Exception{
         new ClienteA4().start(stage);
     }
-    //@Test
+    @Test
     public void testA_TiendaApuntesFXControllerIT() {
         verifyThat("#btnAcceder",isDisabled());
         clickOn("#tfNombreUsuario");
@@ -149,7 +149,7 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
         comboBoxOrdenar=lookup("#comboBoxOrdenar").queryComboBox();
         clickOn("#comboBoxOrdenar");
         while(comboBoxOrdenar.getSelectionModel().getSelectedIndex()!=3){
-           push(KeyCode.DOWN);
+            push(KeyCode.DOWN);
         }
         push(KeyCode.SPACE);
         //comboBoxOrdenar.getSelectionModel().select(3);
@@ -164,7 +164,7 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
         }
         clickOn("#comboBoxOrdenar");
         while(comboBoxOrdenar.getSelectionModel().getSelectedIndex()!=4){
-           push(KeyCode.DOWN);
+            push(KeyCode.DOWN);
         }
         push(KeyCode.SPACE);
         float precioMin=(float) 99999999999999999999999.0;
@@ -198,7 +198,41 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
             clickOn("#listViewApuntes");
             push(KeyCode.DOWN);
         }
-    
+        
+    }
+    @Test
+    public void testE_TiendaApuntesFXControllerIT(){
+        push(KeyCode.CONTROL,KeyCode.ALT,KeyCode.C);
+        push(KeyCode.SPACE);
+        clickOn("#tfNombreUsuario");
+        push(KeyCode.CONTROL, KeyCode.A);
+        push(KeyCode.BACK_SPACE);
+        write("test11888");
+        clickOn("#tfContra");
+        write("123");
+        verifyThat("#btnAcceder",isEnabled());
+        clickOn("#btnAcceder");
+        //Acceder a mis apuntes para subir apunte
+        push(KeyCode.ALT);
+        push(KeyCode.RIGHT);
+        for(int i=0;i<6;i++){
+            push(KeyCode.DOWN);
+        }
+        push(KeyCode.SPACE);
+        clickOn("#listViewApuntes");
+        push(KeyCode.SPACE);
+        //listViewApuntes=lookup("#listViewApuntes").queryListView();
+        clickOn("#btnModificar");
+        clickOn("#btnEliminar");
+        push(KeyCode.SPACE);
+        push(KeyCode.SPACE);
+        clickOn("#listViewApuntes");
+        push(KeyCode.SPACE);
+        clickOn("#btnModificar");
+        clickOn("#btnEliminar");
+        push(KeyCode.SPACE);
+        push(KeyCode.SPACE);
+        
     }
     private void applyPath(String filePath){
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
