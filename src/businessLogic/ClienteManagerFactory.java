@@ -5,7 +5,6 @@
  */
 package businessLogic;
 
-import fakeBusinessLogic.TestClienteManagerImplementation;
 import java.util.ResourceBundle;
 
 /**
@@ -13,17 +12,14 @@ import java.util.ResourceBundle;
  * @author Usuario
  */
 public class ClienteManagerFactory {
-    private static ResourceBundle configFile=ResourceBundle.getBundle("businessLogic.testConfig");
-    private static final String tipo_ejecucion=configFile.getString("tipo_ejecucion");
      public static final String TEST="TEST";
     
     public static ClienteManager createClienteManager(String type) {
         //The object to be returned.
         ClienteManager clienteManager=null;
         //Evaluate type parameter.
-        switch(tipo_ejecucion){
+        switch(type){
             case TEST:
-                clienteManager=new TestClienteManagerImplementation();
                 break;
             default:
                 clienteManager=new ClienteManagerImplementation();

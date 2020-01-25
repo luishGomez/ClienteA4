@@ -454,7 +454,7 @@ public class TiendaApuntesFXController {
             controller.setUser(cliente);
             controller.setStage(stage);
             controller.initStage(root);
-            stage.hide();
+            //stage.hide();
         } catch (IOException ex) {
             Logger.getLogger(TiendaApuntesFXController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -681,10 +681,10 @@ public class TiendaApuntesFXController {
                 
                 break;
             case "ABC...":
-                apuntesParaOrdenar=apuntesParaOrdenar.stream().sorted(Comparator.comparing(ApunteBean::getTitulo)).collect(Collectors.toList());
+                apuntesParaOrdenar=apuntesParaOrdenar.stream().sorted(Comparator.comparing(ApunteBean::getTituloMin)).collect(Collectors.toList());
                 break;
             case "ZYZ...":
-                apuntesParaOrdenar=apuntesParaOrdenar.stream().sorted(Comparator.comparing(ApunteBean::getTitulo, Comparator.reverseOrder())).collect(Collectors.toList());
+                apuntesParaOrdenar=apuntesParaOrdenar.stream().sorted(Comparator.comparing(ApunteBean::getTituloMin, Comparator.reverseOrder())).collect(Collectors.toList());
                 break;
             case "Precio asc.":
                 apuntesParaOrdenar=apuntesParaOrdenar.stream().sorted(Comparator.comparing(ApunteBean::getPrecio)).collect(Collectors.toList());

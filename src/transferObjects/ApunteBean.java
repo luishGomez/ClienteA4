@@ -213,4 +213,8 @@ public class ApunteBean implements Serializable {
         return creador.get().getNombreCompleto();
     }
     
+    public String getTituloMin(){
+        return titulo.get().toLowerCase();
+    }
+    
 }

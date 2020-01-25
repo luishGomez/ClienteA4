@@ -73,7 +73,7 @@ public class CompraApunteFXController {
             btnComprarApunte.setText("C_omprar");
             btnCancelar.setMnemonicParsing(true);
             btnCancelar.setText("_Cancelar");
-            if(cliente.getSaldo()>apunte.getPrecio())
+            if(cliente.getSaldo()>=apunte.getPrecio())
                 btnComprarApunte.setDisable(false);
             else
                 btnComprarApunte.setDisable(true);

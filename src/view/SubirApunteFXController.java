@@ -173,7 +173,7 @@ public class SubirApunteFXController {
                 this.lblMateria.setTextFill(Color.web("red"));
                 todoBien=false;
             }else{
-                this.lblMateria.setText("Materia (Materia)");
+                this.lblMateria.setText("Materia");
                 this.lblMateria.setTextFill(Color.web("black"));
             }
             if(todoBien){
