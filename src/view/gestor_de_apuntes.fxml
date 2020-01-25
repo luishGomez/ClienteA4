@@ -147,7 +147,7 @@
                                     <Insets top="5.0" />
                                  </VBox.margin>
                               </Button>
-                              <Button fx:id="btnInforme" mnemonicParsing="false" prefHeight="25.0" prefWidth="95.0" text="Informe">
+                              <Button fx:id="btnInforme" mnemonicParsing="false" prefHeight="25.0" prefWidth="95.0" text="Informe" onAction="#onActionCrearInforme">
                                  <VBox.margin>
                                     <Insets top="35.0" />
                                  </VBox.margin>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="01ee55c2-0b7b-4e3b-8585-43029df096a1">
+	<property name="ireport.zoom" value="1.4641000000000006"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="idApunte" class="java.lang.Integer"/>
+	<field name="titulo" class="java.lang.String"/>
+	<field name="precio" class="java.lang.Float"/>
+	<field name="likeCont" class="java.lang.Integer"/>
+	<field name="dislikeCont" class="java.lang.Integer"/>
+	<field name="materia.titulo" class="java.lang.String"/>
+	<field name="creador.nombreCompleto" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="455" y="37" width="100" height="20" uuid="c53b11ba-82c9-4236-8af3-3c9eef617057"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="0" y="78" width="555" height="1" uuid="818f29d9-fb47-4abf-8fe6-3107ba5e1ff8"/>
+			</line>
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="40" uuid="15a568ea-d061-4a14-aac2-895c0e1c8697"/>
+				<textElement>
+					<font size="22" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Reporte de los apuntes existentes]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="23" splitType="Stretch">
+			<staticText>
+				<reportElement x="455" y="0" width="100" height="20" uuid="c90440a6-37a0-425b-9ba8-55bc6867196e"/>
+				<textElement>
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Creador]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="390" y="0" width="65" height="20" uuid="80197f39-76c1-4ee8-9009-e2dcb8ea87d7"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Materia]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="339" y="0" width="51" height="20" uuid="ec6c2ab9-1ca6-4de0-bc6b-c7b264a281b6"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Dislike]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="299" y="0" width="40" height="20" uuid="d5c29c03-9ed6-4cab-8dd8-e635e7b19dca"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Likes]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="239" y="0" width="60" height="20" uuid="ccb80205-84c0-43ff-9d51-8d514f91868c"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Precio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="74" y="0" width="165" height="20" uuid="51c96a44-8fd7-4ac7-b06c-454c427c0e90"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Titulo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="74" height="20" uuid="f308d45c-50f4-4492-a96a-cf6ab431ca00"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Identificador]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="74" height="20" uuid="e9eaf091-ef4a-4879-b7da-7aad9cfd2acd"/>
+				<textFieldExpression><![CDATA[$F{idApunte}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="74" y="0" width="165" height="20" uuid="27ee30bc-5d0d-4bd1-aa8d-8aefa45d2661"/>
+				<textFieldExpression><![CDATA[$F{titulo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="239" y="0" width="60" height="20" uuid="3942fd66-6cf6-4ce9-8e83-bc65562b2821"/>
+				<textFieldExpression><![CDATA[$F{precio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="299" y="0" width="40" height="20" uuid="05a89a94-b540-4dfe-b5e3-7e0faef784c6"/>
+				<textFieldExpression><![CDATA[$F{likeCont}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="339" y="0" width="51" height="20" uuid="35852137-826d-4740-a4b2-9f90d0900e8b"/>
+				<textFieldExpression><![CDATA[$F{dislikeCont}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="390" y="0" width="65" height="20" uuid="cfd6fed0-5bfb-4d49-a28c-40b1dab337e0"/>
+				<textFieldExpression><![CDATA[$F{materia.titulo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="455" y="0" width="100" height="20" uuid="fb5707f9-cc24-40f3-9eb8-98c6ad3a0529"/>
+				<textFieldExpression><![CDATA[$F{creador.nombreCompleto}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

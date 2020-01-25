@@ -14,7 +14,10 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,6 +59,12 @@ import javafx.scene.web.WebView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.view.JasperViewer;
 import transferObjects.ApunteBean;
 import transferObjects.ClienteBean;
 import transferObjects.MateriaBean;
@@ -285,6 +294,23 @@ public class GestorDeApuntesFXController {
         } catch (BusinessLogicException ex) {
             LOGGER.severe("Error al cargar las materias: "+ex.getMessage());
             showErrorAlert("No se ha podido cargar las materias.");
+        }
+    }
+    //onActionCrearInforme
+    @FXML
+    private void onActionCrearInforme(ActionEvent event){
+        try{
+            JasperReport report= JasperCompileManager.compileReport(getClass()
+                    .getResourceAsStream("/view/informeDeApuntes.jrxml"));
+            JRBeanCollectionDataSource dataItems=new JRBeanCollectionDataSource((Collection<ApunteBean>)this.tableApuntes.getItems());
+            Map <String,Object> parameters=new HashMap<>();
+            JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, dataItems);
+            JasperViewer jasperViewer = new JasperViewer(jasperPrint);
+            jasperViewer.setVisible(true);
+            
+        }catch(Exception e ){
+            LOGGER.severe("Error iniciar el informe: "+e.getMessage());
+            showErrorAlert("No se ha podido generar el informe.");
         }
     }
     /**
