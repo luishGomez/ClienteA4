@@ -305,7 +305,7 @@ public class GestorDeApuntesFXController {
             JRBeanCollectionDataSource dataItems=new JRBeanCollectionDataSource((Collection<ApunteBean>)this.tableApuntes.getItems());
             Map <String,Object> parameters=new HashMap<>();
             JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, dataItems);
-            JasperViewer jasperViewer = new JasperViewer(jasperPrint);
+            JasperViewer jasperViewer = new JasperViewer(jasperPrint,false);
             jasperViewer.setVisible(true);
             
         }catch(Exception e ){

@@ -88,7 +88,7 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="125" splitType="Stretch">
+		<band height="21" splitType="Stretch">
 			<textField>
 				<reportElement x="0" y="0" width="74" height="20" uuid="e9eaf091-ef4a-4879-b7da-7aad9cfd2acd"/>
 				<textFieldExpression><![CDATA[$F{idApunte}]]></textFieldExpression>
