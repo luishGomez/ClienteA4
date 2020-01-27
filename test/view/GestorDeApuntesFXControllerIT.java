@@ -20,6 +20,7 @@ import static org.testfx.matcher.control.LabeledMatchers.hasText;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.util.ResourceBundle;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.paint.Color;
@@ -31,6 +32,8 @@ import transferObjects.ApunteBean;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class GestorDeApuntesFXControllerIT extends ApplicationTest  {
+    private static ResourceBundle configFile=ResourceBundle.getBundle("view.testConfig");
+    private static final String urlFichero = configFile.getString("fichero");
     private final String tituloApunte="El apunte test";
     private final String descApunte="La descripción del apunte test";
     private final String tituloEditado="Titulo del apunte editado";
@@ -83,7 +86,7 @@ public class GestorDeApuntesFXControllerIT extends ApplicationTest  {
         clickOn("#textDesc");
         write(descApunte);
         clickOn("#btnSeleccionarArchivo");
-        applyPath("F:\\Descargas\\PRUEBAS\\Nueva carpeta\\hi1.pdf");
+        applyPath(urlFichero);
         clickOn("#textFieldPrecio");
         write(precio);
         clickOn("#btnSubirElApunte");

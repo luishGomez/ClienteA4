@@ -9,6 +9,7 @@ import clientea4.ClienteA4;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.util.ResourceBundle;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -33,6 +34,8 @@ import transferObjects.ApunteBean;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class MisApuntesClienteFXControllerIT extends ApplicationTest{
+    private static ResourceBundle configFile=ResourceBundle.getBundle("view.testConfig");
+    private static final String urlFichero = configFile.getString("fichero");
     private final int MAX_PRECIO=100000;
     private final float MIN_PRECIO=(float) 0.30;
     private final String tituloApunte="El apunte test";
@@ -196,7 +199,7 @@ public class MisApuntesClienteFXControllerIT extends ApplicationTest{
         push(KeyCode.BACK_SPACE);
         write(descApunte);
         clickOn("#btnSeleccionarArchivo");
-        applyPath("F:\\Descargas\\PRUEBAS\\Nueva carpeta\\hi1.pdf");
+        applyPath(urlFichero);
         clickOn("#textFieldPrecio");
         push(KeyCode.CONTROL,KeyCode.A);
         push(KeyCode.BACK_SPACE);
@@ -215,6 +218,8 @@ public class MisApuntesClienteFXControllerIT extends ApplicationTest{
         listViewApuntes=lookup("#listViewApuntes").queryListView();
         listViewMateria=lookup("#listViewMateria").queryListView();
         clickOn("#listViewMateria");
+        push(KeyCode.SPACE);
+        subirAlPrimeraMateria();
         push(KeyCode.DOWN);
         String materia="";
         listViewApuntes.getSelectionModel().select(0);
@@ -428,7 +433,11 @@ public class MisApuntesClienteFXControllerIT extends ApplicationTest{
             }
         }
     }
-    
+    private void subirAlPrimeraMateria() {
+         while(this.listViewMateria.getSelectionModel().getSelectedIndex()!=0){
+            push(KeyCode.UP);
+        }
+    }
     
     
 }

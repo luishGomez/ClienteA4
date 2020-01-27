@@ -9,6 +9,7 @@ import clientea4.ClienteA4;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.util.ResourceBundle;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
@@ -28,6 +29,8 @@ import transferObjects.ApunteBean;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TiendaApuntesFXControllerIT  extends ApplicationTest{
+    private static ResourceBundle configFile=ResourceBundle.getBundle("view.testConfig");
+    private static final String urlFichero = configFile.getString("fichero");
     private final String tituloApunteCaro ="El apunte caro";
     private final String tituloApunteBarato ="El apunte barato";
     private final String descApunte="La descripción del apunte test";
@@ -70,7 +73,7 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
         clickOn("#textDesc");
         write(descApunte);
         clickOn("#btnSeleccionarArchivo");
-        applyPath("F:\\Descargas\\PRUEBAS\\Nueva carpeta\\hi1.pdf");
+        applyPath(urlFichero);
         clickOn("#textFieldPrecio");
         write(precioCaro);
         clickOn("#btnSubirElApunte");
@@ -84,7 +87,7 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
         clickOn("#textDesc");
         write(descApunte);
         clickOn("#btnSeleccionarArchivo");
-        applyPath("F:\\Descargas\\PRUEBAS\\Nueva carpeta\\hi1.pdf");
+        applyPath(urlFichero);
         clickOn("#textFieldPrecio");
         write(precioBarato);
         clickOn("#btnSubirElApunte");
@@ -126,6 +129,8 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
         listViewApuntes=lookup("#listViewApuntes").queryListView();
         listViewMateria=lookup("#listViewMateria").queryListView();
         clickOn("#listViewMateria");
+        push(KeyCode.SPACE);
+        subirAlPrimeraMateria();
         push(KeyCode.DOWN);
         String materia="";
         listViewApuntes.getSelectionModel().select(0);
@@ -192,16 +197,26 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
         clickOn("#listViewApuntes");
         push(KeyCode.SPACE);
         listViewApuntes=lookup("#listViewApuntes").queryListView();
+        //Nuevo
+        subirAlPrimerApunte();
+        //        
+        int i=0;
         for(Object a:listViewApuntes.getItems()){
             ApunteBean apunte =(ApunteBean)listViewApuntes.getSelectionModel().getSelectedItem();
             if(apunte.getTitulo().equals(tituloApunteCaro)){
                 clickOn("#btnComprar");
                 verifyThat("#btnComprarApunte",isDisabled());
                 clickOn("#btnCancelar");
+                i++;
+                if(i==2)
+                    break;
             }else if(apunte.getTitulo().equals(tituloApunteBarato)){
                 clickOn("#btnComprar");
                 verifyThat("#btnComprarApunte",isEnabled());
                 clickOn("#btnCancelar");
+                i++;
+                if(i==2)
+                    break;
             }
             clickOn("#listViewApuntes");
             push(KeyCode.DOWN);
@@ -213,6 +228,7 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
      */
     @Test
     public void testE_TiendaApuntesFXControllerIT(){
+        //push(KeyCode.SPACE);
         push(KeyCode.CONTROL,KeyCode.ALT,KeyCode.C);
         push(KeyCode.SPACE);
         clickOn("#tfNombreUsuario");
@@ -254,5 +270,18 @@ public class TiendaApuntesFXControllerIT  extends ApplicationTest{
         clipboard.setContents(stringSelection, stringSelection);
         press(KeyCode.CONTROL).press(KeyCode.V).release(KeyCode.V).release(KeyCode.CONTROL);
         push(KeyCode.ENTER);
+    }
+
+    private void subirAlPrimerApunte() {
+        while(this.listViewApuntes.getSelectionModel().getSelectedIndex()!=0){
+            push(KeyCode.UP);
+        }
+        
+    }
+
+    private void subirAlPrimeraMateria() {
+         while(this.listViewMateria.getSelectionModel().getSelectedIndex()!=0){
+            push(KeyCode.UP);
+        }
     }
 }
