@@ -3,10 +3,13 @@ package view;
 import businessLogic.BusinessLogicException;
 import businessLogic.PackManager;
 import static businessLogic.PackManagerFactory.createPackManager;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
@@ -26,6 +29,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -131,6 +135,14 @@ public class TiendaPackFXController {
             menuVentanas.setText("_Ventanas");
             menuHelp.setMnemonicParsing(true);
             menuHelp.setText("_Help");
+            menuHelpAbout.setAccelerator(KeyCombination.keyCombination("Ctrl+Alt+A"));
+            menuCuentaCerrarSesion.setAccelerator(KeyCombination.keyCombination("Ctrl+Alt+C"));
+            menuCuentaSalir.setAccelerator(KeyCombination.keyCombination("Ctrl+Alt+S"));
+            menuVentanasMiBiblioteca.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+B"));
+            menuVentanasMiPerfil.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+P"));
+            menuVentanasSubirApunte.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+S"));
+            menuVentanasTiendaApuntes.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+A"));
+            menuVentanasTiendaPacks.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+T"));
             //List
             cargarDatos();
             lvPack.getSelectionModel().selectedItemProperty().addListener(this::packClicked);
@@ -139,6 +151,7 @@ public class TiendaPackFXController {
             cbFiltrado.getSelectionModel().selectedItemProperty().addListener(this::comboClicked);
             cbFiltrado.getSelectionModel().selectFirst();
             stage.show();
+            
         }catch(Exception e){
             LOGGER.severe("Error(initStage)" + e.getMessage());
         }
@@ -250,7 +263,21 @@ public class TiendaPackFXController {
     }
     @FXML
     private void onActionAbrirMiBiblioteca(ActionEvent event){
-        
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("biblioteca.fxml"));
+            
+            Parent root = (Parent)loader.load();
+            
+            BibliotecaClienteFXController controller =
+                    ((BibliotecaClienteFXController)loader.getController());
+            controller.setUser(cliente);
+            controller.setStage(stage);
+            controller.initStage(root);
+            stage.hide();
+        } catch (IOException ex) {
+            Logger.getLogger(TiendaApuntesFXController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     @FXML
     private void onActionAbrirTiendaPacks(ActionEvent event){
@@ -271,6 +298,21 @@ public class TiendaPackFXController {
     }
     @FXML
     private void onActionAbrirMiPerfil(ActionEvent event){
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("perfil.fxml"));
+            
+            Parent root = (Parent)loader.load();
+            
+            PerfilFXMLController controller =
+                    ((PerfilFXMLController)loader.getController());
+            controller.setUser(cliente);
+            controller.setStage(stage);
+            controller.initStage(root);
+            stage.hide();
+        } catch (IOException ex) {
+            Logger.getLogger(TiendaApuntesFXController.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }
     @FXML
