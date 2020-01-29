@@ -28,6 +28,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCombination;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -35,9 +36,10 @@ import transferObjects.ApunteBean;
 import transferObjects.MateriaBean;
 import transferObjects.UserBean;
 import static view.ControladorGeneral.showErrorAlert;
+import static view.ControladorGeneral.showWarningAlert;
 
 /**
- *
+ * El controlador de la ventana GestorMateriaFx para gestionar las materias.
  * @author Luis
  */
 public class GestorDeMateriasFXController {
@@ -48,7 +50,7 @@ public class GestorDeMateriasFXController {
     private Set<MateriaBean> materias = null;
     private ObservableList<MateriaBean> materiasObv = null;
     private int opcion;
-    private int posicion;
+    private MateriaBean materia = null;
     
     @FXML
     private Menu menuCuenta;
@@ -71,7 +73,7 @@ public class GestorDeMateriasFXController {
     @FXML
     private MenuItem menuHelpAbout;
     @FXML
-    private Button btnBCrearGestorMateria;
+    private Button btnCrearGestorMateria;
     @FXML
     private Button btnInformeGestorMateria;
     @FXML
@@ -86,28 +88,45 @@ public class GestorDeMateriasFXController {
     private TableColumn cTitulo;
     @FXML
     private TableColumn cDescripcion;
+    @FXML
+    private TextField tfTituloGestorMateria;
+    @FXML
+    private TextField tfDescripcionGestorMateria;
+    @FXML
+    private Button btnModificarGestorMateria;
+    @FXML
+    private Button btnEliminarGestorMateria;
     
+    /**
+     * Método que le da un valor a stage.
+     * @param stage Valor de stage.
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-    
+    /**
+     * Método que le da un valor a user.
+     * @param user Valor de usuario.
+     */
     public void setUser(UserBean user){
         this.user = user;
     }
-    
+    /**
+     * Método que le da un valor a opcion.
+     * @param opcion Valor de opcion.
+     */
     public void setOpc(int opcion){
         this.opcion = opcion;
     }
     
-    public void setPos(int pos){
-        this.posicion = pos;
-        this.tablaMateria.getSelectionModel().select(null);
-    }
-    
+    /**
+     * Método que inicializa la ventana.
+     * @param root Nodo raiz.
+     */
     @FXML
     public void initStage(Parent root) {
         try{
-            LOGGER.info("Iniciando la ventana Gestor de Materia");
+            LOGGER.info("Iniciando la ventana Gestor De Materias");
             Scene scene=new Scene(root);
             stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -115,7 +134,6 @@ public class GestorDeMateriasFXController {
             stage.setTitle("Gestor de Materia");
             stage.setResizable(true);
             stage.setMaximized(true);
-            //Vamos a rellenar los datos en la ventana.
             stage.setOnShowing(this::handleWindowShowing);
             //Menu
             menuCuenta.setMnemonicParsing(true);
@@ -124,24 +142,34 @@ public class GestorDeMateriasFXController {
             menuVentanas.setText("_Ventanas");
             menuHelp.setMnemonicParsing(true);
             menuHelp.setText("_Help");
+            menuHelpAbout.setAccelerator(KeyCombination.keyCombination("Ctrl+Alt+A"));
+            menuCuentaCerrarSesion.setAccelerator(KeyCombination.keyCombination("Ctrl+Alt+C"));
+            menuCuentaSalir.setAccelerator(KeyCombination.keyCombination("Ctrl+Alt+S"));
+            menuVentanasGestorApuntes.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+A"));
+            menuVentanasGestorMaterias.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+M"));
+            menuVentanasGestorOfertas.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+O"));
+            menuVentanasGestorPacks.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+P"));
             //Tabla
             cId.setCellValueFactory(new PropertyValueFactory<>("idMateria"));
             cTitulo.setCellValueFactory(new PropertyValueFactory<>("titulo"));
             cDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
             cargarDatos();
-            tablaMateria.getSelectionModel().selectedItemProperty().addListener(this::MateriaClicked);
+            tablaMateria.getSelectionModel().selectedItemProperty().addListener(this::materiaClicked);
             stage.show();
         }catch(Exception e){
-            LOGGER.severe(e.getMessage());
+            LOGGER.severe("Error(initStage)" + e.getMessage());
         }
     }
-    
+    /**
+     * Método que se ejecuta cuando se muestra la ventana.
+     * @param event Evento que se ha lanzado.
+     */
     private void handleWindowShowing(WindowEvent event){
         try{
-            LOGGER.info("handlWindowShowing --> Gestor de Materia");
+            LOGGER.info("handleWindowShowing -> Gestor De Materias");
             tfFiltrarGestorMateria.requestFocus();
         }catch(Exception e){
-            LOGGER.severe(e.getMessage());
+            LOGGER.severe("Error(handleWindowShowing)" + e.getMessage());
         }
     }
     
@@ -263,7 +291,10 @@ public class GestorDeMateriasFXController {
         
     }
     
-    //Metodos de la escena.
+    /**
+     * Método que se ejecuta cuando se hace click en el botón btnCrearGestorMateria.
+     * @param event Evento que se ha lanzado.
+     */
     @FXML
     private void onActionCrearGestorMateria(ActionEvent event){
         MateriaBean materia = new MateriaBean();
@@ -282,16 +313,22 @@ public class GestorDeMateriasFXController {
                 tablaMateria.refresh();
             }
         }catch(Exception e){
-            e.printStackTrace();
-            showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor."+e.getMessage());
+            LOGGER.severe("Error al intentar abrir la ventana(onActionCrearGestorMateria): " + e.getMessage());
+            showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor.");
         }
     }
-    
+    /**
+     * Método que se ejecuta cuando se hace click en el botón btnInformeGestorMateria.
+     * @param event Evento que se ha lanzado.
+     */
     @FXML
     private void onActionInformeGestorMateria(ActionEvent event){
         
     }
-    
+    /**
+     * Método que se ejecuta cuando se hace click en el botón btnBuscarGestorMateria.
+     * @param event Evento que se ha lanzado.
+     */
     @FXML
     private void onActionBuscarGestorMateria(ActionEvent event){
         if(!tfFiltrarGestorMateria.getText().trim().isEmpty()){
@@ -300,84 +337,141 @@ public class GestorDeMateriasFXController {
             cargarDatos();
         }
     }
-    
+    /**
+     * Método que se ejecuta cuando se hace click en el botón btnModificarGestorMateria.
+     * @param event Evento que se ha lanzado.
+     */
+    @FXML
+    private void onActionModificarGestorMateria(ActionEvent event){
+        if(materia != null){
+            if(tfTituloGestorMateria.getText().trim().isEmpty() || tfDescripcionGestorMateria.getText().trim().isEmpty()){
+                showErrorAlert("Los campos de texto no pueden estar vacios.");
+            }else{
+                MateriaBean mat = new MateriaBean(materia.getIdMateria(),
+                        tfTituloGestorMateria.getText().trim(),
+                        tfDescripcionGestorMateria.getText().trim());
+                if(!(mat.getTitulo().equals(materia.getTitulo()) && mat.getDescripcion().equals(materia.getDescripcion()))){
+                    try{
+                        manager.editMateria(mat);
+                        cargarDatos();
+                        tablaMateria.refresh();
+                        tfTituloGestorMateria.setText("");
+                        tfDescripcionGestorMateria.setText("");
+                        materia = null;
+                    }catch(BusinessLogicException e){
+                        LOGGER.severe("Error al intentar editar una materia(onActionModificarGestorMateria): " + e.getMessage());
+                        showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. " + e.getMessage());
+                    }
+                }
+            }
+        }else{
+            showWarningAlert("Seleccione una materia, después, vuelva a pulsar el botón.");
+        }
+    }
+    /**
+     * Método que se ejecuta cuando se hace click en el botón btnEliminarGestorMateria.
+     * @param event Evento que se ha lanzado.
+     */
+    @FXML
+    private void onActionEliminarGestorMateria(ActionEvent event){
+        if(materia != null){
+            Alert alertCerrarAplicacion = new Alert(Alert.AlertType.CONFIRMATION,"",ButtonType.NO,ButtonType.YES);
+            //Añadimos titulo a la ventana como el alert.
+            alertCerrarAplicacion.setTitle("Eliminar");
+            alertCerrarAplicacion.setHeaderText("¿Estas seguro que lo deseas eliminar?");
+            //Si acepta cerrara la aplicación.
+            alertCerrarAplicacion.showAndWait().ifPresent(response -> {
+                if (response == ButtonType.YES) {
+                    try{
+                        if(comprobar(this.materia)){
+                            manager.removeMateria(this.materia);
+                            tablaMateria.getItems().remove(this.materia);
+                            tablaMateria.refresh();
+                        }else{
+                            showWarningAlert("No puedes borrar esta materia, existen apuntes perteneciente a ella.");
+                        }
+                    }catch(BusinessLogicException e){
+                        LOGGER.severe("Error al intentar borrar una materia(onActionEliminarGestorMateria): " + e.getMessage());
+                        showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. " + e.getMessage());
+                    }
+                }
+            });
+        }else{
+            showWarningAlert("Seleccione una materia, después, vuelva a pulsar el botón.");
+        }
+    }
+    /**
+     * Método para cargar todas las materias.
+     */
     private void cargarDatos() {
         try {
             materias = manager.findAllMateria();
-            List<MateriaBean> matList = materias.stream().sorted(Comparator.comparing(MateriaBean::getIdMateria)).collect(Collectors.toList());
+            List<MateriaBean> matList = materias.stream().sorted(Comparator.comparing(MateriaBean::getTitulo)).collect(Collectors.toList());
             materiasObv = FXCollections.observableArrayList(new ArrayList<>(matList));
             tablaMateria.setItems(materiasObv);
-        }catch (BusinessLogicException ex) {
-            LOGGER.severe("Error al cargar las materias :"+ex.getMessage());
+        }catch (BusinessLogicException e) {
+            LOGGER.severe("Error al intentar cargar las materias(cargarDatos()): " + e.getMessage());
             showErrorAlert("Ha ocurrido un error cargando las materias.");
         }
     }
-    
+    /**
+     * Método para cargar todas las materias y las filtra según el parámetro.
+     * @param string Cadena de caracteres a filtrar.
+     */
     private void cargarDatos(String string) {
         try {
             materias = manager.findAllMateria();
-            List<MateriaBean> matList = materias.stream().filter(materia -> materia.getTitulo().contains(string)).sorted(Comparator.comparing(MateriaBean::getIdMateria)).collect(Collectors.toList());
+            List<MateriaBean> matList = materias.stream().filter(materia -> materia.getTitulo().toLowerCase().contains(string.toLowerCase())).sorted(Comparator.comparing(MateriaBean::getIdMateria)).collect(Collectors.toList());
             materiasObv = FXCollections.observableArrayList(new ArrayList<>(matList));
             tablaMateria.setItems(materiasObv);
-        }catch (BusinessLogicException ex) {
-            LOGGER.severe("Error al cargar las materias :"+ex.getMessage());
+        }catch (BusinessLogicException e) {
+            LOGGER.severe("Error al intentar cargar las materias(cargarDatos(String s)): " + e.getMessage());
             showErrorAlert("Ha ocurrido un error cargando las materias.");
         }
     }
-    
-    private void MateriaClicked(ObservableValue obvservable, Object oldValue, Object newValue){
+    /**
+     * Método que se ejecuta cuando cambia algún valor de una fila de la tabla.
+     * @param obvservable Valor observable.
+     * @param oldValue Valor antiguo.
+     * @param newValue Valor nuevo.
+     */
+    private void materiaClicked(ObservableValue obvservable, Object oldValue, Object newValue){
         if(newValue != null){
-            MateriaBean materia = (MateriaBean) newValue;
-            try{
-                FXMLLoader loader = new FXMLLoader(getClass()
-                        .getResource("modificar_materia.fxml"));
-                Parent root = (Parent)loader.load();
-                ModificarMateriaFXController controller =
-                        ((ModificarMateriaFXController)loader.getController());
-                controller.setMateria(materia);
-                controller.setFXMateria(this);
-                controller.initStage(root);
-                if(opcion == 1){
-                    comprobar(materia);
-                    manager.removeMateria(materia);
-                    tablaMateria.getItems().remove(materia);
-                    //cargarDatos();
-                    tablaMateria.refresh();
-                }else if(opcion == 2){
-                    manager.editMateria(materia);
-                    //Modificar solo del List??
-                    cargarDatos();
-                    tablaMateria.refresh();
-                }
-            }catch(Exception e){
-                e.printStackTrace();
-                showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());
-            }
+            materia = (MateriaBean) newValue;
+            tfTituloGestorMateria.setText(materia.getTitulo());
+            tfDescripcionGestorMateria.setText(materia.getDescripcion());
+            LOGGER.info("Método materiaClicked");
         }
     }
-    
+    /**
+     * Método que utiliza el manager para crear la materia.
+     * @param materia Objeto materia para crear.
+     */
     private void createMateria(MateriaBean materia){
         try{
             manager.createMateria(materia);
         }catch(BusinessLogicException e){
-            e.printStackTrace();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-    
-    private boolean comprobar(MateriaBean materia){
-        ApunteManager managerApunte = ApunteManagerFactory.createApunteManager("real");
-        boolean estaVacio = false;
-        try{
-            List<ApunteBean> apuntes = (List<ApunteBean>) managerApunte.findAll().stream().filter(apunte -> apunte.getMateria().equals(materia)).collect(Collectors.toList());
-            if(apuntes.isEmpty()){
-                estaVacio = true;
-            }
-        }catch(BusinessLogicException e){
-            e.printStackTrace();
+            LOGGER.severe("Error al intentar crear una materia(createMateria): " + e.getMessage());
             showErrorAlert("Ha ocurrido un error.");
         }
-        return estaVacio;
+    }
+    /**
+     * Método para comprobar si existe algún apunte en la materia que se desea eliminar.
+     * @param materia Objeto materia para filtrar.
+     * @return Valor true si se puede borrar la materia.
+     */
+    private boolean comprobar(MateriaBean materia){
+        ApunteManager managerApunte = ApunteManagerFactory.createApunteManager("real");
+        boolean estaVacia = false;
+        try{
+            List<ApunteBean> apuntes = (List<ApunteBean>) managerApunte.findAll().stream().filter(apunte -> apunte.getMateria().getIdMateria() == materia.getIdMateria()).collect(Collectors.toList());
+            if(apuntes.size() == 0){
+                estaVacia = true;
+            }
+        }catch(BusinessLogicException e){
+            LOGGER.severe("Error al intentar cargar los apuntes(comprobar): " + e.getMessage());
+            showErrorAlert("Ha ocurrido un error.");
+        }
+        return estaVacia;
     }
 }

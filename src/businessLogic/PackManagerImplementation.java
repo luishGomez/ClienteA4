@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 import javax.ws.rs.core.GenericType;
 import service.PackRESTClient;
+import transferObjects.OfertaBean;
 import transferObjects.PackBean;
 
 /**
@@ -80,12 +81,33 @@ public class PackManagerImplementation implements PackManager{
 
     @Override
     public void addApunte(PackBean pack, String idApunte) throws BusinessLogicException {
-        
+        try{
+            webClient.insertarApunte(pack, idApunte);
+        }catch(Exception e){
+            LOGGER.severe("ERROR! PackManagerImpl -> addApunte: "+e.getMessage());
+            throw new BusinessLogicException(e.getMessage());
+        }
     }
 
     @Override
     public void removeApunte(PackBean pack, String idApunte) throws BusinessLogicException {
-        
+        try{
+            webClient.eliminarApunte(pack, idApunte);
+        }catch(Exception e){
+            LOGGER.severe("ERROR! PackManagerImpl -> removeApunte: "+e.getMessage());
+            throw new BusinessLogicException(e.getMessage());
+        }
     }
-    
+
+    @Override
+    public OfertaBean getOferta(PackBean pack) throws BusinessLogicException {
+        OfertaBean oferta = null;
+        try{
+            oferta = webClient.dameOferta(OfertaBean.class, pack.getIdPack().toString());
+        }catch(Exception e){
+            LOGGER.severe("ERROR! PackManagerImpl -> removeApunte: "+e.getMessage());
+            throw new BusinessLogicException(e.getMessage());
+        }
+        return oferta;
+    }
 }

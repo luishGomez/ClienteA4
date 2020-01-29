@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -33,9 +34,9 @@
                   <MenuItem fx:id="menuVentanasSubirApunte" mnemonicParsing="false" onAction="#onActionAbrirMisApuntes" text="Subir apuntes" />
               </items>
             </Menu>
-          <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
+          <Menu fx:id="menuHelp" mnemonicParsing="true" text="Help">
             <items>
-              <MenuItem fx:id="menuHelpAbout" mnemonicParsing="false" onAction="#onActionAbout" text="About" />
+              <MenuItem fx:id="menuHelpAbout" mnemonicParsing="true" onAction="#onActionAbout" text="About" />
             </items>
           </Menu>
         </menus>
@@ -99,7 +100,7 @@
                                     <Insets left="100.0" top="100.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label fx:id="lblApellido" prefHeight="17.0" prefWidth="219.0" text="Apellidos">
+                              <Label fx:id="lblLogin" prefHeight="17.0" prefWidth="219.0" text="Login">
                                  <VBox.margin>
                                     <Insets left="100.0" top="20.0" />
                                  </VBox.margin>
@@ -109,9 +110,9 @@
                                     <Insets left="100.0" top="20.0" />
                                  </VBox.margin>
                               </Label>
-                              <Label fx:id="lblCambiarContrasenia" onMouseClicked="#cambiarContrasenia" prefHeight="17.0" prefWidth="219.0" text="Cambiar contraseña" textFill="#745dba">
+                              <Label fx:id="lblCambiarContrasenia" onMouseClicked="#cambiarContrasenia" prefHeight="17.0" prefWidth="245.0" text="Cambiar contraseña" textFill="#745dba">
                                  <VBox.margin>
-                                    <Insets left="100.0" top="20.0" />
+                                    <Insets left="125.0" top="20.0" />
                                  </VBox.margin>
                               </Label>
                               <Button fx:id="btnCancelarPerfil" mnemonicParsing="false" onAction="#cancelarPerfil" text="Cancelar" visible="false">
@@ -128,7 +129,7 @@
                                     <Insets left="100.0" right="100.0" top="100.0" />
                                  </VBox.margin>
                               </TextField>
-                              <TextField fx:id="txtApellido" disable="true">
+                              <TextField fx:id="txtLogin" disable="true">
                                  <VBox.margin>
                                     <Insets left="100.0" right="100.0" top="10.0" />
                                  </VBox.margin>
@@ -138,16 +139,16 @@
                                     <Insets left="100.0" right="100.0" top="10.0" />
                                  </VBox.margin>
                               </TextField>
-                              <TextField fx:id="pswContrasenia" visible="false">
+                              <PasswordField fx:id="pswContrasenia" promptText="Contraseña" visible="false">
                                  <VBox.margin>
                                     <Insets left="100.0" right="100.0" top="10.0" />
                                  </VBox.margin>
-                              </TextField>
-                              <TextField fx:id="pswConfirmarContrasenia" visible="false">
+                              </PasswordField>
+                              <PasswordField fx:id="pswConfirmarContrasenia" promptText="Confirmar contraseña" visible="false">
                                  <VBox.margin>
                                     <Insets left="100.0" right="100.0" top="10.0" />
                                  </VBox.margin>
-                              </TextField>
+                              </PasswordField>
                               <Button fx:id="btnAceptarContrasenia" mnemonicParsing="false" onAction="#aceptarContrasenia" prefHeight="25.0" prefWidth="85.0" text="aceptar" visible="false">
                                  <VBox.margin>
                                     <Insets right="100.0" top="10.0" />

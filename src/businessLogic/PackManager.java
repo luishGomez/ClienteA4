@@ -6,6 +6,7 @@
 package businessLogic;
 
 import java.util.Set;
+import transferObjects.OfertaBean;
 import transferObjects.PackBean;
 
 /**
@@ -20,4 +21,5 @@ public interface PackManager {
     public Set<PackBean> findAllPack() throws BusinessLogicException;
     public void addApunte(PackBean pack, String idApunte) throws BusinessLogicException;
     public void removeApunte(PackBean pack, String idApunte) throws BusinessLogicException;
+    public OfertaBean getOferta(PackBean pack) throws BusinessLogicException;
 }

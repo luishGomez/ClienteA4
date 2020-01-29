@@ -1,12 +1,13 @@
 package view;
 
-//dato curioso ctrl+shift+i importa todo, TODOO!!!
 
 import businessLogic.BusinessLogicException;
 import businessLogic.ClienteManager;
 import static businessLogic.ClienteManagerFactory.createClienteManager;
 import encriptaciones.Encriptador;
 import encriptaciones.EncriptarException;
+import exceptions.LoginNotFoundException;
+import exceptions.PasswordWrongException;
 import java.rmi.ServerException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -60,7 +61,7 @@ public class RegistrarseFXMLController{
     private ClienteBean user=new ClienteBean();
     private ClienteManager logic = createClienteManager("REAL");
     Tooltip tooltip = new Tooltip(MINIMO_CARACTERES);
-    private Encriptador encriptador=new Encriptador();
+    private Encriptador encriptador;
     
     @FXML
     private TextField txtNombre;
@@ -130,23 +131,31 @@ public class RegistrarseFXMLController{
             lblNombreUsuario.setTextFill(Color.web("black"));
             lblEmail.setText(EMAIL_MENSAJE_DEFAULT);
             try{
-                user.setContrasenia(encriptador.encriptar(user.getContrasenia()));
-                logic.create(user);
+                logic.iniciarSesion(user.getLogin(),encriptador.encriptar("-1"));
+            }catch (LoginNotFoundException ex1) {
+                try {
+                    user.setContrasenia(encriptador.encriptar(user.getContrasenia()));
+                    logic.create(user);
+                } catch (BusinessLogicException  ex) {
+                    Logger.getLogger(RegistrarseFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (EncriptarException ex) {
+                    Logger.getLogger(RegistrarseFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 Alert alert=new Alert(AlertType.INFORMATION);
                 alert.setTitle("Informacion de resgistro");
                 alert.setHeaderText("Se ha registrado correctamente");
                 alert.showAndWait();
                 stage.hide();
-                
-            }catch(BusinessLogicException e){
-                showErrorAlert("El nombre de usuario ya existe.");
-                lblNombreUsuario.setTextFill(Color.web("red"));
-                /* MODIFICACION DIN fecha: 13/11/2019 */
+            } catch (PasswordWrongException ex) {
+                Alert alert=new Alert(AlertType.INFORMATION);
+                alert.setTitle("Informacion de resgistro");
+                alert.setHeaderText("Nombre de usuario ya existente");
+                alert.showAndWait();
                 txtNombreUsuario.requestFocus();
-                /*--------------------fin--------------------------*/
+            }catch(BusinessLogicException e){
+                showErrorAlert("Ha ocurrido un error en el servidor, intentelo otra vez o vuelva mas tarde.");
             } catch (EncriptarException ex) {
-                showErrorAlert("A ocurrio un error al intentar resgistrarse.");
-                LOGGER.severe("Error al encriptar la contraseña");
+                Logger.getLogger(RegistrarseFXMLController.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -206,6 +215,7 @@ public class RegistrarseFXMLController{
         /* MODIFICACION DIN fecha: 14/11/2019 */
         scene.getAccelerators().put(new  KeyCodeCombination(KeyCode.F1),this::ayuda);
         /*--------------------fin--------------------------*/
+        encriptador=new Encriptador();
         //Mostrar ventana
         stage.show();
     }

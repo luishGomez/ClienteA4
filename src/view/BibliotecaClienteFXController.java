@@ -462,7 +462,7 @@ public class BibliotecaClienteFXController{
             controller.setUser(user);
             controller.setStage(stage);
             controller.initStage(root);
-            //stage.hide();
+            stage.hide();
         } catch (IOException ex) {
             Logger.getLogger(TiendaApuntesFXController.class.getName()).log(Level.SEVERE, null, ex);
         }

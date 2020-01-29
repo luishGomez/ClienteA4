@@ -31,4 +31,11 @@ public class ControladorGeneral {
                               ButtonType.OK);
         alert.showAndWait();
     }
+    
+    public static void showWarningAlert(String mensaje){
+        Alert alert=new Alert(Alert.AlertType.WARNING,
+                              mensaje,
+                              ButtonType.OK);
+        alert.showAndWait();
+    }
 }
