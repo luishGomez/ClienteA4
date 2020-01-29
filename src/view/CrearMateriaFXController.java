@@ -10,13 +10,14 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import transferObjects.MateriaBean;
+import static view.ControladorGeneral.showWarningAlert;
 
 /**
- *
+ * El controlador de la ventana CrearMateriaFx para crear las materias.
  * @author Luis
  */
 public class CrearMateriaFXController {
-    private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger("view.GestorDePacksFXController");
+    private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger("view.CrearMateriaFXController");
     GestorDeMateriasFXController fxMateria = null;
     private Stage stage;
     private MateriaBean materia;
@@ -30,17 +31,29 @@ public class CrearMateriaFXController {
     @FXML
     private TextField tfDescripcionCrearMateria;
     
+    /**
+     * Método que le da un valor a materia.
+     * @param materia Valor de materia.
+     */
     public void setMateria(MateriaBean materia){
         this.materia = materia;
     }
-    
+    /**
+     * Método que le da un valor a fxController.
+     * @param fxController Valor de fxController.
+     */
     public void setFXMateria(GestorDeMateriasFXController fxController){
         this.fxMateria = fxController;
     }
     
+    /**
+     * Método que inicializa la ventana.
+     * @param root Nodo raiz.
+     */
     @FXML
     public void initStage(Parent root) {
         try{
+            LOGGER.info("Iniciando la ventana Crear Materia");
             Scene scene = new Scene(root);
             stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -51,19 +64,26 @@ public class CrearMateriaFXController {
             stage.setOnShowing(this::handleWindowShowing);
             stage.showAndWait();
         }catch(Exception e){
-            ControladorGeneral.showErrorAlert("Ha ocurrido un error.");
+            LOGGER.severe("Error(initStage)" + e.getMessage());
         }
     }
-    
+    /**
+     * Método que se ejecuta cuando se muestra la ventana.
+     * @param event Evento que se ha lanzado.
+     */
     private void handleWindowShowing(WindowEvent event){
         try{
-            LOGGER.info("handlWindowShowing --> Gestor de Materia CREAR");
+            LOGGER.info("handlWindowShowing --> Crear Materia");
             tfTituloCrearMateria.requestFocus();
         }catch(Exception e){
-            LOGGER.severe(e.getMessage());
+            LOGGER.severe("Error(handleWindowShowing)" + e.getMessage());
         }
     }
     
+    /**
+     * Método que se ejecuta cuando se hace click en el botón btnEliminarGestorMateria.
+     * @param event Evento que se ha lanzado.
+     */
     @FXML
     public void onActionBtnCrearCrearMateria(ActionEvent event){
         if(!tfTituloCrearMateria.getText().isEmpty() && !tfDescripcionCrearMateria.getText().isEmpty()){
@@ -72,10 +92,13 @@ public class CrearMateriaFXController {
             fxMateria.setOpc(1);
             stage.hide();
         }else{
-            ControladorGeneral.showErrorAlert("Debes rellenar todos los campos.");
+            showWarningAlert("Debes rellenar todos los campos.");
         }
     }
-    
+    /**
+     * Método que se ejecuta cuando se hace click en el botón btnSalirCrearMateria.
+     * @param event Evento que se ha lanzado.
+     */
     @FXML
     public void onActionBtnSalirCrearMateria(ActionEvent event){
         fxMateria.setOpc(0);

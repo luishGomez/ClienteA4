@@ -76,7 +76,7 @@ public class CrearPackFXController {
             pack.setTitulo(tfTituloCrearPack.getText());
             pack.setDescripcion(taDescripcionCrearPack.getText());
             pack.setFechaModificacion(new Date());
-            fxPack.setOpc(1);
+            fxPack.setOpcion(1);
             stage.hide();
         }else{
             ControladorGeneral.showErrorAlert("Debes rellenar todos los campos.");
@@ -85,7 +85,7 @@ public class CrearPackFXController {
     
     @FXML
     public void onActionBtnSalirCrearPack(ActionEvent event){
-        fxPack.setOpc(0);
+        fxPack.setOpcion(0);
         stage.hide();
     }
 }

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,9 +21,10 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import transferObjects.ApunteBean;
 import static view.ControladorGeneral.showErrorAlert;
+import static view.ControladorGeneral.showWarningAlert;
 
 /**
- * Clase controladora de la ventana de ApuntePack.
+ * El controlador de la ventana ApuntePackFx para gestionar los apuntes de los packs.
  * @author Luis
  */
 public class ApuntePackFXController {
@@ -43,56 +45,54 @@ public class ApuntePackFXController {
     @FXML
     private TableColumn cMateria;
     @FXML
-    private Button btnSalirApuntePack;
+    private Button btnAñadirApuntePack;
     @FXML
     private Button btnEliminarApuntePack;
     @FXML
-    private Button btnAñadirApuntePack;
+    private Button btnSalirApuntePack;
     
     /**
-     * Asigna un valor a fxGestorPack.
+     * Asigna un valor a fxController.
      * @param fxController Controlador de Pack.
      */
     public void setFXModificarPack(GestorDePacksFXController fxController){
         this.fxGestorPack = fxController;
     }
-    
     /**
-     * Asigna un valor a apunte.
-     * @param apunte Apunte seleccionado.
+     * Método que le da un valor a apunte.
+     * @param apunte Valor de apunte.
      */
     public void setApunte(ApunteBean apunte){
         this.apunte = apunte;
     }
-    
     /**
-     * Asigna un valor a apuntes.
-     * @param apuntes Apuntes del pack.
+     * Método que le da un valor a apuntes.
+     * @param apuntes Valor de apuntes.
      */
     public void setApuntes(Set<ApunteBean> apuntes){
         this.apuntes = apuntes;
     }
-    
     /**
-     * Asigna un valor a opcion.
-     * @param opc Opción elegida.
+     * Método que le da un valor a opcion.
+     * @param opcion Valor de opcion.
      */
-    public void setOpcion(int opc){
-        this.opcion = opc;
+    public void setOpcion(int opcion){
+        this.opcion = opcion;
     }
     
     /**
-     * El método initStage inicializa la ventana.
-     * @param root Nodo raiz de la ventana.
+     * Método que inicializa la ventana.
+     * @param root Nodo raiz.
      */
     @FXML
     public void initStage(Parent root) {
         try{
+            LOGGER.info("Iniciando la ventana Apunte Pack");
             Scene scene = new Scene(root);
             stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
-            stage.setTitle("Modificar Pack");
+            stage.setTitle("Modificar Apuntes de Pack");
             stage.setResizable(false);
             stage.setMaximized(false);
             stage.setOnShowing(this::handleWindowShowing);
@@ -104,43 +104,28 @@ public class ApuntePackFXController {
             tvApuntesApuntePack.getSelectionModel().selectedItemProperty().addListener(this::apunteClicked);
             stage.showAndWait();
         }catch(Exception e){
-            e.printStackTrace();
-            ControladorGeneral.showErrorAlert("Ha ocurrido un error.");
+            LOGGER.severe("Error(initStage)" + e.getMessage());
         }
     }
-    
     /**
-     * El método se ejecuta cuando se esta mostrando la ventana.
-     * @param event Evento de la ventana.
+     * Método que se ejecuta cuando se muestra la ventana.
+     * @param event Evento que se ha lanzado.
      */
     private void handleWindowShowing(WindowEvent event){
         try{
-            LOGGER.info("handlWindowShowing --> Gestor de Pack MODIFICAR Añadir apunte");
+            LOGGER.info("handleWindowShowing -> Apunte Pack");
             btnAñadirApuntePack.requestFocus();
         }catch(Exception e){
-            LOGGER.severe(e.getMessage());
+            LOGGER.severe("Error(handleWindowShowing)" + e.getMessage());
         }
     }
     
     /**
-     * Se activa cuando se hace click en el botón Eliminar.
+     * Método que se ejecuta cuando se hace click en el botón btnAñadirApuntePack.
+     * @param event Evento que se ha lanzado.
      */
     @FXML
-    private void onActionBtnEliminarAddApunte(){
-        if(apunte != null){
-            fxGestorPack.setOpc(1);
-            fxGestorPack.setApunte(apunte);
-            stage.hide();
-        }else{
-            showErrorAlert("Debes seleccionar algun apunte.");
-        }
-    }
-    
-    /**
-     * Se activa cuando se hace click en el botón Añadir.
-     */
-    @FXML
-    private void onActionBtnAñadirAddApunte(){
+    private void onActionBtnAñadirAddApunte(ActionEvent event){
         try{
             FXMLLoader loader = new FXMLLoader(getClass()
                 .getResource("add_apunte.fxml"));
@@ -151,26 +136,40 @@ public class ApuntePackFXController {
             controller.setApuntes(apuntes);
             controller.initStage(root);
             if(opcion == 1){
-                fxGestorPack.setOpc(2);
+                fxGestorPack.setOpcion(2);
                 fxGestorPack.setApunte(apunte);
                 stage.hide();
             }
         }catch(Exception e){
-            showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());
+            LOGGER.severe("Error al intentar abrir la ventana(onActionBtnAñadirAddApunte): " + e.getMessage());
+            showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor.");
         }
     }
-    
     /**
-     * Se activa cuando se hace click en el botón Salir.
+     * Método que se ejecuta cuando se hace click en el botón btnEliminarApuntePack.
+     * @param event Evento que se ha lanzado.
      */
     @FXML
-    private void onActionBtnSalirAddApunte(){
-        fxGestorPack.setOpc(0);
+    private void onActionBtnEliminarAddApunte(ActionEvent event){
+        if(apunte != null){
+            fxGestorPack.setOpcion(1);
+            fxGestorPack.setApunte(apunte);
+            stage.hide();
+        }else{
+            showWarningAlert("Seleccione un apunte, después, vuelva a pulsar el botón.");
+        }
+    }
+    /**
+     * Método que se ejecuta cuando se hace click en el botón btnSalirApuntePack.
+     * @param event Evento que se ha lanzado.
+     */
+    @FXML
+    private void onActionBtnSalirAddApunte(ActionEvent event){
+        fxGestorPack.setOpcion(0);
         stage.hide();
     }
-    
     /**
-     * Carga los datos en la tabla.
+     * Carga todos los apuntes en la tabla.
      */
     private void cargarDatos(){
         if(apuntes != null){
@@ -178,12 +177,11 @@ public class ApuntePackFXController {
             tvApuntesApuntePack.setItems(apuntesObv);
         }
     }
-    
     /**
-     * Cambia el valor de apunte, al nuevo.
-     * @param obvservable Valor obvservable.
-     * @param oldValue Antiguo valor.
-     * @param newValue Nuevo valor.
+     * Método que se ejecuta cuando cambia algún valor de una fila de la tabla.
+     * @param obvservable Valor observable.
+     * @param oldValue Valor antiguo.
+     * @param newValue Valor nuevo.
      */
     private void apunteClicked(ObservableValue obvservable, Object oldValue, Object newValue){
         if(newValue != null){

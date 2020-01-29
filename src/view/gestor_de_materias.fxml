@@ -43,7 +43,7 @@
          <children>
             <HBox alignment="TOP_RIGHT" prefHeight="37.0">
                <children>
-                  <Button fx:id="btnBCrearGestorMateria" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onActionCrearGestorMateria" text="Crear">
+                  <Button fx:id="btnCrearGestorMateria" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onActionCrearGestorMateria" text="Crear">
                      <HBox.margin>
                         <Insets right="5.0" top="6.0" />
                      </HBox.margin>

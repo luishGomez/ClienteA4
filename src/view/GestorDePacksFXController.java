@@ -37,9 +37,10 @@ import transferObjects.ApunteBean;
 import transferObjects.PackBean;
 import transferObjects.UserBean;
 import static view.ControladorGeneral.showErrorAlert;
+import static view.ControladorGeneral.showWarningAlert;
 
 /**
- *
+ * El controlador de la ventana GestorPackFx para gestionar los packs.
  * @author Luis
  */
 public class GestorDePacksFXController {
@@ -50,7 +51,7 @@ public class GestorDePacksFXController {
     private Set<PackBean> packs = null;
     private ObservableList<PackBean> packsObv = null;
     private int opcion;
-    private ApunteBean apunte;
+    private ApunteBean apunte = null;
     private PackBean pack = null;
     
     @FXML
@@ -102,26 +103,43 @@ public class GestorDePacksFXController {
     @FXML
     private Button btnEliminarGestorPack;
     
+    /**
+     * Método que le da un valor a stage.
+     * @param stage Valor de stage.
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-    
+    /**
+     * Método que le da un valor a user.
+     * @param user Valor de usuario.
+     */
     public void setUser(UserBean user){
         this.user = user;
     }
-    
-    public void setOpc(int opcion){
+    /**
+     * Método que le da un valor a opcion.
+     * @param opcion Valor de opcion.
+     */
+    public void setOpcion(int opcion){
         this.opcion = opcion;
     }
-    
+    /**
+     * Método que le da un valor a apunte.
+     * @param apunte Valor de apunte.
+     */
     public void setApunte(ApunteBean apunte){
         this.apunte = apunte;
     }
     
+    /**
+     * Método que inicializa la ventana.
+     * @param root Nodo raiz.
+     */
     @FXML
     public void initStage(Parent root) {
         try{
-            LOGGER.info("Iniciando la ventana Gestor de Pack");
+            LOGGER.info("Iniciando la ventana Gestor De Packs");
             Scene scene=new Scene(root);
             stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -129,7 +147,6 @@ public class GestorDePacksFXController {
             stage.setTitle("Gestor de Pack");
             stage.setResizable(true);
             stage.setMaximized(true);
-            //Vamos a rellenar los datos en la ventana.
             stage.setOnShowing(this::handleWindowShowing);
             //Menu
             menuCuenta.setMnemonicParsing(true);
@@ -146,16 +163,19 @@ public class GestorDePacksFXController {
             tablaPack.getSelectionModel().selectedItemProperty().addListener(this::packClicked);
             stage.show();
         }catch(Exception e){
-            LOGGER.severe(e.getMessage());
+            LOGGER.severe("Error(initStage)" + e.getMessage());
         }
     }
-    
+    /**
+     * Método que se ejecuta cuando se muestra la ventana.
+     * @param event Evento que se ha lanzado.
+     */
     private void handleWindowShowing(WindowEvent event){
         try{
-            LOGGER.info("handlWindowShowing --> Gestor de Pack");
+            LOGGER.info("handleWindowShowing -> Gestor De Packs");
             tfFiltrarGestorPack.requestFocus();
         }catch(Exception e){
-            LOGGER.severe(e.getMessage());
+            LOGGER.severe("Error(handleWindowShowing)" + e.getMessage());
         }
     }
     
@@ -266,7 +286,6 @@ public class GestorDePacksFXController {
             controller.initStage(root);
             stage.hide();
         }catch(Exception e){
-            e.printStackTrace();
             showErrorAlert("A ocurrido un error, reinicie la aplicación por favor.");
         }
     }
@@ -277,7 +296,10 @@ public class GestorDePacksFXController {
         
     }
     
-    //Metodos de la escena.
+    /**
+     * Método que se ejecuta cuando se hace click en el botón btnCrearGestorPack.
+     * @param event Evento que se ha lanzado.
+     */
     @FXML
     private void onActionCrearGestorPack(ActionEvent event){
         PackBean pack = new PackBean();
@@ -297,16 +319,22 @@ public class GestorDePacksFXController {
                 tablaPack.refresh();
             }
         }catch(Exception e){
-            e.printStackTrace();
-            showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor."+e.getMessage());
+            LOGGER.severe("Error al intentar abrir la ventana(onActionCrearGestorPack): " + e.getMessage());
+            showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor.");
         }
     }
-    
+    /**
+     * Método que se ejecuta cuando se hace click en el botón btnInformeGestorPack.
+     * @param event Evento que se ha lanzado.
+     */
     @FXML
     private void onActionInformeGestorPack(ActionEvent event){
         
     }
-    
+    /**
+     * Método que se ejecuta cuando se hace click en el botón btnBuscarGestorPack.
+     * @param event Evento que se ha lanzado.
+     */
     @FXML
     private void onActionBuscarGestorPack(ActionEvent event){
         if(!tfFiltrarGestorPack.getText().trim().isEmpty()){
@@ -315,48 +343,58 @@ public class GestorDePacksFXController {
             cargarDatos();
         }
     }
-    
+    /**
+     * Método que se ejecuta cuando se hace click en el botón btnModificarApunteGestorPack.
+     * @param event Evento que se ha lanzado.
+     */
     @FXML
     private void onActionBtnModificarApunteGestorPack(ActionEvent event){
-        try{
-            FXMLLoader loader = new FXMLLoader(getClass()
-                .getResource("apunte_pack.fxml"));
-            Parent root = (Parent)loader.load();
-            ApuntePackFXController controller =
-                ((ApuntePackFXController)loader.getController());
-            controller.setFXModificarPack(this);
-            controller.setApuntes(pack.getApuntes());
-            controller.initStage(root);
-            if(opcion == 1){
-                Alert alertCerrarAplicacion = new Alert(Alert.AlertType.CONFIRMATION,"",ButtonType.NO,ButtonType.YES);
-                //Añadimos titulo a la ventana como el alert.
-                alertCerrarAplicacion.setTitle("Eliminar");
-                alertCerrarAplicacion.setHeaderText("¿Estas seguro que lo deseas eliminar?");
-                //Si acepta cerrara la aplicación.
-                alertCerrarAplicacion.showAndWait().ifPresent(response -> {
+        if(pack != null){
+            try{
+                FXMLLoader loader = new FXMLLoader(getClass()
+                    .getResource("apunte_pack.fxml"));
+                Parent root = (Parent)loader.load();
+                ApuntePackFXController controller =
+                    ((ApuntePackFXController)loader.getController());
+                controller.setFXModificarPack(this);
+                controller.setApuntes(pack.getApuntes());
+                controller.initStage(root);
+                if(opcion == 1){
+                    Alert alertCerrarAplicacion = new Alert(Alert.AlertType.CONFIRMATION,"",ButtonType.NO,ButtonType.YES);
+                    //Añadimos titulo a la ventana como el alert.
+                    alertCerrarAplicacion.setTitle("Eliminar");
+                    alertCerrarAplicacion.setHeaderText("¿Estas seguro que lo deseas eliminar?");
+                    //Si acepta cerrara la aplicación.
+                    alertCerrarAplicacion.showAndWait().ifPresent(response -> {
+                        try{
+                            manager.removeApunte(pack, Integer.toString(apunte.getIdApunte()));
+                            cargarDatos();
+                            tablaPack.refresh();
+                        } catch (BusinessLogicException e) {
+                            showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());
+                        }
+                    });
+                }else if(opcion == 2){
                     try{
-                        manager.removeApunte(pack, Integer.toString(apunte.getIdApunte()));
+                        manager.addApunte(pack, Integer.toString(apunte.getIdApunte()));
                         cargarDatos();
                         tablaPack.refresh();
                     } catch (BusinessLogicException e) {
                         showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());
                     }
-                });
-            }else if(opcion == 2){
-                try{
-                    manager.addApunte(pack, Integer.toString(apunte.getIdApunte()));
-                    cargarDatos();
-                    tablaPack.refresh();
-                } catch (BusinessLogicException e) {
-                    showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());
                 }
+            }catch(Exception e){
+                LOGGER.severe("Error al intentar abrir la ventana(onActionBtnModificarApunteGestorPack): " + e.getMessage());
+                showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor.");
             }
-        }catch(Exception e){
-            e.printStackTrace();
-            ControladorGeneral.showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());
+        }else{
+            showWarningAlert("Seleccione un pack, después, vuelva a pulsar el botón.");
         }
     }
-    
+    /**
+     * Método que se ejecuta cuando se hace click en el botón btnModificarGestorPack.
+     * @param event Evento que se ha lanzado.
+     */
     @FXML
     private void onActionBtnModificarGestorPack(ActionEvent event){
         if(pack != null){
@@ -366,22 +404,28 @@ public class GestorDePacksFXController {
                 PackBean p = new PackBean(pack.getIdPack(),
                         tfTituloGestorPack.getText().trim(),
                         tfDescripcionGestorPack.getText().trim(), localDateToDate(dpDate.getValue()), pack.getApuntes());
-                if(p != pack){
+                if(!(p.getTitulo().equals(pack.getTitulo()) && p.getDescripcion().equals(pack.getDescripcion()) && p.getFechaModificacion().equals(pack.getFechaModificacion()))){
                     try{
                         manager.editPack(p);
                         cargarDatos();
                         tablaPack.refresh();
-                    }catch(Exception e){
-                        e.printStackTrace();
-                        showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());
+                        tfTituloGestorPack.setText("");
+                        tfDescripcionGestorPack.setText("");
+                        pack = null;
+                    }catch(BusinessLogicException e){
+                        LOGGER.severe("Error al intentar editar un pack(onActionBtnModificarGestorPack): " + e.getMessage());
+                        showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor.");
                     }
                 }
             }
         }else{
-            showErrorAlert("Seleccione un pack, después, pulse el botón.");
+            showWarningAlert("Seleccione un pack, después, vuelva a pulsar el botón.");
         }   
     }
-    
+    /**
+     * Método que se ejecuta cuando se hace click en el botón btnEliminarGestorPack.
+     * @param event Evento que se ha lanzado.
+     */
     @FXML
     private void onActionBtnEliminarGestorPack(ActionEvent event){
         if(pack != null){
@@ -396,66 +440,87 @@ public class GestorDePacksFXController {
                         manager.removePack(pack);
                         tablaPack.getItems().remove(this.pack);
                         tablaPack.refresh();
-                    }catch(Exception e){
-                        e.printStackTrace();
-                        showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. "+e.getMessage());
+                    }catch(BusinessLogicException e){
+                        LOGGER.severe("Error al intentar borrar un pack(onActionBtnEliminarGestorPack): " + e.getMessage());
+                        showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. " + e.getMessage());
                     }
                 }
             });
         }else{
-            showErrorAlert("Seleccione una materia, después, pulse el botón.");
+            showWarningAlert("Seleccione un pack, después, vuelva a pulsar el botón.");
         }
     }
-    
+    /**
+     * Método para cargar todos los packs.
+     */
     private void cargarDatos() {
         try {
             packs = manager.findAllPack();
             List packList = packs.stream().sorted(Comparator.comparing(PackBean::getIdPack)).collect(Collectors.toList());
             packsObv = FXCollections.observableArrayList(new ArrayList<>(packList));
             tablaPack.setItems(packsObv);
-        }catch (BusinessLogicException ex) {
-            LOGGER.severe("Error al cargar los packs :"+ex.getMessage());
+        }catch(BusinessLogicException e) {
+            LOGGER.severe("Error al intentar cargar los packs(cargarDatos()): " + e.getMessage());
             showErrorAlert("Ha ocurrido un error cargando los packs.");
         }
     }
-    
+    /**
+     * Método para cargar todos los packs y los filtra según el parámetro.
+     * @param string Cadena de caracteres a filtrar.
+     */
     private void cargarDatos(String string) {
         try {
             packs = manager.findAllPack();
-            List packList = packs.stream().filter(pack -> pack.getTitulo().toLowerCase().contains(string.toLowerCase())).sorted(Comparator.comparing(PackBean::getIdPack)).collect(Collectors.toList());
+            List<PackBean> packList = packs.stream().filter(pack -> pack.getTitulo().toLowerCase().contains(string.toLowerCase())).sorted(Comparator.comparing(PackBean::getIdPack)).collect(Collectors.toList());
             packsObv = FXCollections.observableArrayList(new ArrayList<>(packList));
             tablaPack.setItems(packsObv);
-        }catch (BusinessLogicException ex) {
-            LOGGER.severe("Error al cargar los packs :"+ex.getMessage());
+        }catch(BusinessLogicException e) {
+            LOGGER.severe("Error al intentar cargar los packs(cargarDatos(String s)): " + e.getMessage());
             showErrorAlert("Ha ocurrido un error cargando los packs.");
         }
     }
-    
+    /**
+     * Método que se ejecuta cuando cambia algún valor de una fila de la tabla.
+     * @param obvservable Valor observable.
+     * @param oldValue Valor antiguo.
+     * @param newValue Valor nuevo.
+     */
     private void packClicked(ObservableValue obvservable, Object oldValue, Object newValue){
         if(newValue != null){
             pack = (PackBean) newValue;
             tfTituloGestorPack.setText(pack.getTitulo());
             tfDescripcionGestorPack.setText(pack.getDescripcion());
             dpDate.setValue(dateToLocalDate(pack.getFechaModificacion()));
+            LOGGER.info("Método packClicked");
         }
     }
-    
+    /**
+     * Método que utiliza el manager para crear el pack.
+     * @param pack Objeto pack para crear.
+     */
     private void createPack(PackBean pack){
         try{
             manager.createPack(pack);
         }catch(BusinessLogicException e){
-            e.printStackTrace();
-        }catch (Exception e){
-            e.printStackTrace();
+            LOGGER.severe("Error al intentar crear un pack(createPack): " + e.getMessage());
+            showErrorAlert("Ha ocurrido un error.");
         }
     }
-    
+    /**
+     * Método que cambia un objeto LocalDate a Date.
+     * @param date Objeto LocalDate.
+     * @return Objeto Date.
+     */
     public Date localDateToDate(LocalDate date) {
         return java.util.Date.from(date.atStartOfDay()
                 .atZone(ZoneId.systemDefault())
                 .toInstant());
     }
-    
+    /**
+     * Método que cambia un objeto Date a LocalDate.
+     * @param date Objeto Date.
+     * @return Objeto LocalDate.
+     */
     public LocalDate dateToLocalDate(Date date) {
         return date.toInstant()
                 .atZone(ZoneId.systemDefault())

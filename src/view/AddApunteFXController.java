@@ -23,15 +23,16 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import transferObjects.ApunteBean;
+import static view.ControladorGeneral.showErrorAlert;
 
 /**
- *
+ * El controlador de la ventana AddApunteFx para gestionar los apuntes de los packs.
  * @author Luis
  */
 public class AddApunteFXController {
     private static final java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger("view.AddApunteFXController");
     private Stage stage;
-    private ApuntePackFXController fxModificarPack = null;
+    private ApuntePackFXController fxController = null;
     private ObservableList<ApunteBean> apuntesObv = null;
     private Set<ApunteBean> apuntes = null;
     private ApunteBean apunte = null;
@@ -53,21 +54,36 @@ public class AddApunteFXController {
     @FXML
     private Button btnSalirAddApunte;
     
+    /**
+     * Asigna un valor a fxController.
+     * @param fxController Controlador de Pack.
+     */
     public void setFXApuntePack(ApuntePackFXController fxController){
-        this.fxModificarPack = fxController;
+        this.fxController = fxController;
     }
-    
-    public void setOpcion(int opc){
-        this.opcion = opc;
+    /**
+     * Método que le da un valor a opcion.
+     * @param opcion Valor de opcion.
+     */
+    public void setOpcion(int opcion){
+        this.opcion = opcion;
     }
-    
+    /**
+     * Método que le da un valor a apuntes.
+     * @param apuntes Valor de apuntes.
+     */
     public void setApuntes(Set<ApunteBean> apuntes){
         this.apuntes = apuntes;
     }
     
+    /**
+     * Método que inicializa la ventana.
+     * @param root Nodo raiz.
+     */
     @FXML
     public void initStage(Parent root) {
         try{
+            LOGGER.info("Iniciando la ventana Add Apunte");
             Scene scene = new Scene(root);
             stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -84,19 +100,26 @@ public class AddApunteFXController {
             tvApuntesAddApunte.getSelectionModel().selectedItemProperty().addListener(this::apunteClicked);
             stage.showAndWait();
         }catch(Exception e){
-            e.printStackTrace();
-            ControladorGeneral.showErrorAlert("Ha ocurrido un error."+ e.getMessage());
+            LOGGER.severe("Error(initStage)" + e.getMessage());
         }
     }
-    
+    /**
+     * Método que se ejecuta cuando se muestra la ventana.
+     * @param event Evento que se ha lanzado.
+     */
     private void handleWindowShowing(WindowEvent event){
         try{
-            LOGGER.info("handlWindowShowing --> Gestor de Pack MODIFICAR Añadir apunte");
+            LOGGER.info("handleWindowShowing -> Add Apunte");
+            tfFiltarAddApunte.requestFocus();
         }catch(Exception e){
-            LOGGER.severe(e.getMessage());
+            LOGGER.severe("Error(handleWindowShowing)" + e.getMessage());
         }
     }
     
+    /**
+     * Método que se ejecuta cuando se hace click en el botón btnBuscarAddApunte.
+     * @param event Evento que se ha lanzado.
+     */
     @FXML
     private void onActionBtnBuscarAddApunte(){
         if(!tfFiltarAddApunte.getText().trim().isEmpty()){
@@ -105,13 +128,18 @@ public class AddApunteFXController {
             cargarDatos();
         }
     }
-    
+    /**
+     * Método que se ejecuta cuando se hace click en el botón btnSalirAddApunte.
+     * @param event Evento que se ha lanzado.
+     */
     @FXML
     private void onActionBtnSalirAddApunte(){
-        fxModificarPack.setOpcion(0);
+        fxController.setOpcion(0);
         stage.hide();
     }
-    
+    /**
+     * Método para cargar todos los apuntes.
+     */
     private void cargarDatos(){
         try{
             Set<ApunteBean> apuns = managerApunte.findAll();
@@ -129,10 +157,14 @@ public class AddApunteFXController {
             apuntesObv = FXCollections.observableArrayList(new ArrayList<>(apunteList));
             tvApuntesAddApunte.setItems(apuntesObv);
         }catch(BusinessLogicException e) {
-            e.printStackTrace();
+            LOGGER.severe("Error al intentar cargar los apuntes(cargarDatos()): " + e.getMessage());
+            showErrorAlert("Ha ocurrido un error cargando los apuntes.");
         }
     }
-    
+    /**
+     * Método para cargar todos los apuntes y las filtra según el parámetro.
+     * @param string Cadena de caracteres a filtrar.
+     */
     private void cargarDatos(String string){
         try{
             Set<ApunteBean> apuns = managerApunte.findAll();
@@ -150,15 +182,21 @@ public class AddApunteFXController {
             apuntesObv = FXCollections.observableArrayList(new ArrayList<>(apunteList));
             tvApuntesAddApunte.setItems(apuntesObv);
         }catch(BusinessLogicException e) {
-            e.printStackTrace();
+            LOGGER.severe("Error al intentar cargar los apuntes(cargarDatos(String s)): " + e.getMessage());
+            showErrorAlert("Ha ocurrido un error cargando los apuntes.");
         }
     }
-    
+    /**
+     * Método que se ejecuta cuando cambia algún valor de una fila de la tabla.
+     * @param obvservable Valor observable.
+     * @param oldValue Valor antiguo.
+     * @param newValue Valor nuevo.
+     */
     private void apunteClicked(ObservableValue obvservable, Object oldValue, Object newValue){
         if(newValue != null){
             apunte = (ApunteBean) newValue;
-            fxModificarPack.setApunte(apunte);
-            fxModificarPack.setOpcion(1);
+            fxController.setApunte(apunte);
+            fxController.setOpcion(1);
             stage.hide();
         }
     }

@@ -7,13 +7,9 @@ import businessLogic.ClienteManager;
 import static businessLogic.ClienteManagerFactory.createClienteManager;
 import businessLogic.PackManager;
 import static businessLogic.PackManagerFactory.createPackManager;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -32,7 +28,7 @@ import transferObjects.OfertaBean;
 import static view.ControladorGeneral.showErrorAlert;
 
 /**
- * Clase controladora de compra pack.
+ * El controlador de la ventana CompraPackFx para comprar los packs.
  * @author Luis
  */
 public class CompraPackFXController {
@@ -66,30 +62,43 @@ public class CompraPackFXController {
     @FXML
     private Button btnComprarComprarPack;
     
+    /**
+     * Método que le da un valor a stage.
+     * @param stage Valor de stage.
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }
-    
+    /**
+     * Método que le da un valor a cliente.
+     * @param cliente Valor de cliente.
+     */
     public void setCliente(ClienteBean cliente){
         this.cliente = cliente;
     }
-    
+    /**
+     * Método que le da un valor a pack.
+     * @param pack Valor de pack.
+     */
     public void setPack(PackBean pack){
         this.pack = pack;
     }
-    
+    /**
+     * Método que le da un valor a fxTienda.
+     * @param fxTienda Valor de fxTienda.
+     */
     public void setFXController(TiendaPackFXController fxTienda){
         this.fxTienda = fxTienda;
     }
     
     /**
-     * El metodo que inicializa la ventana.
-     * @param root El nodo raiz.
+     * Método que inicializa la ventana.
+     * @param root Nodo raiz.
      */
     @FXML
     public void initStage(Parent root) {
         try{
-            LOGGER.info("Iniciando CompraPackFXController");
+            LOGGER.info("Iniciando la ventana Compra Pack");
             Scene scene=new Scene(root);
             stage=new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
@@ -133,13 +142,12 @@ public class CompraPackFXController {
                 stage.showAndWait();
             }
         }catch(Exception e){
-            e.printStackTrace();
-            LOGGER.severe(e.getMessage());
+            LOGGER.severe("Error(initStage)" + e.getMessage());
         }
     }
     /**
-     * Metodo que cancela la compra.
-     * @param event El evento de pulsación.
+     * Método que se ejecuta cuando se hace click en el botón btnCancelarComprarPack.
+     * @param event Evento que se ha lanzado.
      */
     @FXML
     private void onActionCancelarCompraPack(ActionEvent event){
@@ -147,8 +155,8 @@ public class CompraPackFXController {
         stage.hide();
     }
     /**
-     * Metodo que permite comprar el apunte.
-     * @param event El evento de pulsación.
+     * Método que se ejecuta cuando se hace click en el botón btnComprarComprarPack.
+     * @param event Evento que se ha lanzado.
      */
     @FXML
     private void onActionComprarComprarPack(ActionEvent event){
@@ -170,7 +178,7 @@ public class CompraPackFXController {
                     managerCliente.edit(cliente);
                     alertInfo("Pack comprado","Ve a la ventana tu biblioteca para poder descargarlo.");
                 }catch (BusinessLogicException e) {
-                    LOGGER.severe("ERROR en la compra de pack: "+e.getMessage());
+                    LOGGER.severe("ERROR en la compra de pack: " + e.getMessage());
                     showErrorAlert("A ocurrio un error en la compra del pack.");
                 }
                 fxTienda.setOpcion(1);
@@ -179,25 +187,16 @@ public class CompraPackFXController {
         });
     }
     /**
-     * Alert de información sobre la compra.
-     * @param titulo Titulo de la alerta.
-     * @param mensaje Mensaje de la alerta.
+     * Método para mostrar el precio del pack en el label.
      */
-    private void alertInfo(String titulo, String mensaje) {
-        Alert alertCerrarSesion = new Alert(Alert.AlertType.INFORMATION);
-        alertCerrarSesion.setTitle(titulo);
-        alertCerrarSesion.setHeaderText(mensaje);
-        alertCerrarSesion.show();
-    }
-
     private void mostrarPrecio() {
         OfertaBean oferta = null;
         try{
             oferta = managerPack.getOferta(pack);
-        } catch (BusinessLogicException e) {
-            e.printStackTrace();
+        }catch(BusinessLogicException e) {
+            LOGGER.severe("Error al intentar obtener la oferta de un pack(mostrarPrecio): " + e.getMessage());
+            showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor.");
         }
-        Date date = new Date();
         if(oferta != null){
             precio = packActualizado.getPrecio()*(1 - (oferta.getRebaja()/100));
         }else{
@@ -205,11 +204,11 @@ public class CompraPackFXController {
         }
         lblPrecioPack.setText(precio + "€.");
     }
-
+    /**
+     * Método para actualizar la compra del pack en relación a los apuntes que tiene comprado.
+     */
     private void comprobarCompras() {
         packActualizado = pack;
-        System.out.println(pack.getApuntes().size());
-        System.out.println(packActualizado.getApuntes().size());
         Set<ApunteBean> apuntes = new HashSet<ApunteBean>();
         try{
             apuntesComprado = managerApunte.getApuntesByComprador(cliente.getId());
@@ -222,15 +221,27 @@ public class CompraPackFXController {
                     }
                 }
             }
-            if(apuntes != null){
+            if(apuntes.size() == 0){
                 for(ApunteBean a : apuntes){
                     if(packActualizado.getApuntes().contains(a)){
                         packActualizado.getApuntes().remove(a);
                     }
                 }
             }
-        } catch (BusinessLogicException e) {
-            e.printStackTrace();
+        }catch(BusinessLogicException e){
+            LOGGER.severe("Error al intentar obtener los apuntes del cliente(comprobarCompras): " + e.getMessage());
+            showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor.");
         }
+    }
+    /**
+     * Alert de información sobre la compra.
+     * @param titulo Titulo de la alerta.
+     * @param mensaje Mensaje de la alerta.
+     */
+    private void alertInfo(String titulo, String mensaje) {
+        Alert alertCerrarSesion = new Alert(Alert.AlertType.INFORMATION);
+        alertCerrarSesion.setTitle(titulo);
+        alertCerrarSesion.setHeaderText(mensaje);
+        alertCerrarSesion.show();
     }
 }
