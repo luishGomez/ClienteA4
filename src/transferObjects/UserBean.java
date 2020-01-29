@@ -12,11 +12,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Usuario
+ * @author Sergio
  */
 @XmlRootElement(name="user")
 public class UserBean implements Serializable{
-    //private static final long serialVersionUID=1L;
+    private static final long serialVersionUID=1L;
     
     private Integer id;
     private String login;
@@ -29,7 +29,6 @@ public class UserBean implements Serializable{
     private Date ultimoAcceso;
     private Date ultimoCambioContrasenia;
      public UserBean() {
-       // this.nombreCompleto=new SimpleStringProperty();
     }
 
     public UserBean(Integer id, String login, String email, String nombreCompleto, UserStatus status, UserPrivilege privilegio, String contrasenia, Date ultimoAcceso, Date ultimoCambioContrasenia) {
@@ -37,7 +36,6 @@ public class UserBean implements Serializable{
         this.login = login;
         this.email = email;
         this.nombreCompleto = nombreCompleto;
-        //this.nombreCompleto= new SimpleStringProperty(nombreCompleto);
         this.status = status;
         this.privilegio = privilegio;
         this.contrasenia = contrasenia;

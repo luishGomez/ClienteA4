@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package transferObjects;
 
 import java.io.Serializable;
@@ -11,29 +6,15 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
- * @author Usuario
+ * El POJO que almacena los datos de un cliente
+ * @author Ricardo Peinado Lastra
  */
 @XmlRootElement(name="cliente")
 public class ClienteBean extends UserBean implements Serializable{
-    //private static final long serialVersionUID=1L;
-    
-    
-   // private Set <CompraBean> compras;
-   // private Set <ApunteBean> apuntes;
- //   private Set <ApunteBean> misVotaciones;
+   
     private float saldo;
     private byte[] foto;
-/*
-    public ClienteBean(Set<CompraBean> compras, Set<ApunteBean> apuntes, Set<ApunteBean> misVotaciones, float saldo, byte[] foto, Integer id, String login, String email, String nombreCompleto, UserStatus status, UserPrivilege privilegio, String contrasenia, Date ultimoAcceso, Date ultimoCambioContrasenia) {
-        super(id, login, email, nombreCompleto, status, privilegio, contrasenia, ultimoAcceso, ultimoCambioContrasenia);
-        this.compras = compras;
-        this.apuntes = apuntes;
-        this.misVotaciones = misVotaciones;
-        this.saldo = saldo;
-        this.foto = foto;
-    }
-*/
+
     public ClienteBean() {
     }
 

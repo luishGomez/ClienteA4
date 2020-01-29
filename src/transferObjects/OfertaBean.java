@@ -18,11 +18,11 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Usuario
+ * @author Sergio
  */
 @XmlRootElement(name="oferta")
 public class OfertaBean implements Serializable {
-    //private static final long serialVersionUID=1L;
+    private static final long serialVersionUID=1L;
 
     private final SimpleIntegerProperty idOferta;
     private final SimpleStringProperty titulo;

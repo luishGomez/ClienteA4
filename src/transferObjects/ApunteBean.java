@@ -1,8 +1,3 @@
-/*
-* To change this license header, choose License Headers in Project Properties.
-* To change this template file, choose Tools | Templates
-* and open the template in the editor.
-*/
 package transferObjects;
 
 import java.io.Serializable;
@@ -14,8 +9,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
- *
- * @author Usuario
+ * El POJO que almacena los datos de los apnuntes.
+ * @author Ricardo Peinado Lastra
  */
 @XmlRootElement(name="apunte")
 public class ApunteBean implements Serializable {
@@ -24,7 +19,6 @@ public class ApunteBean implements Serializable {
     private final SimpleIntegerProperty idApunte;
     private final SimpleStringProperty titulo;
     private final SimpleStringProperty descripcion;
-    //private final SimpleObjectProperty<byte[]> archivo; //el archivo
     private byte[] archivo;
     private final SimpleObjectProperty<Date> fechaValidacion;
     private final SimpleIntegerProperty likeCont;
@@ -37,7 +31,6 @@ public class ApunteBean implements Serializable {
         this.idApunte = new SimpleIntegerProperty(idApunte);
         this.titulo = new SimpleStringProperty(titulo);
         this.descripcion = new SimpleStringProperty(descripcion);
-        // this.archivo = new SimpleObjectProperty(archivo);
         this.archivo=archivo;
         this.fechaValidacion = new SimpleObjectProperty(fechaValidacion);
         this.likeCont = new SimpleIntegerProperty(likeCont);
@@ -51,7 +44,6 @@ public class ApunteBean implements Serializable {
         this.idApunte = new SimpleIntegerProperty();
         this.titulo = new SimpleStringProperty();
         this.descripcion = new SimpleStringProperty();
-        // this.archivo = new SimpleObjectProperty(archivo);
         
         this.fechaValidacion = new SimpleObjectProperty();
         this.likeCont = new SimpleIntegerProperty();
