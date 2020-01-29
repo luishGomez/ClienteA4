@@ -175,13 +175,11 @@ public class TiendaApuntesFXController {
             
             //CARGAR MATERIAS
             cargarMaterias();
-            //DEJARLO EN TODAS LAS MATERIAS
             
-            //CARGAR LISTVIEW DE PAUNTES
+            //CARGAR LISTVIEW DE APUNTES
             cargarApuntes();
             //CARGAR EL COMBO BOX
             cargarComboBox();
-            //DEJARLO EN EL PRIMERO
             //PREPARAR EL MENU DE CONTEXTO
             MenuItem menuItemRefrescar = new MenuItem("Refresca");
             MenuItem menuItemCompra = new MenuItem("Comprar apunte");
