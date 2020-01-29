@@ -19,26 +19,26 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="769.0" prefWidth="1146.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="view.BibliotecaClienteFXController">
    <top>
-      <MenuBar BorderPane.alignment="CENTER">
+      <MenuBar fx:id="menuBar" BorderPane.alignment="CENTER">
         <menus>
-            <Menu mnemonicParsing="false" text="Cuenta">
+            <Menu fx:id="menuCuenta" mnemonicParsing="false" text="Cuenta">
               <items>
-                  <MenuItem mnemonicParsing="false" text="Cerrar sesión" />
-                <MenuItem mnemonicParsing="false" text="Salir de la aplicación" />
+                  <MenuItem fx:id="menuCuentaCerrarSesion" mnemonicParsing="false" text="Cerrar sesión" onAction="#onActionCerrarSesion"/>
+                <MenuItem fx:id="menuCuentaSalir" mnemonicParsing="false" text="Salir de la aplicación" onAction="#onActionSalir" />
               </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="Ventanas">
+            <Menu fx:id="menuVentanas" mnemonicParsing="false" text="Ventanas">
               <items>
                   <MenuItem fx:id="menuVentanasMiBiblioteca" mnemonicParsing="false" text="Mi biblioteca" onAction="#onActionAbrirMiBiblioteca"/>
-                <MenuItem fx:id="menuVentanasTiendaApuntes" mnemonicParsing="false" text="Tienda de apuntes" onAction="#onActionAbrirTiendaApuntes" />
+                  <MenuItem fx:id="menuVentanasTiendaApuntes" mnemonicParsing="false" text="Tienda de apuntes" onAction="#onActionAbrirTiendaApuntes" />
                   <MenuItem fx:id="menuVentanasTiendaPacks" mnemonicParsing="false" text="Tienda de packs" onAction="#onActionAbrirTiendaPacks"/>
                   <MenuItem fx:id="menuVentanasMiPerfil" mnemonicParsing="false" text="Mi perfil" onAction="#onActionAbrirMiPerfil"/>
                   <MenuItem fx:id="menuVentanasSubirApunte" mnemonicParsing="false" text="Subir apuntes" onAction="#onActionAbrirMisApuntes"/>
               </items>
             </Menu>
-          <Menu mnemonicParsing="false" text="Help">
+          <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem fx:id="menuHelpAbout" mnemonicParsing="false" text="About" onAction="#onActionAbout"/>
             </items>
           </Menu>
         </menus>

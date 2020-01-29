@@ -407,8 +407,6 @@ public class TiendaApuntesFXController {
             stage.hide();
         } catch (IOException ex) {
             Logger.getLogger(TiendaApuntesFXController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (BusinessLogicException ex) {
-            Logger.getLogger(TiendaApuntesFXController.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
@@ -452,7 +450,7 @@ public class TiendaApuntesFXController {
             controller.setUser(cliente);
             controller.setStage(stage);
             controller.initStage(root);
-            //stage.hide();
+            stage.hide();
         } catch (IOException ex) {
             Logger.getLogger(TiendaApuntesFXController.class.getName()).log(Level.SEVERE, null, ex);
         }

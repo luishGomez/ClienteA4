@@ -28,10 +28,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableColumn;
@@ -39,9 +41,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.web.WebEngine;
+import javafx.scene.web.WebView;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -51,14 +59,16 @@ import transferObjects.MateriaBean;
 import static view.ControladorGeneral.showErrorAlert;
 
 /**
- *
+ * Biblioteca del Cliente donde podra ver y descargar los apuntes comprados y valorar la calidad del mismo.
  * @author Sergio
  */
 public class BibliotecaClienteFXController{
     private static final Logger LOGGER = Logger.getLogger("escritorio.view.MisPuntesClienteFXController");
+    private final String RUTA_AYUDA = getClass().getResource("/ayuda/ayuda_perfil.html").toExternalForm();
     public ClienteManager clienteLogic = createClienteManager("real");
     private final ApunteManager apuntesLogic = createApunteManager("real");
     private final MateriaManager materiaLogic = createMateriaManager("real");
+    private String materia="";
     private ClienteBean user;
     private Stage stage;
     private Boolean voyAVotar = false;
@@ -67,6 +77,7 @@ public class BibliotecaClienteFXController{
     private ObservableList<MateriaBean>  materias;
     private ObservableList<String>  materias_titulo = FXCollections.observableArrayList();
     
+    @FXML private Button btnBuscar;
     @FXML private TableView<ApunteBean> tablaBiblioteca;
     @FXML private TableColumn columnaTitulo;
     @FXML private TableColumn columnaMateria;
@@ -79,62 +90,109 @@ public class BibliotecaClienteFXController{
     @FXML private ImageView imgDislike;
     @FXML private ImageView imgDescarga;
     
+    @FXML
+    private MenuBar menuBar;
+    @FXML
+    private Menu menuCuenta;
+    @FXML
+    private MenuItem menuCuentaCerrarSesion;
+    @FXML
+    private MenuItem menuCuentaSalir;
+    @FXML
+    private Menu menuVentanas;
+    @FXML
+    private MenuItem menuVentanasMiBiblioteca;
+    @FXML
+    private MenuItem menuVentanasTiendaApuntes;
+    @FXML
+    private MenuItem menuVentanasTiendaPacks;
+    @FXML
+    private MenuItem menuVentanasMiPerfil;
+    @FXML
+    private MenuItem menuVentanasSubirApunte;
+    @FXML
+    private Menu menuHelp;
+    @FXML
+    private MenuItem menuHelpAbout;
     
-    private final ContextMenu popupMenu = new ContextMenu();; //llamado tmb popup-menu, es decir lo declaramos
-    private final MenuItem menu1 = new MenuItem("Añadir");
-    private final Menu menu2 = new Menu("Borrar Fila");
-    private final MenuItem submenu1 = new MenuItem("Fila seleccionada");
-    private final MenuItem submenu2 = new MenuItem("todas las filas");
-    private final MenuItem menu3 = new MenuItem("Modificar");
+    private final ContextMenu popupMenu = new ContextMenu();
+    private final MenuItem menu1 = new MenuItem("Ayuda");
+    private final Menu menu2 = new Menu("Opciones");
+    private final MenuItem submenu1 = new MenuItem("Cerrar sesion");
+    private final MenuItem submenu2 = new MenuItem("Salir");
     
-    public void setStage(Stage stage){
-        this.stage= stage;
-    }
-    public void setUser(ClienteBean user){
-        this.user=user;
-    }
+    public void setStage(Stage stage){this.stage= stage;}
+    public void setUser(ClienteBean user){this.user=user;}
     
-    
-    public void initStage(Parent root) throws BusinessLogicException{
-        stage = new Stage();
-        Scene scene = new Scene(root);
-        this.root = root;
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setScene(scene);
-        stage.setTitle("Mi Biblioteca");
-        //popup-menu items definiendolas y añadiendolas al popup
-        popupMenu.getItems().add(menu1);
-        popupMenu.getItems().add(menu2);
-        menu2.getItems().add(submenu1);
-        menu2.getItems().add(submenu2);
-        popupMenu.getItems().add(new SeparatorMenuItem());//añadimos linea separadora entre los items
-        popupMenu.getItems().add(menu3);
-        //--Tabla
-        comboFiltroBiblioteca.getSelectionModel().selectedItemProperty().addListener(this::comboControl);
-        columnaTitulo.setCellValueFactory(new PropertyValueFactory<>("titulo"));
-        columnaMateria.setCellValueFactory(new PropertyValueFactory<>("materia"));
-        columnaAutor.setCellValueFactory(new PropertyValueFactory<>("creador"));
-        columnaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
-        apuntes = FXCollections.observableArrayList(apuntesLogic.getApuntesByComprador(user.getId()));
-        tablaBiblioteca.setItems(apuntes);
-        //combo
-        materias = FXCollections.observableArrayList(materiaLogic.findAllMateria());
-        materias_titulo.add("");
-        materias.forEach((materia) -> {
-            LOGGER.info(materia.getTitulo());
-            materias_titulo.add(materia.getTitulo());
-        });
-        comboFiltroBiblioteca.setItems(materias_titulo);
-        //--Events
-        tablaBiblioteca.addEventHandler(MouseEvent.MOUSE_CLICKED, this::puntuacion);
-        tablaBiblioteca.addEventHandler(MouseEvent.MOUSE_CLICKED, this::ocultarPopup);
-        stage.addEventHandler(MouseEvent.MOUSE_CLICKED, this::clicks);
-        imgLike.addEventHandler(MouseEvent.MOUSE_CLICKED, this::puntuacion);
-        imgDislike.addEventHandler(MouseEvent.MOUSE_CLICKED, this::puntuacion);
-        imgDescarga.addEventHandler(MouseEvent.MOUSE_CLICKED, this::puntuacion);
-        
-        
-        stage.show();
+    public void initStage(Parent root){
+        try {
+            stage = new Stage();
+            Scene scene = new Scene(root);
+            this.root = root;
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(scene);
+            stage.setTitle("Mi Biblioteca");
+            stage.setResizable(true);
+            stage.setMaximized(true);
+            //popup-menu items definiendolas y añadiendolas al popup
+            popupMenu.getItems().add(menu1);
+            popupMenu.getItems().add(menu2);
+            menu2.getItems().add(submenu1);
+            menu2.getItems().add(submenu2);
+            popupMenu.getItems().add(new SeparatorMenuItem());//añadimos linea separadora entre los items
+            //--Tabla
+            comboFiltroBiblioteca.getSelectionModel().selectedItemProperty().addListener(this::comboControl);
+            columnaTitulo.setCellValueFactory(new PropertyValueFactory<>("titulo"));
+            columnaMateria.setCellValueFactory(new PropertyValueFactory<>("materia"));
+            columnaAutor.setCellValueFactory(new PropertyValueFactory<>("creador"));
+            columnaDescripcion.setCellValueFactory(new PropertyValueFactory<>("descripcion"));
+            apuntes = FXCollections.observableArrayList(apuntesLogic.getApuntesByComprador(user.getId()));
+            tablaBiblioteca.setItems(apuntes);
+            //combo
+            materias = FXCollections.observableArrayList(materiaLogic.findAllMateria());
+            materias_titulo.add("");
+            materias.forEach((materia) -> {
+                LOGGER.info(materia.getTitulo());
+                materias_titulo.add(materia.getTitulo());
+            });
+            comboFiltroBiblioteca.setItems(materias_titulo);
+            //--Events
+            tablaBiblioteca.addEventHandler(MouseEvent.MOUSE_CLICKED, this::puntuacion);
+            tablaBiblioteca.addEventHandler(MouseEvent.MOUSE_CLICKED, this::ocultarPopup);
+            stage.addEventHandler(MouseEvent.MOUSE_CLICKED, this::clicks);
+            imgLike.addEventHandler(MouseEvent.MOUSE_CLICKED, this::puntuacion);
+            imgDislike.addEventHandler(MouseEvent.MOUSE_CLICKED, this::puntuacion);
+            imgDescarga.addEventHandler(MouseEvent.MOUSE_CLICKED, this::puntuacion);
+            txtBuscar.setOnKeyPressed(this::keyPress);
+            btnBuscar.setOnKeyPressed(this::keyPress);
+            menu1.addEventHandler(ActionEvent.ACTION,this::accionDeMenus);
+            submenu1.addEventHandler(ActionEvent.ACTION,this::accionDeMenus);
+            submenu2.addEventHandler(ActionEvent.ACTION,this::accionDeMenus);
+            
+            //Mnemonicos
+            //Menu->
+            menuCuenta.setMnemonicParsing(true);
+            menuCuenta.setText("_Cuenta");
+            menuVentanas.setMnemonicParsing(true);
+            menuVentanas.setText("_Ventanas");
+            menuHelp.setMnemonicParsing(true);
+            menuHelp.setText("_Help");
+            menuHelpAbout.setAccelerator(KeyCombination.keyCombination("Ctrl+Alt+A"));
+            menuCuentaCerrarSesion.setAccelerator(KeyCombination.keyCombination("Ctrl+Alt+C"));
+            menuCuentaSalir.setAccelerator(KeyCombination.keyCombination("Ctrl+Alt+S"));
+            menuVentanasMiBiblioteca.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+B"));
+            menuVentanasMiPerfil.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+P"));
+            menuVentanasSubirApunte.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+S"));
+            menuVentanasTiendaApuntes.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+A"));
+            menuVentanasTiendaPacks.setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+T"));
+            //<-Menu
+            
+            txtBuscar.setPromptText("Buscar coincidencias.");
+            
+            stage.show();
+        } catch (BusinessLogicException ex) {
+            Logger.getLogger(BibliotecaClienteFXController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     /**
      * cerrado del PopupMenu
@@ -165,7 +223,7 @@ public class BibliotecaClienteFXController{
             voyAVotar=false;
         }
     }/**
-     * Control de las puntuciones de un apunte.
+     * Control de las puntuciones de un apunte mas la descarga del mismo.
      * @param m
      */
     public void puntuacion(MouseEvent m){
@@ -183,9 +241,20 @@ public class BibliotecaClienteFXController{
                     if(!coprobarVoto()){
                         try {
                             apuntesLogic.votacion(user.getId(), 1, tablaBiblioteca.getSelectionModel().getSelectedItem());
+                            Alert alert=new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Informacion de votacion");
+                            alert.setHeaderText("Se ha votado correctamente");
+                            alert.showAndWait();
                         } catch (BusinessLogicException ex) {
-                            Logger.getLogger(BibliotecaClienteFXController.class.getName()).log(Level.SEVERE, null, ex);
+                            LOGGER.log(Level.SEVERE,
+                                    "BibliotecaClienteFXController: Error votar like",
+                                    ex.getMessage());
                         }
+                    }else{
+                        Alert alert=new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Informacion de votacion");
+                        alert.setHeaderText("No puedes volver a votar ya que ya has votado este apunte.");
+                        alert.showAndWait();
                     }
                 }
                 else if(m.getTarget().equals(imgDislike)){
@@ -193,9 +262,20 @@ public class BibliotecaClienteFXController{
                     if(!coprobarVoto()){
                         try {
                             apuntesLogic.votacion(user.getId(), -1, tablaBiblioteca.getSelectionModel().getSelectedItem());
+                            Alert alert=new Alert(Alert.AlertType.INFORMATION);
+                            alert.setTitle("Informacion de votacion");
+                            alert.setHeaderText("Se ha votado correctamente");
+                            alert.showAndWait();
                         } catch (BusinessLogicException ex) {
-                            Logger.getLogger(BibliotecaClienteFXController.class.getName()).log(Level.SEVERE, null, ex);
+                            LOGGER.log(Level.SEVERE,
+                                    "BibliotecaClienteFXController: Error votar dislike",
+                                    ex.getMessage());
                         }
+                    }else{
+                        Alert alert=new Alert(Alert.AlertType.INFORMATION);
+                        alert.setTitle("Informacion de votacion");
+                        alert.setHeaderText("No puedes volver a votar ya que ya has votado este apunte.");
+                        alert.showAndWait();
                     }
                 }
                 else if(m.getTarget().equals(imgDescarga)){
@@ -212,7 +292,7 @@ public class BibliotecaClienteFXController{
         
     }
     /**
-     * Comprueba que no haya votado ya antes a ese apunte
+     * Comprueba que no haya votado al mismo apunte mas de una vez.
      * @return TRUE si ya ha votado || FALSE si no ha votado
      */
     private Boolean coprobarVoto() {
@@ -220,14 +300,16 @@ public class BibliotecaClienteFXController{
         try {
             Set<ClienteBean> clientes=clienteLogic.getVotantesId(tablaBiblioteca.getSelectionModel().getSelectedItem().getIdApunte());
             if(clientes!=null){
-                for(ClienteBean cliente:clientes){
+                for (ClienteBean cliente : clientes) {
                     if(cliente.getId().equals(user.getId()))
                         votado = true;
                 }
             }
             
         } catch (BusinessLogicException ex) {
-            Logger.getLogger(BibliotecaClienteFXController.class.getName()).log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE,
+                    "BibliotecaClienteFXController: Error Comprobar Clientes votantes de un apunte.",
+                    ex.getMessage());
         }
         return votado;
     }
@@ -262,13 +344,19 @@ public class BibliotecaClienteFXController{
      * @param newValue
      */
     private void comboControl(ObservableValue obvservable, Object oldValue, Object newValue){
+        String palabraBusqueda;
         ObservableList<ApunteBean> apuntesFiltrados = FXCollections.observableArrayList();
         if(newValue !=null){
+            materia = newValue.toString();
+            txtBuscar.setText("");
             apuntes.stream().filter((apunte) -> (apunte.getMateria().toString().toUpperCase().equals(newValue.toString().toUpperCase()))).forEachOrdered((apunte) -> {
                 apuntesFiltrados.add(apunte);
             });
             if(apuntesFiltrados.size()>0){
                 tablaBiblioteca.setItems(apuntesFiltrados);
+                tablaBiblioteca.refresh();
+            }else{
+                tablaBiblioteca.setItems(null);
                 tablaBiblioteca.refresh();
             }
         }
@@ -284,34 +372,81 @@ public class BibliotecaClienteFXController{
     @FXML private void buscar(ActionEvent event){
         String palabraBusqueda;
         ObservableList<ApunteBean> apuntesFiltrados = FXCollections.observableArrayList();
-        if(txtBuscar.getText().isEmpty()){
+        if(txtBuscar.getText().isEmpty() && materia.equals("")){
+            LOGGER.info("primer if");
             tablaBiblioteca.setItems(apuntes);
             tablaBiblioteca.refresh();
         }
         else{
             palabraBusqueda = txtBuscar.getText().toUpperCase();
-            apuntes.stream().filter((apunte) -> (apunte.getTitulo().toUpperCase().contains(palabraBusqueda) ||
-                    apunte.getMateria().toString().toUpperCase().contains(palabraBusqueda)||
-                    apunte.getCreador().toString().toUpperCase().contains(palabraBusqueda) ||
-                    apunte.getDescripcion().toUpperCase().contains(palabraBusqueda))).map((apunte) -> {
-                        apuntesFiltrados.add(apunte);
-                        return apunte;
-                    });
+            if(materia.equals("")){
+                apuntes.stream().filter((apunte) -> (apunte.getTitulo().toUpperCase().contains(palabraBusqueda) ||
+                        apunte.getCreador().toString().toUpperCase().contains((palabraBusqueda)) ||
+                        apunte.getDescripcion().toUpperCase().contains((palabraBusqueda)))).forEachOrdered((apunte) -> {
+                            apuntesFiltrados.add(apunte);
+                        });
+            }else{
+                apuntes.stream().filter((apunte) -> (apunte.getMateria().toString().equals(materia))).filter((apunte) -> (apunte.getTitulo().toUpperCase().contains(palabraBusqueda) ||
+                        apunte.getCreador().toString().toUpperCase().contains((palabraBusqueda)) ||
+                        apunte.getDescripcion().toUpperCase().contains((palabraBusqueda)))).forEachOrdered((apunte) -> {
+                            apuntesFiltrados.add(apunte);
+                        });
+            }
             if(apuntesFiltrados.size()>0){
                 tablaBiblioteca.setItems(apuntesFiltrados);
                 tablaBiblioteca.refresh();
+            }else{
+                tablaBiblioteca.setItems(null);
+                tablaBiblioteca.refresh();
             }
-            
         }
     }
+    /**
+     * Atajos
+     * @param key
+     */
+    public void keyPress(KeyEvent key){
+        if(key.getCode().equals(KeyCode.ENTER))
+            btnBuscar.fire();
+    }
+    /**
+     * control de eventos del pop-up
+     * @param e
+     */
+    public void accionDeMenus(ActionEvent e){
+        if(e.getSource().equals(menu1))
+            onActionAbout();
+        if(e.getSource().equals(submenu1))
+            onActionCerrarSesion();
+        if(e.getSource().equals(submenu2))
+            onActionSalir();
+    }
+    /**
+     * Crea y muestra la ventana ayuda.
+     */
+    public void ayuda(){
+        Stage stageAyuda = new Stage();
+        WebView webView = new WebView();
+        final WebEngine webEngine = webView.getEngine();
+        webEngine.load(RUTA_AYUDA);
+        VBox root = new VBox();
+        root.getChildren().add(webView);
+        Scene scene = new Scene(root);
+        stageAyuda.setScene(scene);
+        stageAyuda.setTitle("Ventana de ayuda");
+        stageAyuda.setResizable(false);
+        stageAyuda.setMinWidth(1285);
+        stageAyuda.initModality(Modality.APPLICATION_MODAL);
+        stageAyuda.show();
+    }
     //Inicio de los metodos de navegación de la aplicación
-     //Parte comun
+    //Parte comun
     /**
      * Metodo que permite cerrar sesión.
      * @param event El evento de pulsación del botón.
      */
     @FXML
-    private void onActionCerrarSesion(ActionEvent event){
+    private void onActionCerrarSesion(){
         try{
             //Creamos la alerta del tipo confirmación.
             Alert alertCerrarSesion = new Alert(Alert.AlertType.CONFIRMATION);
@@ -334,7 +469,7 @@ public class BibliotecaClienteFXController{
      * @param event El evento de pulsación del botón.
      */
     @FXML
-    private void onActionSalir(ActionEvent event){
+    private void onActionSalir(){
         try{
             //Creamos la alerta con el tipo confirmación, con su texto y botones de
             //aceptar y cancelar.
@@ -417,8 +552,6 @@ public class BibliotecaClienteFXController{
             stage.hide();
         } catch (IOException ex) {
             Logger.getLogger(TiendaApuntesFXController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (BusinessLogicException ex) {
-            Logger.getLogger(TiendaApuntesFXController.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
@@ -429,7 +562,7 @@ public class BibliotecaClienteFXController{
      */
     @FXML
     private void onActionAbrirTiendaPacks(ActionEvent event){
-         try {
+        try {
             FXMLLoader loader = new FXMLLoader(getClass()
                     .getResource("tienda_pack.fxml"));
             
@@ -468,7 +601,8 @@ public class BibliotecaClienteFXController{
         }
     }
     @FXML
-    private void onActionAbout(ActionEvent event){
+    private void onActionAbout(){
+        ayuda();
     }
     //Fin de los metodos de navegación de la aplicación
     
