@@ -59,6 +59,7 @@ public class InicioFXController extends ControladorGeneral{
      * Campo de texto Nombre de usuario.
      * Nombre de usuario text field.
      */
+    @FXML private Label labelPasswordForgot;
     @FXML
     private TextField tfNombreUsuario;
     /**
@@ -507,5 +508,21 @@ public class InicioFXController extends ControladorGeneral{
                 Platform.exit();
             }
         });
+    }
+    @FXML public void onActionPasswordForgot(){
+        try{
+                FXMLLoader loader = new FXMLLoader(getClass()
+                        .getResource("password_forgot.fxml"));
+                
+                Parent root = (Parent)loader.load();
+                PasswordForgotFXController controller =
+                        ((PasswordForgotFXController)loader.getController());
+                controller.initStage(root);
+                tfContra.setText("");
+            }catch(IOException e){
+                showErrorAlert("Error al cargar la ventana de Login.");
+                LOGGER.severe("Error "+e.getMessage());
+                
+            }
     }
 }

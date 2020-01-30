@@ -115,10 +115,14 @@ public class ClienteManagerImplementation implements ClienteManager {
     }
 
     @Override
-    public boolean passwordForgot(String login) throws BusinessLogicException {
+    public boolean passwordForgot(String login) throws BusinessLogicException,NotFoundException {
         boolean resultado=false;
         try{
            resultado=webClient.passwordForgot(Boolean.class, login);
+           
+        }catch(NotFoundException e){
+            LOGGER.severe("ERROR! ClienteManagerImplementation -> passwordForgot: "+e.getMessage());
+            throw new NotFoundException(e.getMessage());
         }catch(Exception e){
             LOGGER.severe("ERROR! ClienteManagerImplementation -> passwordForgot: "+e.getMessage());
             throw new BusinessLogicException(e.getMessage());

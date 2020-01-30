@@ -221,7 +221,7 @@ public class CompraPackFXController {
                     }
                 }
             }
-            if(apuntes.size() == 0){
+            if(apuntes.size() != 0){
                 for(ApunteBean a : apuntes){
                     if(packActualizado.getApuntes().contains(a)){
                         packActualizado.getApuntes().remove(a);
