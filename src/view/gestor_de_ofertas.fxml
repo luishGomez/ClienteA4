@@ -49,7 +49,7 @@
                </VBox.margin>
                <children>
                   <TextField fx:id="txtBuscar" />
-                  <Button fx:id="btnBuscar" mnemonicParsing="false" text="Buscar">
+                  <Button fx:id="btnBuscar" mnemonicParsing="false" onAction="#buscar" text="Buscar">
                      <HBox.margin>
                         <Insets right="-190.0" />
                      </HBox.margin></Button>
@@ -78,32 +78,32 @@
             </TableView>
             <HBox alignment="CENTER" prefHeight="49.0" prefWidth="925.0">
                <children>
-                  <DatePicker fx:id="dateInicio" prefHeight="25.0" prefWidth="153.0" promptText="Fecha inicio">
+                  <DatePicker fx:id="dateInicio" prefHeight="25.0" prefWidth="153.0" promptText="Fecha inicio" visible="false">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </DatePicker>
-                  <DatePicker fx:id="dateFin" promptText="Fecha fin">
+                  <DatePicker fx:id="dateFin" promptText="Fecha fin" visible="false">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </DatePicker>
-                  <TextField fx:id="txtOfertaNombre" promptText="Oferta nombre">
+                  <TextField fx:id="txtOfertaNombre" promptText="Oferta nombre" visible="false">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </TextField>
-                  <TextField fx:id="txtDescuento" promptText="Descuento">
+                  <TextField fx:id="txtDescuento" promptText="Descuento" visible="false">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </TextField>
-                  <ComboBox fx:id="comboPacks" prefHeight="25.0" prefWidth="129.0">
+                  <ComboBox fx:id="comboPacks" prefHeight="25.0" prefWidth="129.0" visible="false">
                      <HBox.margin>
                         <Insets right="10.0" />
                      </HBox.margin>
                   </ComboBox>
-                  <Button fx:id="btnAceptar" mnemonicParsing="false" onAction="#aceptar" text="Aceptar" />
+                  <Button fx:id="btnAceptar" mnemonicParsing="false" onAction="#aceptar" text="Aceptar" visible="false" />
                </children>
             </HBox>
          </children>

@@ -18,8 +18,8 @@ import service.ClienteRESTClient;
 import transferObjects.ClienteBean;
 
 /**
- *
- * @author Usuario
+ *  La clase que implementa el manager de cliente.
+ * @author Ricardo Peinado Lastra
  */
 public class ClienteManagerImplementation implements ClienteManager {
     private ClienteRESTClient webClient;
@@ -28,6 +28,11 @@ public class ClienteManagerImplementation implements ClienteManager {
     public ClienteManagerImplementation() {
         webClient= new ClienteRESTClient();
     }
+    /**
+     * Crea un cliente.
+     * @param cliente Los datos del cliente
+     * @throws BusinessLogicException  Si ocurre algun error al crear el cliente.
+     */
     @Override
     public void create(ClienteBean cliente) throws BusinessLogicException {
         try{
@@ -37,7 +42,11 @@ public class ClienteManagerImplementation implements ClienteManager {
             throw new BusinessLogicException(e.getMessage());
         }
     }
-
+    /**
+     * Permite modificar un cliente
+     * @param cliente Los datos de un cliente.
+     * @throws BusinessLogicException Salta si ocurre algun error.
+     */
     @Override
     public void edit(ClienteBean cliente) throws BusinessLogicException {
         try{
@@ -47,7 +56,11 @@ public class ClienteManagerImplementation implements ClienteManager {
             throw new BusinessLogicException(e.getMessage());
         }
     }
-
+    /**
+     * Permite borrar un cliente.
+     * @param id El identificador del cliente.
+     * @throws BusinessLogicException Salta si ocurre algun error
+     */
     @Override
     public void remove(Integer id) throws BusinessLogicException {
         try{
@@ -57,7 +70,12 @@ public class ClienteManagerImplementation implements ClienteManager {
             throw new BusinessLogicException(e.getMessage());
         }
     }
-
+    /**
+     * Busca un cliente por su identificador.
+     * @param id El identificador del cliente.
+     * @return Retorna los datos del cliente.
+     * @throws BusinessLogicException Salta si ocurre algun error.
+     */
     @Override
     public ClienteBean find(Integer id) throws BusinessLogicException {
         ClienteBean resultado=null;
@@ -69,7 +87,11 @@ public class ClienteManagerImplementation implements ClienteManager {
         }
         return resultado;
     }
-
+    /**
+     * Busca todos los clientes.
+     * @return Retorna todos los datos del clientes.
+     * @throws BusinessLogicException Salta si ocurre algun error.
+     */
     @Override
     public Set<ClienteBean> findAll() throws BusinessLogicException {
         Set<ClienteBean> resultado=null;
@@ -81,7 +103,12 @@ public class ClienteManagerImplementation implements ClienteManager {
         }
         return resultado;
     }
-
+    /**
+     * Devuelve la lista de clientes que han votado un apunte en especifico.
+     * @param id El identificador del apunte.
+     * @return La lista de clientes de votantes.
+     * @throws BusinessLogicException Salta si ocurre algun error.
+     */
     @Override
     public Set<ClienteBean> getVotantesId(Integer id) throws BusinessLogicException {
         Set<ClienteBean> resultado=null;
@@ -93,7 +120,11 @@ public class ClienteManagerImplementation implements ClienteManager {
         }
         return resultado;
     }
-
+    /**
+     * Permite al cliente actualizar su contraseña.
+     * @param cliente Los datos del cliente.
+     * @throws BusinessLogicException Salta si ocurre algun error.
+     */
     @Override
     public void actualizarContrasenia(ClienteBean cliente) throws BusinessLogicException {
         try{
@@ -103,7 +134,12 @@ public class ClienteManagerImplementation implements ClienteManager {
             throw new BusinessLogicException(e.getMessage());
         }
     }
-
+    /**
+     * Permite comprar un apunte.
+     * @param cliente Los datos del cliente.
+     * @param idApunte El identificador del apunte.
+     * @throws BusinessLogicException  Salta si ocurre algun error.
+     */
     @Override
     public void comprarApunte(ClienteBean cliente, Integer idApunte) throws BusinessLogicException {
         try{
@@ -113,7 +149,13 @@ public class ClienteManagerImplementation implements ClienteManager {
             throw new BusinessLogicException(e.getMessage());
         }
     }
-
+    /**
+     * Permite enviar una nueva contraseña al email de la cuenta.
+     * @param login El login del usuario.
+     * @return Retorna si todo a ido bien.
+     * @throws BusinessLogicException Salta si ocurre un error.
+     * @throws NotFoundException  Salta si ese login no existe.
+     */
     @Override
     public boolean passwordForgot(String login) throws BusinessLogicException,NotFoundException {
         boolean resultado=false;
@@ -129,6 +171,15 @@ public class ClienteManagerImplementation implements ClienteManager {
         }
         return resultado;
     }
+    /**
+     * Permite iniciar sesion a un cliente.
+     * @param login El login
+     * @param contrasenia La contraseña
+     * @return Los datos del cliente
+     * @throws BusinessLogicException Salta si ocurre algun error.
+     * @throws PasswordWrongException Salta si la contraseña es incorrecta.
+     * @throws LoginNotFoundException  Salta si el login no existe.
+     */
     @Override
     public ClienteBean iniciarSesion(String login,String contrasenia)throws BusinessLogicException, PasswordWrongException, LoginNotFoundException{
         ClienteBean resultado=null;

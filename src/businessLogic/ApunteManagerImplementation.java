@@ -12,8 +12,8 @@ import service.ApunteRESTClient;
 import transferObjects.ApunteBean;
 
 /**
- *
- * @author 2dam
+ *  La clase que implementa el manager de apuntes.
+ * @author Ricardo Peinado Lastra
  */
 public class ApunteManagerImplementation implements ApunteManager{
     private ApunteRESTClient webClient;
@@ -22,6 +22,11 @@ public class ApunteManagerImplementation implements ApunteManager{
     public ApunteManagerImplementation() {
         webClient= new ApunteRESTClient();
     }
+    /**
+     * Permite crear un apunte.
+     * @param apunte Los datos del apunte.
+     * @throws BusinessLogicException Salta si ocurre algun error.
+     */
     @Override
     public void create(ApunteBean apunte) throws BusinessLogicException {
         try{
@@ -31,6 +36,11 @@ public class ApunteManagerImplementation implements ApunteManager{
             throw new BusinessLogicException(e.getMessage());
         }
     }
+    /**
+     * Permite editar un apunte.
+     * @param apunte Los datos del apunte.
+     * @throws BusinessLogicException  Salta si ocurre algun error.
+     */
     @Override
     public void edit(ApunteBean apunte) throws BusinessLogicException {
         try{
@@ -40,7 +50,11 @@ public class ApunteManagerImplementation implements ApunteManager{
             throw new BusinessLogicException(e.getMessage());
         }
     }
-
+    /**
+     * Permite borrar un apunte.
+     * @param id El identificador del apunte.
+     * @throws BusinessLogicException  Salta si ocurre algun error.
+     */
     @Override
     public void remove(Integer id) throws BusinessLogicException {
         try{
@@ -50,7 +64,12 @@ public class ApunteManagerImplementation implements ApunteManager{
             throw new BusinessLogicException(e.getMessage());
         }
     }
-
+    /**
+     * Encuetra los datos de un apuntes por su identificador.
+     * @param id El identificador.
+     * @return Los datos del apunte.
+     * @throws BusinessLogicException Salta si ocurre algun error. 
+     */
     @Override
     public ApunteBean find(Integer id) throws BusinessLogicException {
         ApunteBean resultado=null;
@@ -62,7 +81,11 @@ public class ApunteManagerImplementation implements ApunteManager{
         }
         return resultado;
     }
-
+    /**
+     * Devuelve una lista de todos los datos del los apuntes existentes.
+     * @return La lista de todos los apuntes existentes.
+     * @throws BusinessLogicException Salta si ocurre algun error.
+     */
     @Override
     public Set<ApunteBean> findAll() throws BusinessLogicException {
         Set<ApunteBean> resultado=null;
@@ -74,7 +97,12 @@ public class ApunteManagerImplementation implements ApunteManager{
         }
         return resultado;
     }
-
+    /**
+     * Devuelve todos los apuntes creados por un usuario.
+     * @param id El identificador del cliente.
+     * @return La lista de los apuntes.
+     * @throws BusinessLogicException  Salta si ocurre algun error.
+     */
     @Override
     public Set<ApunteBean> getApuntesByCreador(Integer id) throws BusinessLogicException {
         Set<ApunteBean> resultado=null;
@@ -86,7 +114,12 @@ public class ApunteManagerImplementation implements ApunteManager{
         }
         return resultado;
     }
-
+    /**
+     * Devuelve una lista de apuntes que halla comprado un cliente.
+     * @param id El identificador del cliente.
+     * @return La lista de apuntes.
+     * @throws BusinessLogicException Salta si ocurre un error. 
+     */
     @Override
     public Set<ApunteBean> getApuntesByComprador(Integer id) throws BusinessLogicException {
         Set<ApunteBean> resultado=null;
@@ -98,7 +131,13 @@ public class ApunteManagerImplementation implements ApunteManager{
         }
         return resultado;
     }
-
+    /**
+     * Permite votar a un cliente
+     * @param idCliente El identificador del cliente
+     * @param like Like 1 o dislike -1
+     * @param apunte Los datos del apunte.
+     * @throws BusinessLogicException  Salta si ocurre algun error.
+     */
     @Override
     public void votacion(Integer idCliente, Integer like, ApunteBean apunte) throws BusinessLogicException {
          try{
@@ -108,6 +147,12 @@ public class ApunteManagerImplementation implements ApunteManager{
             throw new BusinessLogicException(e.getMessage());
         }
     }
+    /**
+     * Saca cuantas compras a tenido un apunte.
+     * @param id El identificador del apunte.
+     * @return El numero de compras
+     * @throws BusinessLogicException Salta si ocurre algun error. 
+     */
     @Override
     public int cuantasCompras(Integer id) throws BusinessLogicException{
         int resultado=0;
