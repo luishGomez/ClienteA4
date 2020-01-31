@@ -334,7 +334,9 @@ public class PerfilFXMLController{
         toques++;
         if(toques >1){
             pswContrasenia.setVisible(false);
+            pswContrasenia.setText("");
             pswConfirmarContrasenia.setVisible(false);
+            pswConfirmarContrasenia.setText("");
             btnAceptarContrasenia.setVisible(false);
             toques=0;
             lblCambiarContrasenia.setText(CAMBIAR_CONTRASENIA);
@@ -352,7 +354,9 @@ public class PerfilFXMLController{
                 Logger.getLogger(PerfilFXMLController.class.getName()).log(Level.SEVERE, null, ex);
             }
             pswContrasenia.setVisible(false);
+            pswContrasenia.setText("");
             pswConfirmarContrasenia.setVisible(false);
+            pswConfirmarContrasenia.setText("");
             btnAceptarContrasenia.setVisible(false);
             toques=0;
             lblCambiarContrasenia.setText(CAMBIAR_CONTRASENIA);

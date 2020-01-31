@@ -101,7 +101,7 @@ public class GestorDeOfertasFXController {
             stage=new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(scene);
-            stage.setTitle("Tienda de apuntes");
+            stage.setTitle("Gestor ofertas");
             stage.setResizable(true);
             stage.setMaximized(true);
             //Vamos a rellenar los datos en la ventana.
