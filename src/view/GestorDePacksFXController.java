@@ -419,6 +419,7 @@ public class GestorDePacksFXController {
                         tablaPack.refresh();
                         tfTituloGestorPack.setText("");
                         tfDescripcionGestorPack.setText("");
+                        this.dpDate.setValue(null);
                         pack = null;
                     }catch(BusinessLogicException e){
                         LOGGER.severe("Error al intentar editar un pack(onActionBtnModificarGestorPack): " + e.getMessage());
@@ -448,6 +449,10 @@ public class GestorDePacksFXController {
                         manager.removePack(pack);
                         tablaPack.getItems().remove(this.pack);
                         tablaPack.refresh();
+                        tfTituloGestorPack.setText("");
+                        tfDescripcionGestorPack.setText("");
+                        this.dpDate.setValue(dateToLocalDate(new Date()));
+                        pack=null;
                     }catch(BusinessLogicException e){
                         LOGGER.severe("Error al intentar borrar un pack(onActionBtnEliminarGestorPack): " + e.getMessage());
                         showErrorAlert("A ocurrido un error, reinicie la aplicación porfavor. " + e.getMessage());

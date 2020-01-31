@@ -387,6 +387,8 @@ public class GestorDeMateriasFXController {
                             manager.removeMateria(this.materia);
                             tablaMateria.getItems().remove(this.materia);
                             tablaMateria.refresh();
+                            this.tfTituloGestorMateria.setText("");
+                            this.tfDescripcionGestorMateria.setText("");
                         }else{
                             showWarningAlert("No puedes borrar esta materia, existen apuntes perteneciente a ella.");
                         }

@@ -12,6 +12,6 @@
       <Label layoutX="36.0" layoutY="68.0" text="Título" />
       <Label layoutX="35.0" layoutY="162.0" text="Descripción" />
       <TextField fx:id="tfTituloCrearPack" layoutX="36.0" layoutY="96.0" prefHeight="25.0" prefWidth="202.0" />
-      <TextField fx:id="taDescripcionCrearPack" layoutX="36.0" layoutY="191.0" prefHeight="25.0" prefWidth="202.0" />
+      <TextField fx:id="tfDescripcionCrearPack" layoutX="36.0" layoutY="191.0" prefHeight="25.0" prefWidth="202.0" />
    </children>
 </Pane>

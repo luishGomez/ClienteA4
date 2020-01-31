@@ -42,32 +42,36 @@ public class perfil_saldoFXMLController{
         this.stage = stage;
     }
     public void initStage(Parent root){
-       
+        
     }
     
     @FXML public void aceptarSaldo(){
-        try{
-        Float elPrecio=Float.parseFloat(txtSaldo.getText());
-        LOGGER.info("He ingresado mi saldo");
-        Alert alertIngresarSaldo = new Alert(Alert.AlertType.CONFIRMATION,"¨Seguro de ingresar esta cantidad?.",ButtonType.NO,ButtonType.YES);
-        //Añadimos titulo a la ventana como el alert.
-        alertIngresarSaldo.setTitle("Ingresar Saldo");
-        alertIngresarSaldo.setHeaderText("¿Quieres ingresar saldo?.");
-        //Si acepta ingresa saldo
-        alertIngresarSaldo.showAndWait().ifPresent(response -> {
-            if (response == ButtonType.YES) {
-                try {
-                    user.setSaldo(user.getSaldo()+elPrecio);
-                    clientLogic.edit(user);
-                } catch (BusinessLogicException ex) {
-                    Logger.getLogger(perfil_saldoFXMLController.class.getName()).log(Level.SEVERE, null, ex);
-                }
+        if(txtSaldo.getText()!=""){
+            try{
+                Float elPrecio=Float.parseFloat(txtSaldo.getText());
+                LOGGER.info("He ingresado mi saldo");
+                Alert alertIngresarSaldo = new Alert(Alert.AlertType.CONFIRMATION,"¨Seguro de ingresar esta cantidad?.",ButtonType.NO,ButtonType.YES);
+                //Añadimos titulo a la ventana como el alert.
+                alertIngresarSaldo.setTitle("Ingresar Saldo");
+                alertIngresarSaldo.setHeaderText("¿Quieres ingresar saldo?.");
+                //Si acepta ingresa saldo
+                alertIngresarSaldo.showAndWait().ifPresent(response -> {
+                    if (response == ButtonType.YES) {
+                        try {
+                            user.setSaldo(user.getSaldo()+elPrecio);
+                            clientLogic.edit(user);
+                        } catch (BusinessLogicException ex) {
+                            Logger.getLogger(perfil_saldoFXMLController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                });
+                stage.hide();
+            }catch(Exception e){
+                LOGGER.severe("Error al ingresar el saldo");
+                showErrorAlert("Ese saldo no es valido");
             }
-        });
-        stage.hide();
-        }catch(Exception e){
-            LOGGER.severe("Error al ingresar el saldo");
-            showErrorAlert("Ese saldo no es valido");
+        }else{
+            showErrorAlert("Inserte el saldo que quieras ingresar.");
         }
     }
     @FXML public void cancelarSaldo(){

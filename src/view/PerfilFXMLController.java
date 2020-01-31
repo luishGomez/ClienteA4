@@ -273,7 +273,7 @@ public class PerfilFXMLController{
         }
         if(actualizado){
             try{
-                logicCliente.iniciarSesion(user.getLogin(),"-1");
+                logicCliente.iniciarSesion(user.getLogin(),encriptador.encriptar("-1"));
             }catch (LoginNotFoundException ex1) {
                 try {                 
                     logicCliente.edit(user);
@@ -287,7 +287,9 @@ public class PerfilFXMLController{
                 alert.setHeaderText("Nombre de usuario ya existente");
                 alert.showAndWait();
                 txtLogin.requestFocus();
-            }catch(BusinessLogicException e){
+            }catch(BusinessLogicException  e){
+                showErrorAlert("Ha ocurrido un error en el servidor, intentelo otra vez o vuelva mas tarde.");
+            } catch (EncriptarException ex) {
                 showErrorAlert("Ha ocurrido un error en el servidor, intentelo otra vez o vuelva mas tarde.");
             }
 
