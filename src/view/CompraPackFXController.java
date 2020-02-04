@@ -7,7 +7,6 @@ import businessLogic.ClienteManager;
 import static businessLogic.ClienteManagerFactory.createClienteManager;
 import businessLogic.PackManager;
 import static businessLogic.PackManagerFactory.createPackManager;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import javafx.event.ActionEvent;
@@ -221,7 +220,7 @@ public class CompraPackFXController {
                     }
                 }
             }
-            if(apuntes.size() == 0){
+            if(apuntes.size() != 0){
                 for(ApunteBean a : apuntes){
                     if(packActualizado.getApuntes().contains(a)){
                         packActualizado.getApuntes().remove(a);

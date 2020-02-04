@@ -337,7 +337,7 @@ public class InicioFXController extends ControladorGeneral{
             UserBean usuario= new UserBean();
             usuario=(UserBean) user;
             //abrir admin
-            showErrorAlert("admin");
+            //showErrorAlert("admin");
             
             
             try{

@@ -1,6 +1,7 @@
 package transferObjects;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -34,6 +35,7 @@ public class PackBean {
         this.titulo = new SimpleStringProperty();
         this.descripcion = new SimpleStringProperty();
         this.fechaModificacion = new SimpleObjectProperty();
+        this.apuntes=new HashSet<ApunteBean>();
     }
 
     public Integer getIdPack() {

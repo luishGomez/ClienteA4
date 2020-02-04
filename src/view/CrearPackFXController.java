@@ -30,7 +30,7 @@ public class CrearPackFXController {
     @FXML
     private TextField tfTituloCrearPack;
     @FXML
-    private TextField taDescripcionCrearPack;
+    private TextField tfDescripcionCrearPack;
     
     public void setPack(PackBean pack){
         this.pack = pack;
@@ -72,9 +72,9 @@ public class CrearPackFXController {
     
     @FXML
     public void onActionBtnCrearCrearPack(ActionEvent event){
-        if(!tfTituloCrearPack.getText().isEmpty() && !taDescripcionCrearPack.getText().isEmpty()){
+        if(!tfTituloCrearPack.getText().isEmpty() && !tfDescripcionCrearPack.getText().isEmpty()){
             pack.setTitulo(tfTituloCrearPack.getText());
-            pack.setDescripcion(taDescripcionCrearPack.getText());
+            pack.setDescripcion(tfDescripcionCrearPack.getText());
             pack.setFechaModificacion(new Date());
             fxPack.setOpcion(1);
             stage.hide();

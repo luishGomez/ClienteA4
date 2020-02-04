@@ -24,6 +24,8 @@ public class CellTiendaPack extends ListCell<PackBean> {
     private Label lblPrecio = new Label("");
     private PackManager managerPack = PackManagerFactory.createPackManager("real");
     private OfertaBean oferta = null;
+    private float precio = 0;
+    private PackBean pack;
     
     /**
      * Constructor que añade Label y HBox a VBox.
@@ -46,8 +48,8 @@ public class CellTiendaPack extends ListCell<PackBean> {
         super.updateItem(pack, vacio);
         setText(null);
         setGraphic(null);
-        float precio = 0;
         if(pack != null && !vacio){
+            this.pack = pack;
             lblTitulo.setText("Titulo: " + pack.getTitulo());
             lblDescripcion.setText("Descripcion: " + pack.getDescripcion());
             lblApuntes.setText("Apuntes: ");
@@ -67,5 +69,17 @@ public class CellTiendaPack extends ListCell<PackBean> {
             lblPrecio.setText(precio + "€");
             setGraphic(vBox);
         }
+    }
+    
+    public float getPrecio(){
+        return precio;
+    }
+    
+    public OfertaBean getOferta(){
+        return oferta;
+    }
+    
+    public PackBean getPack(){
+        return pack;
     }
 }
