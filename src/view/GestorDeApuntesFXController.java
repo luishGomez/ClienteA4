@@ -342,7 +342,8 @@ public class GestorDeApuntesFXController {
                                 vaciar();
                                 this.tableApuntes.getSelectionModel().select(null);
                             } catch (BusinessLogicException ex) {
-                                Logger.getLogger(GestorDeApuntesFXController.class.getName()).log(Level.SEVERE, null, ex);
+                                LOGGER.severe("ERROR al intentar borrar un apunte: "+ex.getMessage());
+                                showErrorAlert("Lo sentimos, hubo un error al intentar borrar el apunte.");
                             }
                         }
                     });
