@@ -319,46 +319,47 @@ public class GestorDeApuntesFXController {
      */
     @FXML
     private void onActionBorrar(ActionEvent event){
-        if(this.apunteProvisional!=null){
-            try{
+        try{
+            if(this.apunteProvisional!=null){
+                
                 boolean sePuedeBorrar=true;
                 int cuantasCompras=this.apunteLogic.cuantasCompras(this.apunteProvisional.getIdApunte());
                 if(cuantasCompras==0){
-                    try{
-                        //Creamos la alerta del tipo confirmación.
-                        Alert alertCerrarSesion = new Alert(AlertType.CONFIRMATION);
-                        alertCerrarSesion.setTitle("Borrar apunte");
-                        alertCerrarSesion.setHeaderText("¿Estas seguro de borrar el apunte "+this.apunteProvisional.getTitulo()+"?");
-                        alertCerrarSesion.showAndWait().ifPresent(response -> {
-                            if (response == ButtonType.OK) {
-                                try {
-                                    apunteLogic.remove(apunteProvisional.getIdApunte());
-                                    Alert alert=new Alert(Alert.AlertType.INFORMATION,
-                                            "El apunte "+this.apunteProvisional.getTitulo()+" fue eliminado.",
-                                            ButtonType.OK);
-                                    alert.showAndWait();
-                                    this.tableApuntes.getItems().remove(this.tableApuntes.getSelectionModel().getSelectedItem());
-                                    this.tableApuntes.refresh();
-                                    vaciar();
-                                    this.tableApuntes.getSelectionModel().select(null);
-                                } catch (BusinessLogicException ex) {
-                                    Logger.getLogger(GestorDeApuntesFXController.class.getName()).log(Level.SEVERE, null, ex);
-                                }
+                    //Creamos la alerta del tipo confirmación.
+                    Alert alertCerrarSesion = new Alert(AlertType.CONFIRMATION);
+                    alertCerrarSesion.setTitle("Borrar apunte");
+                    alertCerrarSesion.setHeaderText("¿Estas seguro de borrar el apunte "+this.apunteProvisional.getTitulo()+"?");
+                    alertCerrarSesion.showAndWait().ifPresent(response -> {
+                        if (response == ButtonType.OK) {
+                            try {
+                                apunteLogic.remove(apunteProvisional.getIdApunte());
+                                Alert alert=new Alert(Alert.AlertType.INFORMATION,
+                                        "El apunte "+this.apunteProvisional.getTitulo()+" fue eliminado.",
+                                        ButtonType.OK);
+                                alert.showAndWait();
+                                this.tableApuntes.getItems().remove(this.tableApuntes.getSelectionModel().getSelectedItem());
+                                this.tableApuntes.refresh();
+                                vaciar();
+                                this.tableApuntes.getSelectionModel().select(null);
+                            } catch (BusinessLogicException ex) {
+                                Logger.getLogger(GestorDeApuntesFXController.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                        });
-                    }catch(Exception e){
-                        LOGGER.severe("ERROR al intentar borrar un apunte: "+e.getMessage());
-                        showErrorAlert("Lo sentimos, hubo un error al intentar borrar el apunte.");
-                    }
+                        }
+                    });
+                    
                 }else{
                     showErrorAlert("Lo sentimos, no se puede borrar el apunte, ya que tiene una o más de una venta.");
                 }
-            }catch(BusinessLogicException ex){
-                LOGGER.severe("ERROR al consultar cuantas compras tiene un apunte: "+ex.getMessage());
-                showErrorAlert("Lo sentimos, hubo un error al consultar datos sobre el apunte.");
+                
+            }else{
+                showErrorAlert("Para borrar un apunte seleccione en la tabla el apunte correspondient porfavor.");
             }
-        }else{
-            showErrorAlert("Para borrar un apunte seleccione en la tabla el apunte correspondient porfavor.");
+        }catch(BusinessLogicException ex){
+            LOGGER.severe("ERROR al consultar cuantas compras tiene un apunte: "+ex.getMessage());
+            showErrorAlert("Lo sentimos, hubo un error al consultar datos sobre el apunte.");
+        }catch(Exception e){
+            LOGGER.severe("ERROR al intentar borrar un apunte: "+e.getMessage());
+            showErrorAlert("Lo sentimos, hubo un error al intentar borrar el apunte.");
         }
     }
     /**
@@ -402,43 +403,44 @@ public class GestorDeApuntesFXController {
      */
     @FXML
     private void onActionModificar(ActionEvent event){
-        if(this.apunteProvisional!=null){
-            boolean todoBien = true;
-            if(!esValido(this.textFieldTitulo.getText().trim(),MIN_CARACTERES,MAX_CARACTERES)){
-                this.labelTitulo.setText("Titulo (Min "+MIN_CARACTERES+" car. | Max "+MAX_CARACTERES+" car.)");
-                this.labelTitulo.setTextFill(Color.web("red"));
-                todoBien=false;
-            }else{
-                this.labelTitulo.setText("Titulo");
-                this.labelTitulo.setTextFill(Color.web("black"));
-            }
-            if(!esValido(this.textFieldDesc.getText().trim(),MIN_CARACTERES,250)){
-                this.labelDesc.setText("Descripción (Min "+MIN_CARACTERES+" car. | Max "+MAX_CARACTERES+" car.)");
-                this.labelDesc.setTextFill(Color.web("red"));
-                todoBien=false;
-            }else{
-                this.labelDesc.setText("Descripción");
-                this.labelDesc.setTextFill(Color.web("black"));
-            }
-            if(this.datePickerFecha.getValue()==null){
-                this.labelFecha.setTextFill(Color.web("red"));
-                todoBien=false;
-            }else{
-                this.labelFecha.setTextFill(Color.web("black"));
-            }
-            if(this.comboBoxMaterias.getSelectionModel().getSelectedItem()==null){
-                this.labelMateria.setTextFill(Color.web("red"));
-                todoBien=false;
-            }else{
-                this.labelMateria.setTextFill(Color.web("black"));
-            }
-            if(todoBien){
-                apunteProvisional.setTitulo(this.textFieldTitulo.getText().trim());
-                apunteProvisional.setDescripcion(this.textFieldDesc.getText().trim());
-                apunteProvisional.setFechaValidacion(localDateToDate(this.datePickerFecha.getValue()));
-                apunteProvisional.setMateria((MateriaBean) this.comboBoxMaterias.getSelectionModel().getSelectedItem());
-                
-                try {
+        try {
+            if(this.apunteProvisional!=null){
+                boolean todoBien = true;
+                if(!esValido(this.textFieldTitulo.getText().trim(),MIN_CARACTERES,MAX_CARACTERES)){
+                    this.labelTitulo.setText("Titulo (Min "+MIN_CARACTERES+" car. | Max "+MAX_CARACTERES+" car.)");
+                    this.labelTitulo.setTextFill(Color.web("red"));
+                    todoBien=false;
+                }else{
+                    this.labelTitulo.setText("Titulo");
+                    this.labelTitulo.setTextFill(Color.web("black"));
+                }
+                if(!esValido(this.textFieldDesc.getText().trim(),MIN_CARACTERES,250)){
+                    this.labelDesc.setText("Descripción (Min "+MIN_CARACTERES+" car. | Max "+MAX_CARACTERES+" car.)");
+                    this.labelDesc.setTextFill(Color.web("red"));
+                    todoBien=false;
+                }else{
+                    this.labelDesc.setText("Descripción");
+                    this.labelDesc.setTextFill(Color.web("black"));
+                }
+                if(this.datePickerFecha.getValue()==null){
+                    this.labelFecha.setTextFill(Color.web("red"));
+                    todoBien=false;
+                }else{
+                    this.labelFecha.setTextFill(Color.web("black"));
+                }
+                if(this.comboBoxMaterias.getSelectionModel().getSelectedItem()==null){
+                    this.labelMateria.setTextFill(Color.web("red"));
+                    todoBien=false;
+                }else{
+                    this.labelMateria.setTextFill(Color.web("black"));
+                }
+                if(todoBien){
+                    apunteProvisional.setTitulo(this.textFieldTitulo.getText().trim());
+                    apunteProvisional.setDescripcion(this.textFieldDesc.getText().trim());
+                    apunteProvisional.setFechaValidacion(localDateToDate(this.datePickerFecha.getValue()));
+                    apunteProvisional.setMateria((MateriaBean) this.comboBoxMaterias.getSelectionModel().getSelectedItem());
+                    
+                    
                     apunteLogic.edit(apunteProvisional);
                     Alert alert=new Alert(Alert.AlertType.INFORMATION,
                             "El apunte "+this.apunteProvisional.getTitulo()+" fue modificado.",
@@ -449,13 +451,13 @@ public class GestorDeApuntesFXController {
                     this.tableApuntes.refresh();
                     vaciar();
                     
-                } catch (BusinessLogicException ex) {
-                    LOGGER.severe("Error enviar la modificación del apunte: "+ex.getMessage());
-                    showErrorAlert("Hubo un error al modificar el apunte.");
                 }
+            }else{
+                showErrorAlert("Para modificar primero seleccione un apunte.");
             }
-        }else{
-            showErrorAlert("Para modificar primero seleccione un apunte.");
+        } catch (BusinessLogicException ex) {
+            LOGGER.severe("Error enviar la modificación del apunte: "+ex.getMessage());
+            showErrorAlert("Hubo un error al modificar el apunte.");
         }
     }
     /**
