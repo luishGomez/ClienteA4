@@ -22,6 +22,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 import org.testfx.framework.junit.ApplicationTest;
 import static org.testfx.matcher.base.NodeMatchers.isDisabled;
 import static org.testfx.matcher.base.NodeMatchers.isEnabled;
+import transferObjects.PackBean;
 
 /**
  *
@@ -38,6 +39,8 @@ public class GestorDePacksFXControllerIT extends ApplicationTest{
     private TextField tfTitulo;
     private TextField tfDescripcion;
     private DatePicker datePicker;
+    private PackBean pack;
+    private Integer idPack;
     private final String fechaModificada = "26/01/2020";
     private final String fechaEsperada = "2020-01-26";
     
@@ -83,6 +86,8 @@ public class GestorDePacksFXControllerIT extends ApplicationTest{
         table = lookup("#tablaPack").queryTableView();
         push(KeyCode.DOWN);
         push(KeyCode.SPACE);
+        pack = (PackBean) table.getSelectionModel().getSelectedItem();
+        idPack = pack.getIdPack();
         tfTitulo = lookup("#tfTituloGestorPack").queryAs(TextField.class);
         tfDescripcion = lookup("#tfDescripcionGestorPack").queryAs(TextField.class);
         datePicker = lookup("#dpDate").queryAs(DatePicker.class);
@@ -92,7 +97,7 @@ public class GestorDePacksFXControllerIT extends ApplicationTest{
     }
     
     @Test
-    public void testB_ModificarMateria(){
+    public void testB_ModificarMateria() {
         //Gestor Pack
         push(KeyCode.ALT);
         push(KeyCode.RIGHT);
@@ -174,6 +179,11 @@ public class GestorDePacksFXControllerIT extends ApplicationTest{
         verifyThat(tfTitulo.getText().trim(),is(""));
         verifyThat(tfDescripcion.getText().trim(),is(""));
         verifyThat(datePicker.getValue().toString(),is(dateToLocalDate(new Date()).toString()));
+        for(Object p : table.getSelectionModel().getSelectedItems().toArray()){
+            if(((PackBean) p).getIdPack() == idPack){
+                throw new Exception("No se ha borrado el pack.");
+            }
+        }
     }
     
     public LocalDate dateToLocalDate(Date date) {
