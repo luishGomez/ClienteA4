@@ -12,7 +12,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -152,7 +154,14 @@ public class ApuntePackFXController {
     @FXML
     private void onActionBtnEliminarAddApunte(ActionEvent event){
         if(apunte != null){
-            fxGestorPack.setOpc(1);
+            Alert alertCerrarAplicacion = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.NO, ButtonType.YES);
+            //Añadimos titulo a la ventana como el alert.
+            alertCerrarAplicacion.setTitle("Eliminar");
+            alertCerrarAplicacion.setHeaderText("¿Estas seguro que lo deseas eliminar?");
+            //Si acepta cerrara la aplicación.
+            alertCerrarAplicacion.showAndWait().ifPresent(response -> {
+                fxGestorPack.setOpc(1);
+            });
             fxGestorPack.setApunte(apunte);
             stage.hide();
         }else{
