@@ -421,7 +421,6 @@ public class GestorDePacksFXController {
             JasperPrint jasperPrint = JasperFillManager.fillReport(report, parameters, dataItems);
             JasperViewer jasperViewer = new JasperViewer(jasperPrint, false);
             jasperViewer.setVisible(true);
-
         } catch (JRException e) {
             LOGGER.severe("Error iniciar el informe: " + e.getMessage());
             showErrorAlert("No se ha podido generar el informe.");
